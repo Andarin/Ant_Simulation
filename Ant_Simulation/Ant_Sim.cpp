@@ -18,10 +18,9 @@
 //http://www.youtube.com/user/thecplusplusguy
 // If so it is stated in the header. The original files are distributed under LPGL.
 //
-//The source files are also GPL v3.0 with 2 exceptions:
-//grass.bmp and sand.bmp are taken from
+//The source files are also GPL v3.0 with 1 exception:
+//grass.bmp is taken from
 //http://www.public-domain-image.com/full-image/textures-and-patterns-public-domain-images-pictures/grass-texture-public-domain-images-pictures/buffalo-grass-texture.jpg-copyright-friendly-photo.html
-//http://www.public-domain-image.com/textures-and-patterns-public-domain-images-pictures/earth-texture-public-domain-images-pictures/yellow-sand-texture.jpg.html
 //by Titus Tscharntke
 
 #pragma once
