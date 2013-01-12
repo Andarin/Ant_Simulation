@@ -1,4 +1,4 @@
-//This example program is created by thecplusplusuy for demonstration purposes. It's a simple skybox:
+﻿//This example program is created by thecplusplusuy for demonstration purposes. It's a simple skybox:
 //http://www.youtube.com/user/thecplusplusguy
 //Free source, modify if you want, LGPL licence (I guess), I would be happy, if you would not delete the link
 //so other people can see the tutorial
@@ -12,7 +12,7 @@ unsigned int skybox[6]; //the ids for the textures
 //load all of the textures, to the skybox array
 void init_skybox()
 {
-    skybox[SKY_LEFT]=load_texture_png("src/left.png", 512,256,true);
+    skybox[SKY_LEFT]=load_texture_png("src/left.png", 512,256, true);
     skybox[SKY_BACK]=load_texture_png("src/back.png", 512,256,true);
     skybox[SKY_RIGHT]=load_texture_png("src/right.png", 512,256,true);
     skybox[SKY_FRONT]=load_texture_png("src/front.png", 512,256,true);
@@ -138,7 +138,7 @@ unsigned int load_texture(const char* filename, bool duplicate_pixels)
     return num;     //and we return the id
 }
 
-unsigned int load_texture_png(const char* filename, unsigned width, unsigned height, bool duplicate_pixels)
+unsigned int load_texture_png(const char* filename, unsigned width, unsigned height, bool duplicate_pixels, bool mipmapping)
 //load the filename named texture
 {
 	// Load file and decode image.
@@ -158,10 +158,18 @@ unsigned int load_texture_png(const char* filename, unsigned width, unsigned hei
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER,0.5);
     glBindTexture(GL_TEXTURE_2D,num);       
-	//if the texture is smaller, than the image, we get the avarege of the pixels next to it
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	//same if the image bigger
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); 
+	
+	// 1) check of mipmapping (= texture antialising)
+	if (mipmapping)
+	{
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR );
+	} else
+	{
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	}
+
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+
 	if (duplicate_pixels) 
 	{
 		//we repeat the pixels in the edge of the texture, 
@@ -188,7 +196,14 @@ unsigned int load_texture_png(const char* filename, unsigned width, unsigned hei
 	//}
 	////we make the actual texture
 	//glTexImage2D(GL_TEXTURE_2D, 0, 4, u2, v2, 0, GL_RGBA, GL_UNSIGNED_BYTE, &image2[0]);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &image[0]);
+
+	if (mipmapping)	
+	{
+		gluBuild2DMipmaps( GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_UNSIGNED_BYTE, &image[0] );
+	} else {
+		glTexImage2D(GL_TEXTURE_2D, 0, 4, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &image[0]); 
+	}
+
     return num;     //and we return the id
 }
 

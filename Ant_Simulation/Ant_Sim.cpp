@@ -106,7 +106,7 @@ void init()
 	glFogfv(GL_FOG_COLOR,fog_color);
 	init_skybox();
 	tex_board=load_texture("src/grass.bmp", false);
-	tex_border=load_texture_png("src/border.png", 1024, 1024, false);
+	tex_border=load_texture_png("src/border.png", 1024, 1024, false, false);
 
 	for (int cnt = 0; cnt < ant_number; cnt++)
 	{
@@ -156,6 +156,8 @@ int main(int argc, char** argv)
 	Uint32 current_time = SDL_GetTicks();
 	Uint32 accumulator = 0;
 	Uint32 time_stopper = 0;
+	int round_cnt_save = 0;
+	int frame_cnt_save = 0;
 	int frame_cnt = 0;
 
 	SDL_Event event;
@@ -202,9 +204,11 @@ int main(int argc, char** argv)
 		accumulator += frame_time;
 		// calculate and print frame rate
 		if (new_time-time_stopper  > 3000) {
-			cout << "Average Frames Per Second: " << (round_cnt-frame_cnt) / ( (new_time-time_stopper) / 1000.f ) <<endl;
+			cout << "Average Rounds Per Second: " << (round_cnt-round_cnt_save) / ( (new_time-time_stopper) / 1000.f ) 
+				<< " by " << (frame_cnt-frame_cnt_save) / ( (new_time-time_stopper) / 1000.f ) << " FPS."<< endl;
 			time_stopper = new_time;
-			frame_cnt = round_cnt;
+			round_cnt_save = round_cnt;
+			frame_cnt_save = frame_cnt;
 		}
 
 		////////////////////////////////////////////////////////
@@ -212,14 +216,14 @@ int main(int argc, char** argv)
 		////////////////////////////////////////////////////////
 		while ( accumulator >= time_step )
 		{
-			round_cnt += 1;
+			round_cnt++;
 			move_ants();
 
 			// operations to hold constant time flux
 			accumulator -= time_step;
 			time += time_step;
 		}
-
+		frame_cnt++;
 		////////////////////////////////////////////////////////
 		/////////////        GRAPHIC RENDERING    //////////////
 		////////////////////////////////////////////////////////

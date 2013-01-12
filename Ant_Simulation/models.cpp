@@ -51,6 +51,7 @@ void draw_board(int size, unsigned int tex_grass)
   glTexCoord2f(tex_repeat_rate,0.0);
   glVertex3f(size,0,0);
   glEnd();
+  glDisable(GL_TEXTURE_2D);
 }
 
 void draw_border(int size, unsigned int tex_border)
@@ -70,7 +71,6 @@ void draw_border(int size, unsigned int tex_border)
   glVertex3f(size,0,0);
   glEnd();
 
-  glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D,tex_border);
   glBegin(GL_QUADS);
   glColor3f(1.0,1.0,1.0);
@@ -84,7 +84,6 @@ void draw_border(int size, unsigned int tex_border)
   glVertex3f(size,0,size);
   glEnd();
 
-  glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D,tex_border);
   glBegin(GL_QUADS);
   glColor3f(1.0,1.0,1.0);
@@ -98,7 +97,6 @@ void draw_border(int size, unsigned int tex_border)
   glVertex3f(0,0,size);
   glEnd();
 
-  glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D,tex_border);
   glBegin(GL_QUADS);
   glColor3f(1.0,1.0,1.0);
@@ -111,6 +109,7 @@ void draw_border(int size, unsigned int tex_border)
   glTexCoord2f(tex_repeat_rate,1.0);
   glVertex3f(0,0,0);
   glEnd();
+  glDisable(GL_TEXTURE_2D);
 }
 
 void draw_ant(int size)

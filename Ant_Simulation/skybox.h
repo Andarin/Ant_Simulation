@@ -19,5 +19,5 @@ void draw_skybox(float size);    //draw the skybox
 void init_skybox();      //load the textures
 void kill_skybox();      //delete the textures
 unsigned int load_texture(const char*, bool);
-unsigned int load_texture_png(const char*, unsigned, unsigned, bool);
+unsigned int load_texture_png(const char*, unsigned, unsigned, bool duplicate_pixel = false, bool mipmapping = true);
 #endif
