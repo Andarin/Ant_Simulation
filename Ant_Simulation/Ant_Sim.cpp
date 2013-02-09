@@ -37,6 +37,7 @@
 #include "camera.h"
 #include "skybox.h"
 #include "models.h"
+#include "objloader.h"
 
 using namespace std;
 
@@ -88,7 +89,7 @@ void move_ants()
 		ant_angley += 90/45; break;
 	}
 }
-
+int ant_model;
 void init()
 {
 	SDL_WM_SetCaption( "Ant Simulation", NULL );
@@ -105,9 +106,8 @@ void init()
 	float fog_color[] = {0.33,0.5,.80,0.7};
 	glFogfv(GL_FOG_COLOR,fog_color);
 	init_skybox();
-	tex_board=load_texture("src/grass.bmp", false);
-	tex_border=load_texture_png("src/border.png", 1024, 1024, false, false);
-
+	tex_board=load_texture_png("src/grass.png", 512, 512, false, true);
+	tex_border=load_texture_png("src/border.png", 1024, 1024);
 	for (int cnt = 0; cnt < ant_number; cnt++)
 	{
 		ant_posx[cnt] = rand() % (board_size-40) + 20;
@@ -132,6 +132,7 @@ void display()
 	draw_board(board_size, tex_board);
 	draw_border(board_size, tex_border);
 
+	glCallList(ant_model);
 	for (int cnt = 0; cnt < ant_number; cnt++) 
 	{
 		glPushMatrix();
@@ -204,8 +205,10 @@ int main(int argc, char** argv)
 		accumulator += frame_time;
 		// calculate and print frame rate
 		if (new_time-time_stopper  > 3000) {
-			cout << "Average Rounds Per Second: " << (round_cnt-round_cnt_save) / ( (new_time-time_stopper) / 1000.f ) 
-				<< " by " << (frame_cnt-frame_cnt_save) / ( (new_time-time_stopper) / 1000.f ) << " FPS."<< endl;
+			float rounds = (round_cnt-round_cnt_save) / ( (new_time-time_stopper) / 1000.f );
+			cout << "Rounds per realtime sec: " << rounds
+			     << " = " << time_step * rounds / 1000
+				 << " simulation sec by " << (frame_cnt-frame_cnt_save) / ( (new_time-time_stopper) / 1000.f ) << " FPS."<< endl;
 			time_stopper = new_time;
 			round_cnt_save = round_cnt;
 			frame_cnt_save = frame_cnt;

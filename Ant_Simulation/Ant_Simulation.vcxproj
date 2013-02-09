@@ -11,16 +11,26 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Ant.cpp" />
+    <ClCompile Include="Ant_birth_info.cpp" />
     <ClCompile Include="Ant_Sim.cpp" />
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="Colony.cpp" />
+    <ClCompile Include="Colony_birth_info.cpp" />
     <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="models.cpp" />
+    <ClCompile Include="School_4.cpp" />
     <ClCompile Include="skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Ant.h" />
+    <ClInclude Include="Ant_birth_info.h" />
     <ClInclude Include="camera.h" />
+    <ClInclude Include="Colony.h" />
+    <ClInclude Include="Colony_birth_info.h" />
     <ClInclude Include="lodepng.h" />
     <ClInclude Include="models.h" />
+    <ClInclude Include="School_4.h" />
     <ClInclude Include="skybox.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
