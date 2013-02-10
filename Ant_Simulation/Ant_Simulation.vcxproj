@@ -11,25 +11,38 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\smart_pointers\smart_pointers\Student.cpp" />
     <ClCompile Include="Ant.cpp" />
     <ClCompile Include="Ant_birth_info.cpp" />
     <ClCompile Include="Ant_Sim.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="Colony.cpp" />
     <ClCompile Include="Colony_birth_info.cpp" />
+    <ClCompile Include="Game_object.cpp" />
+    <ClCompile Include="Game_object_birth_info.cpp" />
+    <ClCompile Include="Hormone.cpp" />
+    <ClCompile Include="Hormone_birth_info.cpp" />
     <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="models.cpp" />
+    <ClCompile Include="Position.cpp" />
     <ClCompile Include="School_4.cpp" />
     <ClCompile Include="skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\smart_pointers\smart_pointers\Student.h" />
     <ClInclude Include="Ant.h" />
     <ClInclude Include="Ant_birth_info.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="Colony.h" />
     <ClInclude Include="Colony_birth_info.h" />
+    <ClInclude Include="Game_object.h" />
+    <ClInclude Include="Game_object_birth_info.h" />
+    <ClInclude Include="general_constants.h" />
+    <ClInclude Include="Hormone.h" />
+    <ClInclude Include="Hormone_birth_info.h" />
     <ClInclude Include="lodepng.h" />
     <ClInclude Include="models.h" />
+    <ClInclude Include="Position.h" />
     <ClInclude Include="School_4.h" />
     <ClInclude Include="skybox.h" />
   </ItemGroup>

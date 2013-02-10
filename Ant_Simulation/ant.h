@@ -1,27 +1,39 @@
 #pragma once
 #include "Ant_birth_info.h"
+#include "Hormone.h"
+#include "Food.h"
+#include "general_constants.h"
+#include <SDL.h>
+#include <vector>
 
 class Ant
 {
 public:
 	Ant(Ant_birth_info);
 	~Ant(void);
-	void update();
+	void update(Uint32, std::vector<Game_object>);
+	int _color;
+	Position _pos;
+	int _obj_type;
+
 private:
-	const int _ANT_TYPE;
-	const double _SPEED;
-	const int _ATTACK_POINTS;
-	const int _ARMOR;
-	const int _TRANSPORT_CAPABILITY;
-	const int _COLOR;
-	Area Olfactory_area;
-	Area corps;
+	int _ant_type;
+	double _speed;
+	int _attack_points;
+	int _armor;
+	int _transport_capability;
+	int _size;
+	Uint32 _time_of_death;
+
+	double _olfactory_sense_radius;
 	int _energy;
+	int _energy_consumption;
 
 	void think(void);
-	void walk(Pos new_position);
-	void eat(Object food);
-	void attack(Object target);
-	Object transform_food(Object food);
+	void walk(Position new_position);
+	void eat(Game_object food);
+	void attack(Game_object target);
+	void destroy(void);
+	void set_hormone(void);
+	Food transform_food(Food food);
 };
-

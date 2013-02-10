@@ -24,16 +24,18 @@
 //by Titus Tscharntke
 
 #pragma once
-#include "windows.h"
+
+// libraries
+#include <windows.h>
 #include <SDL.h>
-#include "SDL_image.h"
+#include <SDL_image.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include "glext.h"
 #include <cmath>
 #include <iostream>
+#include "glext.h"
 
-// our external depencies
+// self-created external depencies
 #include "camera.h"
 #include "skybox.h"
 #include "models.h"
@@ -41,12 +43,14 @@
 
 using namespace std;
 
-// user cahngeable parameters
+// user changeable parameters
 int FPS = 40;
 const int screen_width = 960;
 const int screen_height = 640;
 const int ant_number = 5000;
 const int board_size = 5000;
+const bool SWITCH_FOG_ON = true;
+const double SKY_BOY_DISTANCE = 5000.0;
 int cam_velocity = 1;
 
 // system variables
@@ -99,12 +103,15 @@ void init()
 	gluPerspective(45,(1.0*screen_width)/screen_height,1.0,5000.0);
 	glMatrixMode(GL_MODELVIEW);
 	glEnable(GL_DEPTH_TEST);
-	//glEnable(GL_FOG);
-	glFogi(GL_FOG_MODE,GL_LINEAR);
-	glFogf(GL_FOG_START,800.0);
-	glFogf(GL_FOG_END,3000.0);
-	float fog_color[] = {0.33,0.5,.80,0.7};
-	glFogfv(GL_FOG_COLOR,fog_color);
+	if (SWITCH_FOG_ON)
+	{ 
+		glEnable(GL_FOG);
+		glFogi(GL_FOG_MODE,GL_LINEAR);
+		glFogf(GL_FOG_START,800.0);
+		glFogf(GL_FOG_END,3000.0);
+		float fog_color[] = {0.33,0.5,.80,0.7};
+		glFogfv(GL_FOG_COLOR,fog_color);
+	}
 	init_skybox();
 	tex_board=load_texture_png("src/grass.png", 512, 512, false, true);
 	tex_border=load_texture_png("src/border.png", 1024, 1024);
@@ -127,7 +134,7 @@ void display()
 	if(keystates[SDLK_LSHIFT])
 		recent_cam_velocity *= 4;
 	camera_control(recent_cam_velocity,0.5,board_size,screen_width,screen_height,mousein);
-	draw_skybox(3000.0); // don't make it bigger than the far-view-plane (see gluPerspective)
+	draw_skybox(SKY_BOY_DISTANCE); // don't make it bigger than the far-view-plane (see gluPerspective)
 	update_camera();
 	draw_board(board_size, tex_board);
 	draw_border(board_size, tex_border);
