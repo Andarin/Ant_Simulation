@@ -1,5 +1,6 @@
 #pragma once
 #include "Ant.h"
+#include "Colony_birth_info.h"
 #include <vector>
 #include "general_constants.h"
 

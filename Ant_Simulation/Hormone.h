@@ -1,21 +1,17 @@
 #pragma once
-#include "Hormone_birth_info.h"
-#include "Position.h"
-#include <algorithm>
+#include "Game_object.h"
+#include "general_constants.h"
 
-class Hormone
+class Hormone : public Game_object
 {
 public:
-	Hormone(Hormone_birth_info);
+	Hormone(Game_object_birth_info go_birth_info, int hormone_type):Game_object(go_birth_info)
+	{
+		_obj_type = OBJECT_TYPE_NR_OF_HORMONE;
+		_hormone_type = hormone_type;
+	};
 	~Hormone(void);
-	void update();
-	Position _pos;
-	int _obj_type;
 
-private:
 	int _hormone_type;
-	int _size;
-	int _energy;
-	int _energy_consumption;
-	void destroy(void);
+
 };

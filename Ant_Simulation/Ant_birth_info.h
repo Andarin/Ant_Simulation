@@ -1,4 +1,5 @@
 #pragma once
+#include "Position.h"
 
 class Ant_birth_info
 {

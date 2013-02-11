@@ -11,7 +11,7 @@ class Ant
 public:
 	Ant(Ant_birth_info);
 	~Ant(void);
-	void update(Uint32, std::vector<Game_object>);
+	void update(Uint32);
 	int _color;
 	Position _pos;
 	int _obj_type;

@@ -18,14 +18,13 @@
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="Colony.cpp" />
     <ClCompile Include="Colony_birth_info.cpp" />
+    <ClCompile Include="Food.cpp" />
     <ClCompile Include="Game_object.cpp" />
     <ClCompile Include="Game_object_birth_info.cpp" />
     <ClCompile Include="Hormone.cpp" />
-    <ClCompile Include="Hormone_birth_info.cpp" />
     <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="models.cpp" />
     <ClCompile Include="Position.cpp" />
-    <ClCompile Include="School_4.cpp" />
     <ClCompile Include="skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -35,15 +34,14 @@
     <ClInclude Include="camera.h" />
     <ClInclude Include="Colony.h" />
     <ClInclude Include="Colony_birth_info.h" />
+    <ClInclude Include="Food.h" />
     <ClInclude Include="Game_object.h" />
     <ClInclude Include="Game_object_birth_info.h" />
     <ClInclude Include="general_constants.h" />
     <ClInclude Include="Hormone.h" />
-    <ClInclude Include="Hormone_birth_info.h" />
     <ClInclude Include="lodepng.h" />
     <ClInclude Include="models.h" />
     <ClInclude Include="Position.h" />
-    <ClInclude Include="School_4.h" />
     <ClInclude Include="skybox.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

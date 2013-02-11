@@ -39,7 +39,6 @@
 #include "camera.h"
 #include "skybox.h"
 #include "models.h"
-#include "objloader.h"
 
 using namespace std;
 

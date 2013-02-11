@@ -6,11 +6,17 @@
 class Game_object
 {
 public:
-	Game_object(void);
-	Game_object(Game_object_birth_info);
+	Game_object(Game_object_birth_info go_birth_info);
 	~Game_object(void);
-	virtual void update();
-	int _obj_type;
-private:
+	void update(void);
 	Position _pos;
+	int _obj_type;
+
+protected:
+	int _hormone_type;
+	int _size;
+	int _energy;
+	int _energy_consumption;
+
+	void destroy(void);
 };

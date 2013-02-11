@@ -21,7 +21,7 @@ Ant::~Ant(void)
 {
 }
 
-void Ant::update(Uint32 time, std::vector<Game_object> colliding_objects)
+void Ant::update(Uint32 time)
 {
 	_energy -= _energy_consumption;
 
