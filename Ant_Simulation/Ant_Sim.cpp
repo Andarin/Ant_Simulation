@@ -28,7 +28,7 @@
 // libraries
 #include <windows.h>
 #include <SDL.h>
-#include <SDL_image.h>
+//#include <SDL_image.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <cmath>
