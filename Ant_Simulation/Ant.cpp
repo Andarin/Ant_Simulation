@@ -37,6 +37,6 @@ void Ant::destroy(void)
 {
 }
 
-void Ant::set_hormone(void)
+void Ant::set_pheromone(void)
 {
 }
