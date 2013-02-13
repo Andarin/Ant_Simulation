@@ -1,6 +1,6 @@
 #include "Ant.h"
 
-Ant::Ant(Ant_birth_info ant_birth_info)
+Ant::Ant(Ant_birth_info &ant_birth_info)
 {
 	_ant_type = ant_birth_info._ant_type;
 	_speed = ant_birth_info._speed;
@@ -37,6 +37,6 @@ void Ant::destroy(void)
 {
 }
 
-void Ant::set_hormone(void)
+void Ant::set_pheromone(void)
 {
 }

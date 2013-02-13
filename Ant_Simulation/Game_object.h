@@ -2,6 +2,7 @@
 #include "Game_object_birth_info.h"
 #include "models.h"
 #include "Position.h"
+#include "general_constants.h"
 
 class Game_object
 {
@@ -13,7 +14,7 @@ public:
 	int _obj_type;
 
 protected:
-	int _hormone_type;
+	int _pheromone_type;
 	int _size;
 	int _energy;
 	int _energy_consumption;

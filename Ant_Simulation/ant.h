@@ -1,6 +1,6 @@
 #pragma once
 #include "Ant_birth_info.h"
-#include "Hormone.h"
+#include "Pheromone.h"
 #include "Food.h"
 #include "general_constants.h"
 #include <SDL.h>
@@ -9,7 +9,7 @@
 class Ant
 {
 public:
-	Ant(Ant_birth_info);
+	Ant(Ant_birth_info&);
 	~Ant(void);
 	void update(Uint32);
 	int _color;
@@ -34,6 +34,6 @@ private:
 	void eat(Game_object food);
 	void attack(Game_object target);
 	void destroy(void);
-	void set_hormone(void);
+	void set_pheromone(void);
 	Food transform_food(Food food);
 };

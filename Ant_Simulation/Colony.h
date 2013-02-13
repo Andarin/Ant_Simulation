@@ -1,22 +1,25 @@
 #pragma once
 #include "Ant.h"
 #include "Colony_birth_info.h"
-#include <vector>
+#include <list>
 #include "general_constants.h"
+#include "random_generator.h"
 
 class Colony
 {
 public:
-	Colony(Colony_birth_info);
+	Colony(Colony_birth_info&);
 	~Colony(void);
 	void update(Uint32);
 	void enter(Ant);
 	void exit(Ant);
-	int _color;
-	Position _pos;
 	int _obj_type;
 
+	std::list<std::shared_ptr<Ant> > _ant_list;
+
 private:
+	int _color;
+	Position _pos;
 	double _ant_speed;
 	int _ant_attack_points;
 	int _ant_armor;
@@ -25,19 +28,21 @@ private:
 	int _ant_olfactory_sense_radius;
 	int _ant_start_energy;
 	int _ant_energy_consumption;
-	int _egg_production_per_m;
 	int _queen_energy_consumption;
+	// a list with times when larvas will devellop to ants
+	std::list<Uint32> larva_list;
+
+	// set inside the class
+	int _egg_production_per_m;
+	int _larva_dev_time;
 	int _queen_hp;
+	double _proba_that_ant_is_worker_not_solidier;
 	int _liquid_food;
 	int _solid_food;
-	int _ant_type_distribution[2];
-	std::vector<Ant> ant_vector;
-	std::vector<Uint32> larva_vector;
-	int _number_of_ants_in_colony;
-	int _number_of_larvas_in_colony;
 
 	void transform_food_(void);
 	int calc_energy_consumption(int);
-	void produce_larvas();
-	void test_if_larvas_developped();
+	void produce_larva(Uint32);
+	void test_if_larva_developped(Uint32);
+	void create_ant(Uint32);
 };

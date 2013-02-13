@@ -28,17 +28,19 @@
 // libraries
 #include <windows.h>
 #include <SDL.h>
-#include <SDL_image.h>
+//#include <SDL_image.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <cmath>
 #include <iostream>
+#include <time.h>
 #include "glext.h"
 
 // self-created external depencies
 #include "camera.h"
 #include "skybox.h"
 #include "models.h"
+#include "general_constants.h"
 
 using namespace std;
 
@@ -58,6 +60,7 @@ bool mousein = false;
 unsigned int tex_board;
 unsigned int tex_border;
 Uint8 *keystates = SDL_GetKeyState( NULL );
+int ant_model;
 
 // just for testing / not important
 float ant_posx[ant_number];
@@ -92,7 +95,7 @@ void move_ants()
 		ant_angley += 90/45; break;
 	}
 }
-int ant_model;
+
 void init()
 {
 	SDL_WM_SetCaption( "Ant Simulation", NULL );
