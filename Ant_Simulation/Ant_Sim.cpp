@@ -28,7 +28,7 @@
 // libraries
 #include <windows.h>
 #include <SDL.h>
-//#include <SDL_image.h>
+#include <SDL_image.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <cmath>
@@ -47,12 +47,6 @@ using namespace std;
 
 // user changeable parameters
 int FPS = 40;
-const int screen_width = 960;
-const int screen_height = 640;
-const int ant_number = 50;
-const int board_size = 5000;
-const bool SWITCH_FOG_ON = true;
-const double SKY_BOY_DISTANCE = 5000.0;
 int cam_velocity = 1;
 
 // system variables
@@ -64,6 +58,7 @@ Uint8 *keystates = SDL_GetKeyState( NULL );
 int ant_model;
 
 // just for testing / not important
+const int ant_number = 50;
 float ant_posx[ant_number];
 float ant_posz[ant_number];
 float ant_posy = 2;
@@ -103,7 +98,7 @@ void init()
 	glClearColor(0.2,0.2,0.8,1.0); //background color and alpha
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(45,(1.0*screen_width)/screen_height,1.0,5000.0);
+	gluPerspective(45,(1.0*screen_width)/screen_height,1.0,10000.0);
 	glMatrixMode(GL_MODELVIEW);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_TEXTURE_2D);
@@ -149,7 +144,8 @@ void display(VirtualAnim *anim,AnimMesh *fish)
 		glPushMatrix();
 			glTranslatef(ant_posx[cnt],ant_posy,ant_posz[cnt]);
 			glRotatef(ant_angley,0.0,1.0,0.0);
-			anim->draw(fish,false,true);
+			draw_ant(ant_size);
+			//anim->draw(fish,false,true);
 		glPopMatrix();
 	}
 }
@@ -175,8 +171,8 @@ int main(int argc, char** argv)
 	SDL_Event event;
 	init();
 
-	AnimMesh *ant=new AnimMesh(16,"src/fourmi obj/fourmi2"); //On charge les frames
-    VirtualAnim *anim=new VirtualAnim(); //On crée une animation virtuelle
+	AnimMesh *ant=new AnimMesh(16,"src/fourmi_obj/fourmi2"); //On charge les frames
+    VirtualAnim *anim=new VirtualAnim(); //We create a virtual animation
  
     anim->start(0,15,50); //On lance l'animation
 

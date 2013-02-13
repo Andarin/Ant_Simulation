@@ -45,4 +45,6 @@ private:
 	void produce_larva(Uint32);
 	void test_if_larva_developped(Uint32);
 	void create_ant(Uint32);
+	int hand_out_food(int);
+	void store_food(int);
 };

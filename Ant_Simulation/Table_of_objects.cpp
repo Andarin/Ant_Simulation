@@ -3,7 +3,7 @@
 
 Table_of_objects::Table_of_objects(int n)
 {
-	std::vector<std::shared_ptr<Hormone>> row_vect ;
+	std::vector<std::shared_ptr<Pheromone>> row_vect ;
 	row_vect.resize(n);
 	_pheromone_matrix.assign(n,row_vect);
 }
@@ -28,7 +28,7 @@ void Table_of_objects::add_food (std::shared_ptr<Food> p_food){
 	_food_list.push_back (p_food);
 }
 
-void Table_of_objects::add_pheromone (std::shared_ptr<Hormone> p_pheromone){
+void Table_of_objects::add_pheromone (std::shared_ptr<Pheromone> p_pheromone){
 	if (std::find(_pheromone_list.begin(), _pheromone_list.end(), p_pheromone) == _pheromone_list.end())
 	_pheromone_list.push_back (p_pheromone);
 }
@@ -45,10 +45,10 @@ std::list<std::shared_ptr<Food>> Table_of_objects::get_food_list(){
 	return _food_list ;
 }
 
-std::list<std::shared_ptr<Hormone>> Table_of_objects::get_pheromone_list(){
+std::list<std::shared_ptr<Pheromone>> Table_of_objects::get_pheromone_list(){
 	return _pheromone_list ;
 }
 
-std::vector<std::vector<std::shared_ptr<Hormone>>> Table_of_objects::get_pheromone_matrix(){
+std::vector<std::vector<std::shared_ptr<Pheromone>>> Table_of_objects::get_pheromone_matrix(){
 	return _pheromone_matrix ;
 }

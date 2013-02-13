@@ -29,6 +29,7 @@ Colony::~Colony(void)
 
 void Colony::update(Uint32 time)
 {
+
 }
 
 int Colony::calc_energy_consumption(int eggs_per_minute)
@@ -71,4 +72,17 @@ void Colony::create_ant(Uint32 time)
 	info._energy_consumption = _ant_energy_consumption;
 
 	Ant new_ant(info);
+}
+
+int Colony::hand_out_food(int ant_demand)
+{
+	int take_away_food = 0;
+	if (_liquid_food > 0)
+		{ take_away_food = min(ant_demand, _liquid_food); }
+	return take_away_food;
+}
+
+void Colony::store_food(int amount_delivered)
+{
+	_solid_food += amount_delivered;
 }
