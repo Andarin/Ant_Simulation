@@ -28,12 +28,13 @@
 // libraries
 #include <windows.h>
 #include <SDL.h>
-//#include <SDL_image.h>
+#include <SDL_image.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <cmath>
 #include <iostream>
 #include "glext.h"
+#include "OBJlib.h"
 
 // self-created external depencies
 #include "camera.h"
@@ -46,7 +47,7 @@ using namespace std;
 int FPS = 40;
 const int screen_width = 960;
 const int screen_height = 640;
-const int ant_number = 5000;
+const int ant_number = 50;
 const int board_size = 5000;
 const bool SWITCH_FOG_ON = true;
 const double SKY_BOY_DISTANCE = 5000.0;
@@ -102,6 +103,7 @@ void init()
 	gluPerspective(45,(1.0*screen_width)/screen_height,1.0,5000.0);
 	glMatrixMode(GL_MODELVIEW);
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_TEXTURE_2D);
 	if (SWITCH_FOG_ON)
 	{ 
 		glEnable(GL_FOG);
@@ -121,7 +123,7 @@ void init()
 	}
 }
 
-void display()
+void display(VirtualAnim *anim,AnimMesh *fish)
 {
 	// in color_buffer the color of every pixel is saved
 	// in depth buffer the depth of every pixel is saved (which px is in front of which)
@@ -144,7 +146,7 @@ void display()
 		glPushMatrix();
 			glTranslatef(ant_posx[cnt],ant_posy,ant_posz[cnt]);
 			glRotatef(ant_angley,0.0,1.0,0.0);
-			draw_ant(ant_size);
+			anim->draw(fish,false,true);
 		glPopMatrix();
 	}
 }
@@ -169,6 +171,11 @@ int main(int argc, char** argv)
 
 	SDL_Event event;
 	init();
+
+	AnimMesh *ant=new AnimMesh(16,"src/fourmi obj/fourmi2"); //On charge les frames
+    VirtualAnim *anim=new VirtualAnim(); //On crée une animation virtuelle
+ 
+    anim->start(0,15,50); //On lance l'animation
 
 	while(running) {
 		////////////////////////////////////////////////////////
@@ -236,7 +243,7 @@ int main(int argc, char** argv)
 		////////////////////////////////////////////////////////
 		/////////////        GRAPHIC RENDERING    //////////////
 		////////////////////////////////////////////////////////
-		display();
+		display(anim,ant);
 		SDL_GL_SwapBuffers(); // blits the buffer to the screen
 		
 	}
@@ -244,5 +251,9 @@ int main(int argc, char** argv)
 	kill_skybox();
 	glDeleteTextures(1,&tex_board);
 	glDeleteTextures(1,&tex_border);
+
+	delete anim;
+    delete ant;
+
 	return 0;
 }
