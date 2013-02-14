@@ -4,7 +4,7 @@ Food::~Food(void)
 {
 }
 
-void Food::update(void)
+void Food::update(Uint32 time, Uint32 time_step)
 {
 }
 

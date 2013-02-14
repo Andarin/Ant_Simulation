@@ -18,7 +18,7 @@ protected:
 	int _pheromone_type;
 	double _size;
 	double _energy;
-	double _energy_consumption;
+	double _energy_consumption_per_m;
 
 	void destroy(void);
 };

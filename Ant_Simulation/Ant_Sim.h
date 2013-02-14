@@ -61,6 +61,7 @@ private:
 	// system variables
 	SDL_Surface *_prescreen;
 	SDL_Surface *_screen;
+	SDL_Surface *_logo;
 	int _round_cnt;
 	bool _mousein;
 	unsigned int _tex_board;
@@ -85,4 +86,5 @@ private:
 	void set_fog(void);
 	void init(void);
 	void display(VirtualAnim*, AnimMesh*);
+	void clean_up(void);
 };

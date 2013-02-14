@@ -16,7 +16,7 @@ public:
 	int _ant_olfactory_sense_radius;
 	int _ant_life_time;
 	double _ant_start_energy;
-	double _ant_energy_consumption;
+	double _ant_energy_consumption_per_m;
 	int _colony_max_reproduction_speed;
 	double _initial_food;
 };

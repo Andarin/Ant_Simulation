@@ -48,6 +48,14 @@ void Ant_Sim::move_ants()
 
 void Ant_Sim::set_window(void)
 {
+	SDL_Init(SDL_INIT_EVERYTHING);
+	// SDL_SWSURFACE|SDL_OPENGL means: do both options
+	_prescreen = SDL_SetVideoMode(screen_width, screen_height, 32, SDL_SWSURFACE);
+	//screen = SDL_SetVideoMode(screen_width, screen_height, 32, SDL_SWSURFACE|SDL_FULLSCREEN);
+	_logo = load_image("src/logo.png");
+	apply_surface( 200, 150, _logo, _prescreen );
+	SDL_Flip( _prescreen ); 
+	_screen = SDL_SetVideoMode(screen_width, screen_height, 32, SDL_SWSURFACE|SDL_OPENGL);
 	SDL_WM_SetCaption( "Ant Simulation", NULL );
 	Uint32 colorkey;
 	SDL_Surface *icon;
@@ -124,19 +132,28 @@ void Ant_Sim::display(VirtualAnim *anim, AnimMesh *fish)
 	}
 }
 
+void Ant_Sim::clean_up(void)
+{
+	SDL_FreeSurface( _prescreen );
+	SDL_FreeSurface( _screen );
+	SDL_FreeSurface( _logo );
+	kill_skybox();
+	glDeleteTextures(1,&_tex_board);
+	glDeleteTextures(1,&_tex_border);
+	delete(_ant_posx);
+	delete(_ant_posz);
+
+	SDL_Quit();
+}
+
 void Ant_Sim::start(void)
 {
-	SDL_Init(SDL_INIT_EVERYTHING);
-	// SDL_SWSURFACE|SDL_OPENGL means: do both options
-	_prescreen = SDL_SetVideoMode(screen_width, screen_height, 32, SDL_SWSURFACE);
-	//screen = SDL_SetVideoMode(screen_width, screen_height, 32, SDL_SWSURFACE|SDL_FULLSCREEN);
-	SDL_Surface *logo = load_image("src/logo.png");
-	//SDL_BlitSurface( hello, NULL, screen, NULL ); 
-	apply_surface( 200, 150, logo, _prescreen );
-	SDL_Flip( _prescreen ); 
-	_screen = SDL_SetVideoMode(screen_width, screen_height, 32, SDL_SWSURFACE|SDL_OPENGL);
+	init();
+
+	// set local variables
+	SDL_Event event;
 	bool running = true;
-	Uint32 time = 0;
+	Uint32 time = 0; // in milli seconds
 	Uint32 time_step = 10; // in milli seconds
 	Uint32 current_time = SDL_GetTicks();
 	Uint32 accumulator = 0;
@@ -145,13 +162,10 @@ void Ant_Sim::start(void)
 	int frame_cnt_save = 0;
 	int frame_cnt = 0;
 
-	SDL_Event event;
-	init();
-
+	// better graphics meshes
 	AnimMesh *ant=new AnimMesh(16,"src/fourmi_obj/fourmi2"); //On charge les frames
     VirtualAnim *anim=new VirtualAnim(); //We create a virtual animation
- 
-    anim->start(0,15,50); //On lance l'animation
+    anim->start(0,15,50); // we start the animation
 
 	while(running) {
 		////////////////////////////////////////////////////////
@@ -231,16 +245,7 @@ void Ant_Sim::start(void)
 		SDL_GL_SwapBuffers(); // blits the buffer to the screen
 		
 	}
-	SDL_FreeSurface( _prescreen );
-	SDL_FreeSurface( _screen );
-	SDL_FreeSurface( logo );
-	SDL_Quit();
-	kill_skybox();
-	glDeleteTextures(1,&_tex_board);
-	glDeleteTextures(1,&_tex_border);
-	delete(_ant_posx);
-	delete(_ant_posz);
-
 	delete anim;
     delete ant;
+	clean_up();
 }

@@ -10,6 +10,6 @@ public:
 	int _obj_type;
 	int _size;
 	int _energy;
-	int _energy_consumption;
+	int _energy_consumption_per_m;
 	Position _pos;
 };

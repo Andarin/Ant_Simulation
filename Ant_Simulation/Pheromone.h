@@ -11,7 +11,7 @@ public:
 		_pheromone_type = pheromone_type;
 	};
 	~Pheromone(void);
-	void update(void);
+	void update(Uint32, Uint32);
 	void merge_pheromone(Pheromone);
 
 	int _pheromone_type;

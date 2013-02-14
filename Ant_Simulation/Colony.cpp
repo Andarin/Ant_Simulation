@@ -10,7 +10,7 @@ Colony::Colony(Colony_birth_info &colony_birth_info)
 	_color = colony_birth_info._color;
 	_ant_olfactory_sense_radius = colony_birth_info._ant_olfactory_sense_radius;
 	_ant_start_energy = colony_birth_info._ant_start_energy;
-	_ant_energy_consumption = colony_birth_info._ant_energy_consumption;
+	_ant_energy_consumption_per_m = colony_birth_info._ant_energy_consumption_per_m;
 	_pos = colony_birth_info._pos;
 	_obj_type = OBJECT_TYPE_NR_OF_COLONY;
 
@@ -105,9 +105,8 @@ void Colony::create_ant(Uint32 time)
 	info._transport_capability = _ant_transport_capability;
 	info._time_of_death = time + _ant_life_time;
 	info._color = _color;
-	info._olfactory_sense_radius = _ant_olfactory_sense_radius;
 	info._energy = _ant_start_energy;
-	info._energy_consumption = _ant_energy_consumption;
+	info._energy_consumption_per_m = _ant_energy_consumption_per_m;
 
 	// where to put it
 	// ????

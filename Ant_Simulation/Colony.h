@@ -28,7 +28,7 @@ private:
 	int _ant_life_time;
 	int _ant_olfactory_sense_radius;
 	double _ant_start_energy;
-	double _ant_energy_consumption;
+	double _ant_energy_consumption_per_m;
 	// a list with times when larvas will devellop to ants
 	std::list<Uint32> larva_list;
 

@@ -15,8 +15,7 @@ public:
 	int _transport_capability;
 	double _time_of_death;
 	int _color;
-	double _olfactory_sense_radius;
 	int _energy;
-	int _energy_consumption;
+	int _energy_consumption_per_m;
 };
 

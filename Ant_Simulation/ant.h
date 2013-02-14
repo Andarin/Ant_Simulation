@@ -14,7 +14,7 @@ class Ant
 public:
 	Ant(Ant_birth_info&);
 	~Ant(void);
-	void update(Uint32);
+	void update(Uint32, Uint32);
 	Position _pos;
 	int _color;
 	int _obj_type;
@@ -28,10 +28,9 @@ private:
 	int _size;
 	Uint32 _time_of_death;
 
-	double _olfactory_sense_radius;
 	double _max_energy_storage;
 	double _energy;
-	double _energy_consumption;
+	double _energy_consumption_per_m;
 
 	void think(void);
 	void walk(Position new_position);
