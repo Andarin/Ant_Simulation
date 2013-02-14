@@ -19,5 +19,8 @@ int main(int argc, char** argv){
 	std::shared_ptr<Pheromone> pp = M[0][0];
 	B.delete_ant(shared_pointer_ant);
 	bool bb = (pp == NULL);
+	double aaa = 3.678;
+	double ccc = aaa/1.233333;
+	int bbb= (int) aaa;
 	return 0;
 }

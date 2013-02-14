@@ -6,8 +6,8 @@
 
 class Collision_detector				//This object will be used to determine all the
 {									//diverse collisions between the objects in the game.
-public:									//It is build thanks to the three doubles
-	Collision_detector(double, double, double);//for the max radius
+public:									//It is build thanks to a Table_of_objects and three 
+	Collision_detector(Table_of_objects, double, double, double);//doubles for the max radius
 	~Collision_detector(void);			//of resp. olfactive, sight and touch collisions
 
 	//Update functions :
@@ -35,16 +35,16 @@ private:
 
 	Table_of_objects _environment;
 
-	std::map<std::tuple<int,int>,std::shared_ptr<Pheromone>> _map_ph_for_ant; //subdivision
+	std::map<std::tuple<int,int>,std::list<std::shared_ptr<Pheromone>>> _map_ph_for_ant; //subdivision
 					//of all the pheromones into groups to ease their collisions with an ant
 
-	std::map<std::tuple<int,int>,std::shared_ptr<Ant>> _map_ant_for_ant;//subdivision
+	std::map<std::tuple<int,int>,std::list<std::shared_ptr<Ant>>> _map_ant_for_ant;//subdivision
 					//of all the ants into groups to ease their collisions with an ant
 
-	std::map<std::tuple<int,int>,std::shared_ptr<Colony>> _map_col_for_ant;//subdivision
+	std::map<std::tuple<int,int>,std::list<std::shared_ptr<Colony>>> _map_col_for_ant;//subdivision
 					//of all the colonies into groups to ease their collisions with an ant
 
-	std::map<std::tuple<int,int>,std::shared_ptr<Food>> _map_food_for_ant;//subdivision
+	std::map<std::tuple<int,int>,std::list<std::shared_ptr<Food>>> _map_food_for_ant;//subdivision
 					//of all the foods into groups to ease their collisions with an ant
 
 };
