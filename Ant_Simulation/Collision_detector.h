@@ -26,6 +26,9 @@ public:									//It is build thanks to a Table_of_objects and three
 	std::list<std::shared_ptr<Food>> get_fo_coll(std::shared_ptr<Ant>);//get a list of all foods in collision with our ant
 	std::list<std::shared_ptr<Pheromone>> get_ph_coll(std::shared_ptr<Ant>);//get a list of all pheromones in collision with our ant
 
+	//Others...
+	 //Get the square of a map of a certain double subdivision where position is
+	std::tuple<int,int> get_in_wich_square (Position, double);
 
 private:
 

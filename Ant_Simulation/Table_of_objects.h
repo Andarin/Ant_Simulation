@@ -27,16 +27,6 @@ public:									// We use smart pointers to identify the objects
 	void delete_food (std::shared_ptr<Food>);
 	void delete_pheromone (std::shared_ptr<Pheromone>);
 
-	//Get functions :
-
-	std::list<std::shared_ptr<Ant>> get_ant_list();
-	std::list<std::shared_ptr<Colony>> get_colony_list();
-	std::list<std::shared_ptr<Food>> get_food_list();
-	std::list<std::shared_ptr<Pheromone>> get_pheromone_list();
-	std::vector<std::vector<std::shared_ptr<Pheromone>>> get_pheromone_matrix();
-
-private:
-
 	//Lists :
 
 	std::list<std::shared_ptr<Ant>> _ant_list;
