@@ -15,8 +15,9 @@ int main(int argc, char** argv){
 	std::advance(it, 0);
 	std::shared_ptr<Ant> p = *it ;
 	(*p)._color = 555 ;
-	std::vector<std::vector<std::shared_ptr<Hormone>>> M = B.get_pheromone_matrix();
-	std::shared_ptr<Hormone> pp = M[0][0];
+	std::vector<std::vector<std::shared_ptr<Pheromone>>> M = B.get_pheromone_matrix();
+	std::shared_ptr<Pheromone> pp = M[0][0];
+	B.delete_ant(shared_pointer_ant);
 	bool bb = (pp == NULL);
 	return 0;
 }

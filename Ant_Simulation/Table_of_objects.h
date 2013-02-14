@@ -5,13 +5,14 @@
 #include "Pheromone.h"
 #include <list>
 #include <vector>
+#include <algorithm>	
 
 class Table_of_objects					// This table regroup all the objects of the game
 {								// It is created at the beginning and updated during the game
 public:									// We use smart pointers to identify the objects
 	Table_of_objects(int);		//The int input is the number of sudivisions of the matrix M
 	~Table_of_objects(void);			// representing the map, i.e. dim M = n*n
-
+	Table_of_objects();
 	//Add functions :
 
 	void add_ant (std::shared_ptr<Ant>);

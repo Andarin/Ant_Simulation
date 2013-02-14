@@ -47,7 +47,7 @@ using namespace std;
 int FPS = 40;
 const int screen_width = 960;
 const int screen_height = 640;
-const int ant_number = 50;
+const int ant_number = 500;
 const int board_size = 5000;
 const bool SWITCH_FOG_ON = true;
 const double SKY_BOY_DISTANCE = 5000.0;

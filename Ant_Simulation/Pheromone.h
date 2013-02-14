@@ -11,7 +11,11 @@ public:
 		_pheromone_type = pheromone_type;
 	};
 	~Pheromone(void);
+	int get_pheromone_type (void) ;
+
+private:
 
 	int _pheromone_type;
+	
 
 };
