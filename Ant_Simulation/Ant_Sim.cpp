@@ -40,6 +40,7 @@
 // self-created external depencies
 #include "camera.h"
 #include "skybox.h"
+#include "loadpng_functions.h"
 #include "models.h"
 #include "general_constants.h"
 
@@ -48,43 +49,39 @@ using namespace std;
 // user changeable parameters
 int FPS = 40;
 int cam_velocity = 1;
+bool high_quality_on = false;
 
 // system variables
 int round_cnt = 0;
 bool mousein = false;
 unsigned int tex_board;
 unsigned int tex_border;
+unsigned int tex_logo;
 Uint8 *keystates = SDL_GetKeyState( NULL );
 int ant_model;
 
 // just for testing / not important
-const int ant_number = 50;
+const int ant_number = 5000;
 float ant_posx[ant_number];
 float ant_posz[ant_number];
 float ant_posy = 2;
-float ant_size = 4;
+float ant_size = 10;
 float ant_angley = 180;
 
 void move_ants()
 {
-	int velocity = (round_cnt%450)/45;	 
+	int velocity = (round_cnt%360)/45;	 
 	switch(velocity) {
 	case 0:
-		ant_size += 0.2;
-		ant_posy += 0.1; break;
-	case 1:
 		for (int cnt = 0; cnt < ant_number; cnt++) {ant_posz[cnt] += 1;}
 		break;
-	case 3:
+	case 2:
 		for (int cnt = 0; cnt < ant_number; cnt++) {ant_posx[cnt] += 1;}
 		break;
-	case 5:
-		ant_size -= 0.2;
-		ant_posy -= 0.1; break;
-	case 6:
+	case 4:
 		for (int cnt = 0; cnt < ant_number; cnt++) {ant_posz[cnt] -= 1;}
 		break;
-	case 8:
+	case 6:
 		for (int cnt = 0; cnt < ant_number; cnt++) {ant_posx[cnt] -= 1;}
 		break;
 	default:
@@ -95,6 +92,13 @@ void move_ants()
 void init()
 {
 	SDL_WM_SetCaption( "Ant Simulation", NULL );
+	Uint32 colorkey;
+	SDL_Surface *icon;
+	icon = SDL_LoadBMP("src/icon.bmp");
+	colorkey = SDL_MapRGB(icon->format, 111,111,111);
+	SDL_SetColorKey(icon, SDL_SRCCOLORKEY, colorkey);              
+	SDL_WM_SetIcon(icon,NULL);
+	SDL_FreeSurface(icon);
 	glClearColor(0.2,0.2,0.8,1.0); //background color and alpha
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -144,8 +148,9 @@ void display(VirtualAnim *anim,AnimMesh *fish)
 		glPushMatrix();
 			glTranslatef(ant_posx[cnt],ant_posy,ant_posz[cnt]);
 			glRotatef(ant_angley,0.0,1.0,0.0);
-			draw_ant(ant_size);
-			//anim->draw(fish,false,true);
+			if (high_quality_on) { anim->draw(fish,false,true); }
+			else { draw_ant(ant_size); }
+			//
 		glPopMatrix();
 	}
 }
@@ -153,11 +158,17 @@ void display(VirtualAnim *anim,AnimMesh *fish)
 int main(int argc, char** argv)
 {
 	SDL_Init(SDL_INIT_EVERYTHING);
-	SDL_Surface *screen;
+	SDL_Surface *prescreen;
 	// SDL_SWSURFACE|SDL_OPENGL means: do both options
-	screen = SDL_SetVideoMode(screen_width, screen_height, 32, SDL_SWSURFACE|SDL_OPENGL);
+	prescreen = SDL_SetVideoMode(screen_width, screen_height, 32, SDL_SWSURFACE);
 	//screen = SDL_SetVideoMode(screen_width, screen_height, 32, SDL_SWSURFACE|SDL_FULLSCREEN);
-	
+	SDL_Surface *logo = load_image("src/logo.png");
+	//SDL_BlitSurface( hello, NULL, screen, NULL ); 
+	apply_surface( 200, 150, logo, prescreen );
+	SDL_Flip( prescreen ); 
+
+	SDL_Surface *screen;
+	screen = SDL_SetVideoMode(screen_width, screen_height, 32, SDL_SWSURFACE|SDL_OPENGL);
 	bool running = true;
 	Uint32 time = 0;
 	Uint32 time_step = 10; // in milli seconds
@@ -196,7 +207,9 @@ int main(int argc, char** argv)
 				case SDL_KEYUP:
 					switch(event.key.keysym.sym) {
 						case SDLK_p:
-							print_camera_pos(); break;	
+							print_camera_pos(); break;
+						case SDLK_q:
+							high_quality_on = !high_quality_on; break;	
 						case SDLK_n:
 							time_step = min(time_step+1,300); break;						
 						case SDLK_m:
@@ -220,7 +233,8 @@ int main(int argc, char** argv)
 			float rounds = (round_cnt-round_cnt_save) / ( (new_time-time_stopper) / 1000.f );
 			cout << "Rounds per realtime sec: " << rounds
 			     << " = " << time_step * rounds / 1000
-				 << " simulation sec by " << (frame_cnt-frame_cnt_save) / ( (new_time-time_stopper) / 1000.f ) << " FPS."<< endl;
+				 << " simulation sec by " << (frame_cnt-frame_cnt_save) / ( (new_time-time_stopper) / 1000.f )
+				 << " FPS."<< endl;
 			time_stopper = new_time;
 			round_cnt_save = round_cnt;
 			frame_cnt_save = frame_cnt;
@@ -246,6 +260,8 @@ int main(int argc, char** argv)
 		SDL_GL_SwapBuffers(); // blits the buffer to the screen
 		
 	}
+	SDL_FreeSurface( prescreen );
+	SDL_FreeSurface( logo );
 	SDL_Quit();
 	kill_skybox();
 	glDeleteTextures(1,&tex_board);

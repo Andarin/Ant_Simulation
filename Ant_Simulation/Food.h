@@ -10,7 +10,8 @@ public:
 		_food_type = food_type;
 	};
 	~Food(void);
+	void update(void);
+	double get_piece(double);
 
 	int _food_type;
-
 };

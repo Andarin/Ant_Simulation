@@ -1,0 +1,12 @@
+# Blender MTL File: 'fourmi2.blend'
+# Material Count: 1
+newmtl Material
+Ns 292.156863
+Ka 0.000000 0.000000 0.000000
+Kd 0.042025 0.042025 0.042025
+Ks 0.140501 0.140501 0.140501
+Ni 1.000000
+d 1.000000
+illum 2
+
+

@@ -12,5 +12,7 @@ public:
 	};
 	~Pheromone(void);
 
+	void merge_pheromone(Pheromone);
+
 	int _pheromone_type;
 };
