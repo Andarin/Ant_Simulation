@@ -11,7 +11,7 @@ Colony::Colony(Colony_birth_info &colony_birth_info)
 	_ant_olfactory_sense_radius = colony_birth_info._ant_olfactory_sense_radius;
 	_ant_start_energy = colony_birth_info._ant_start_energy;
 	_ant_energy_consumption = colony_birth_info._ant_energy_consumption;
-	_pos_ptr = colony_birth_info._pos.clone();
+	_pos = colony_birth_info._pos;
 	_obj_type = OBJECT_TYPE_NR_OF_COLONY;
 
 	_max_egg_production_per_m = colony_birth_info._colony_max_reproduction_speed;
@@ -84,7 +84,7 @@ void Colony::test_if_larva_developped(Uint32 time)
 void Colony::transform_food(Uint32 time_step)
 {
 	// one larva transforms one unity of solid food per sec to liquid food
-	double food_transformed = min(larva_list.size()*time_step/1000,_solid_food);
+	double food_transformed = std::min<double>(larva_list.size()*time_step/1000,_solid_food);
 	_solid_food -= food_transformed;
 	_liquid_food += food_transformed;
 }
@@ -98,7 +98,7 @@ void Colony::create_ant(Uint32 time)
 	else 
 	{ info._ant_type = ANT_TYPE_NR_OF_SOLDIER; }
 
-	info._pos = (*_pos_ptr);
+	info._pos = _pos;
 	info._speed = _ant_speed;
 	info._attack_points = _ant_attack_points;
 	info._armor = _ant_armor;
@@ -118,7 +118,7 @@ double Colony::hand_out_food(double ant_demand)
 {
 	double take_away_food = 0;
 	if (_liquid_food > 0)
-		{ take_away_food = min(ant_demand, _liquid_food); }
+		{ take_away_food = std::min<double>(ant_demand, _liquid_food); }
 	return take_away_food;
 }
 
@@ -129,13 +129,8 @@ void Colony::store_food(double amount_delivered)
 
 void Colony::change_egg_production(int new_egg_production)
 {
-	_egg_production_per_m = min(new_egg_production, _max_egg_production_per_m);
+	_egg_production_per_m = std::min<double>(new_egg_production, _max_egg_production_per_m);
 	_every_XX_ms_egg = 60000/_egg_production_per_m;
-}
-
-std::shared_ptr<Position> Colony::get_position(void)
-{
-	return _pos_ptr;
 }
 
 void Colony::destroy()

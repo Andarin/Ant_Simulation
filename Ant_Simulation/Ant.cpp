@@ -14,7 +14,7 @@ Ant::Ant(Ant_birth_info &ant_birth_info)
 	_energy = ant_birth_info._energy;
 	_energy_consumption = ant_birth_info._energy_consumption;;
 	_size = 1;
-	_pos_ptr = ant_birth_info._pos.clone();
+	_pos = ant_birth_info._pos;
 	_obj_type = OBJECT_TYPE_NR_OF_ANT;
 }
 
@@ -35,7 +35,7 @@ void Ant::update(Uint32 time)
 void Ant::set_pheromone(int phero_type)
 {
 	Game_object_birth_info info;
-	info._pos = (*_pos_ptr);
+	info._pos = _pos;
 	info._energy = 100;
 	info._energy_consumption = 1;
 	info._size = 400;

@@ -14,14 +14,13 @@ public:
 	~Colony(void);
 	void update(Uint32, Uint32);
 	int _obj_type;
-	std::shared_ptr<Position> get_position(void);
+	Position _pos;
 	double hand_out_food(double);
 	void store_food(double);
 	void change_egg_production(int);
 
 private:
 	int _color;
-	std::shared_ptr<Position> _pos_ptr;
 	double _ant_speed;
 	int _ant_attack_points;
 	int _ant_armor;

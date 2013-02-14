@@ -15,13 +15,11 @@ public:
 	Ant(Ant_birth_info&);
 	~Ant(void);
 	void update(Uint32);
-	std::shared_ptr<Position> get_position(void);
-
+	Position _pos;
 	int _color;
 	int _obj_type;
 
 private:
-	std::shared_ptr<Position> _pos_ptr;
 	int _ant_type;
 	double _speed;
 	int _attack_points;

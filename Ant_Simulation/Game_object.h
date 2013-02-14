@@ -11,17 +11,14 @@ class Game_object
 public:
 	Game_object(Game_object_birth_info go_birth_info);
 	~Game_object(void);
-	void update(void);
-	std::shared_ptr<Position> get_position(void);
+	Position _pos;
 	int _obj_type;
 
 protected:
 	int _pheromone_type;
-	int _size;
-	int _energy;
-	int _energy_consumption;
-
-	std::shared_ptr<Position> _pos_ptr;
+	double _size;
+	double _energy;
+	double _energy_consumption;
 
 	void destroy(void);
 };
