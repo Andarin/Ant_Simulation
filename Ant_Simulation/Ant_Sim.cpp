@@ -52,18 +52,22 @@ void Ant_Sim::move_ants()
 void Ant_Sim::set_window(void)
 {
 	SDL_Init(SDL_INIT_EVERYTHING);
-	// SDL_SWSURFACE|SDL_OPENGL means: do both options
+
+	// create prescreen to show logo while everything is initialized
 	_prescreen = SDL_SetVideoMode(screen_width, screen_height, 32, SDL_SWSURFACE);
-	//screen = SDL_SetVideoMode(screen_width, screen_height, 32, SDL_SWSURFACE|SDL_FULLSCREEN);
 	_logo = load_image("src/logo.png");
 	apply_surface( 200, 150, _logo, _prescreen );
 	SDL_Flip( _prescreen ); 
+
+	// set up the real screen
 	_screen = SDL_SetVideoMode(screen_width, screen_height, 32, SDL_SWSURFACE|SDL_OPENGL);
+	// SDL_SWSURFACE|SDL_OPENGL means: do both options
+	// for full screen:
+	//screen = SDL_SetVideoMode(screen_width, screen_height, 32, SDL_SWSURFACE|SDL_FULLSCREEN);
 	SDL_WM_SetCaption( "Ant Simulation", NULL );
-	Uint32 colorkey;
 	SDL_Surface *icon;
 	icon = SDL_LoadBMP("src/icon.bmp");
-	colorkey = SDL_MapRGB(icon->format, 111,111,111);
+	Uint32 colorkey = SDL_MapRGB(icon->format, 111,111,111);
 	SDL_SetColorKey(icon, SDL_SRCCOLORKEY, colorkey);              
 	SDL_WM_SetIcon(icon,NULL);
 	SDL_FreeSurface(icon);
@@ -211,7 +215,6 @@ void Ant_Sim::start(void)
 		{
 			handle_user_input(event);
 		}
-
 		////////////////////////////////////////////////////////
 		/////////////            GAME LOGIC       //////////////
 		////////////////////////////////////////////////////////
@@ -229,9 +232,8 @@ void Ant_Sim::start(void)
 		////////////////////////////////////////////////////////
 		/////////////        GRAPHIC RENDERING    //////////////
 		////////////////////////////////////////////////////////
-		display(anim,ant);
+		display(anim, ant);
 		SDL_GL_SwapBuffers(); // blits the buffer to the screen
-		
 	}
 	delete anim;
     delete ant;
