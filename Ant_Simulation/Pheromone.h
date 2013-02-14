@@ -11,11 +11,10 @@ public:
 		_pheromone_type = pheromone_type;
 	};
 	~Pheromone(void);
-	int get_pheromone_type (void) ;
 
-private:
+	void update(Uint32, Uint32);
+	void merge_pheromone(Pheromone);
 
 	int _pheromone_type;
-	
 
 };

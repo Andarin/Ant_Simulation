@@ -34,9 +34,5 @@ public:									// We use smart pointers to identify the objects
 	std::list<std::shared_ptr<Food>> _food_list;
 	std::list<std::shared_ptr<Pheromone>> _pheromone_list;
 
-	//Pheromone position matrix :
-
 	std::vector<std::vector<std::shared_ptr<Pheromone>>> _pheromone_matrix ;
-
 };
-

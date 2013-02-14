@@ -1,43 +1,54 @@
 #pragma once
+#include <list>
+#include <memory>
+
 #include "Ant.h"
 #include "Colony_birth_info.h"
-#include <vector>
 #include "general_constants.h"
+#include "random_generator.h"
 
 class Colony
 {
 public:
-	Colony(Colony_birth_info);
+	Colony(Colony_birth_info&);
 	~Colony(void);
-	void update(Uint32);
-	void enter(Ant);
-	void exit(Ant);
-	int _color;
-	Position _pos;
+	void update(Uint32, Uint32);
 	int _obj_type;
+	Position _pos;
+	double hand_out_food(double);
+	void store_food(double);
+	void change_egg_production(int);
 
 private:
+	int _color;
 	double _ant_speed;
 	int _ant_attack_points;
 	int _ant_armor;
-	int _ant_transport_capability;
+	double _ant_transport_capability;
 	int _ant_life_time;
 	int _ant_olfactory_sense_radius;
-	int _ant_start_energy;
-	int _ant_energy_consumption;
-	int _egg_production_per_m;
-	int _queen_energy_consumption;
-	int _queen_hp;
-	int _liquid_food;
-	int _solid_food;
-	int _ant_type_distribution[2];
-	std::vector<Ant> ant_vector;
-	std::vector<Uint32> larva_vector;
-	int _number_of_ants_in_colony;
-	int _number_of_larvas_in_colony;
+	double _ant_start_energy;
+	double _ant_energy_consumption_per_m;
+	// a list with times when larvas will devellop to ants
+	std::list<Uint32> larva_list;
 
-	void transform_food_(void);
-	int calc_energy_consumption(int);
-	void produce_larvas();
-	void test_if_larvas_developped();
+	// set inside the class
+	int _egg_production_per_m;
+	int _max_egg_production_per_m;
+	int _every_XX_ms_egg;
+	Uint32 _egg_time_accumulated;
+	int _larva_dev_time;
+	int _queen_hp;
+	double _proba_that_ant_is_worker_not_solidier;
+	double _liquid_food;
+	double _solid_food;
+
+	void transform_food(Uint32);
+	void check_if_queen_starves(void);
+	void calc_energy_consumption(Uint32);
+	void lay_egg(Uint32, Uint32);
+	void produce_larva(Uint32);
+	void test_if_larva_developped(Uint32);
+	void create_ant(Uint32);
+	void destroy();
 };

@@ -11,6 +11,7 @@
 #include <GL/glu.h>
 #include <iostream>
 #include "glext.h"
+#include "loadpng_functions.h"
 
 #ifndef SKYBOX_H
 #define SKYBOX_H
@@ -18,6 +19,5 @@
 void draw_skybox(float size);    //draw the skybox
 void init_skybox();      //load the textures
 void kill_skybox();      //delete the textures
-unsigned int load_texture(const char*, bool);
-unsigned int load_texture_png(const char*, unsigned, unsigned, bool duplicate_pixel = false, bool mipmapping = false);
+
 #endif
