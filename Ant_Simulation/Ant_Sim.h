@@ -43,6 +43,7 @@
 #include "loadpng_functions.h"
 #include "models.h"
 #include "general_constants.h"
+#include "Time_machine.h"
 
 class Ant_Sim
 {
@@ -53,7 +54,9 @@ public:
 
 private:
 	int _FPS;
+	Uint32 _sim_time_step;
 	int _cam_velocity;
+	int _recent_cam_velocity;
 	int _ant_number;
 	bool _high_quality_on;
 	bool _switch_fog_on;
@@ -63,6 +66,7 @@ private:
 	SDL_Surface *_screen;
 	SDL_Surface *_logo;
 	int _round_cnt;
+	bool _running;
 	bool _mousein;
 	unsigned int _tex_board;
 	unsigned int _tex_border;
@@ -85,6 +89,7 @@ private:
 	void set_openGL(void);
 	void set_fog(void);
 	void init(void);
+	void handle_user_input(SDL_Event &event);
 	void display(VirtualAnim*, AnimMesh*);
 	void clean_up(void);
 };

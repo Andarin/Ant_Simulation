@@ -4,13 +4,16 @@ Ant_Sim::Ant_Sim(int ant_number, int FPS, int cam_velocity)
 {
 	_ant_number = ant_number;
 	_FPS = FPS;
+	_sim_time_step = 10; // in milli seconds
 	_cam_velocity = cam_velocity;
+	_recent_cam_velocity = _cam_velocity;
 	_switch_fog_on = false;
 	_high_quality_on = false;
 	_ant_posx = new float[_ant_number];
 	_ant_posz = new float[_ant_number];
 
 	// system variables
+	_running = true;
 	_round_cnt = 0;
 	_mousein = false;
 	_keystates = SDL_GetKeyState( NULL );
@@ -110,10 +113,9 @@ void Ant_Sim::display(VirtualAnim *anim, AnimMesh *fish)
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
-	int recent_cam_velocity = 1;
-	if(_keystates[SDLK_LSHIFT])
-		recent_cam_velocity *= 4;
-	camera_control(recent_cam_velocity,0.5,board_size,screen_width,screen_height,_mousein);
+	if(_keystates[SDLK_LSHIFT]) { _recent_cam_velocity += 1; }
+	else { _recent_cam_velocity = _cam_velocity; }
+	camera_control(_recent_cam_velocity,0.5,board_size,screen_width,screen_height,_mousein);
 	draw_skybox(SKY_BOY_DISTANCE); // don't make it bigger than the far-view-plane (see gluPerspective)
 	update_camera();
 	draw_board(board_size, _tex_board);
@@ -146,98 +148,84 @@ void Ant_Sim::clean_up(void)
 	SDL_Quit();
 }
 
+void Ant_Sim::handle_user_input(SDL_Event &event)
+{
+	switch(event.type) {
+		case SDL_QUIT:
+			_running = false; break;
+		case SDL_MOUSEBUTTONDOWN:
+			_mousein = true;
+			SDL_ShowCursor(SDL_DISABLE);
+			SDL_WarpMouse(screen_width/2,screen_height/2);
+			break;
+		case SDL_MOUSEBUTTONUP:
+			_mousein = false;
+			SDL_ShowCursor(SDL_ENABLE);
+			break;
+		case SDL_KEYUP:
+			switch(event.key.keysym.sym) {
+				case SDLK_p:
+					print_camera_pos(); break;
+				case SDLK_f:
+					_switch_fog_on= !_switch_fog_on;
+					if (_switch_fog_on) { glEnable(GL_FOG); }
+					else {glDisable(GL_FOG); }
+					break;	
+				case SDLK_q:
+					_high_quality_on = !_high_quality_on; break;	
+				case SDLK_n:
+					_sim_time_step = std::min<int>(_sim_time_step+1,300); break;						
+				case SDLK_m:
+					_sim_time_step = std::max<int>(_sim_time_step-1,2); break;
+				case SDLK_ESCAPE:
+					_running = false; break;
+				default:
+					break;
+			}
+			break;
+		default:
+			break;
+	}
+}
+
 void Ant_Sim::start(void)
 {
 	init();
 
 	// set local variables
 	SDL_Event event;
-	bool running = true;
+	Time_machine time_machine; // to keep control of time flux
 	Uint32 time = 0; // in milli seconds
-	Uint32 time_step = 10; // in milli seconds
-	Uint32 current_time = SDL_GetTicks();
 	Uint32 accumulator = 0;
-	Uint32 time_stopper = 0;
-	int round_cnt_save = 0;
-	int frame_cnt_save = 0;
-	int frame_cnt = 0;
 
 	// better graphics meshes
 	AnimMesh *ant=new AnimMesh(16,"src/fourmi_obj/fourmi2"); //On charge les frames
     VirtualAnim *anim=new VirtualAnim(); //We create a virtual animation
     anim->start(0,15,50); // we start the animation
 
-	while(running) {
+	while(_running) {
 		////////////////////////////////////////////////////////
 		/////////////         EVENT HANDLING      //////////////
 		////////////////////////////////////////////////////////
-		while(SDL_PollEvent(&event)) {
-			switch(event.type) {
-				case SDL_QUIT:
-					running = false; break;
-				case SDL_MOUSEBUTTONDOWN:
-					_mousein = true;
-					SDL_ShowCursor(SDL_DISABLE);
-					SDL_WarpMouse(screen_width/2,screen_height/2);
-					break;
-				case SDL_MOUSEBUTTONUP:
-					_mousein = false;
-					SDL_ShowCursor(SDL_ENABLE);
-					break;
-				case SDL_KEYUP:
-					switch(event.key.keysym.sym) {
-						case SDLK_p:
-							print_camera_pos(); break;
-						case SDLK_f:
-							_switch_fog_on= !_switch_fog_on;
-							if (_switch_fog_on) { glEnable(GL_FOG); }
-							else {glDisable(GL_FOG); }
-							break;	
-						case SDLK_q:
-							_high_quality_on = !_high_quality_on; break;	
-						case SDLK_n:
-							time_step = min(time_step+1,300); break;						
-						case SDLK_m:
-							time_step = max(time_step-1,2); break;
-						case SDLK_ESCAPE:
-							running = false; break;
-						default:
-							break;
-				    }
-					break;
-				default:
-					break;
-			}
-		}
-		Uint32 new_time = SDL_GetTicks();
-		Uint32 frame_time = new_time - current_time;
-		current_time = new_time;
-		accumulator += frame_time;
-		// calculate and print frame rate
-		if (new_time-time_stopper  > 3000) {
-			float rounds = (_round_cnt-round_cnt_save) / ( (new_time-time_stopper) / 1000.f );
-			cout << "Rounds per realtime sec: " << rounds
-			     << " = " << time_step * rounds / 1000
-				 << " simulation sec by " << (frame_cnt-frame_cnt_save) / ( (new_time-time_stopper) / 1000.f )
-				 << " FPS."<< endl;
-			time_stopper = new_time;
-			round_cnt_save = _round_cnt;
-			frame_cnt_save = frame_cnt;
+		while(SDL_PollEvent(&event))
+		{
+			handle_user_input(event);
 		}
 
 		////////////////////////////////////////////////////////
 		/////////////            GAME LOGIC       //////////////
 		////////////////////////////////////////////////////////
-		while ( accumulator >= time_step )
+		accumulator += time_machine.return_frame_time();
+		time_machine.print_time_status(_round_cnt, _sim_time_step);
+
+		while ( accumulator >= _sim_time_step )
 		{
 			_round_cnt++;
 			move_ants();
-
 			// operations to hold constant time flux
-			accumulator -= time_step;
-			time += time_step;
+			accumulator -= _sim_time_step;
+			time += _sim_time_step;
 		}
-		frame_cnt++;
 		////////////////////////////////////////////////////////
 		/////////////        GRAPHIC RENDERING    //////////////
 		////////////////////////////////////////////////////////
