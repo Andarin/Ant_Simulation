@@ -95,4 +95,9 @@ std::list<std::shared_ptr<Pheromone>> Collision_detector::get_ph_coll(std::share
 	Ant ant = *p_ant ;
 	Position pos = ant._pos ;
 	std::tuple<int,int> square = get_in_wich_square (pos,_sub_size_olf);
+
+	// Lucas: sorry, I added an output so that I can compile
+	// this is garbage you should instantly delete tomorrow
+	std::list<std::shared_ptr<Pheromone>> test;
+	return test;
 }

@@ -153,7 +153,10 @@ void Ant_Sim::display(VirtualAnim *anim, AnimMesh *fish)
 		glPushMatrix();
 			glTranslatef(_ant_posx[cnt],_ant_posy,_ant_posz[cnt]);
 			glRotatef(_ant_angley,0.0,1.0,0.0);
-			if (_high_quality_on) { anim->draw(fish,false,true); }
+			if (_high_quality_on) 
+			{
+				anim->draw(fish,false,true);
+			}
 			else { draw_ant(_ant_size); }
 			//
 		glPopMatrix();
@@ -227,7 +230,7 @@ void Ant_Sim::start(void)
 	// better graphics meshes
 	AnimMesh *ant=new AnimMesh(16,"src/fourmi_obj/fourmi2"); //On charge les frames
     VirtualAnim *anim=new VirtualAnim(); //We create a virtual animation
-    anim->start(0,15,50); // we start the animation
+    anim->start(0,15,60); // we start the animation
 
 	while(_running) {
 		////////////////////////////////////////////////////////
