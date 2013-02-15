@@ -26,9 +26,14 @@
 #pragma once
 
 // libraries
-#include <windows.h>
-#include <SDL.h>
-#include <SDL_image.h>
+#ifdef _WIN32
+	#include "windows.h"
+	#include <SDL.h>
+	#include <SDL_image.h>
+#else
+	#include <SDL/SDL.h>
+	#include <SDL/SDL_image.h>
+#endif
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <cmath>
@@ -70,6 +75,10 @@ private:
 	bool _mousein;
 	unsigned int _tex_board;
 	unsigned int _tex_border;
+	unsigned int _tex_colony;
+	unsigned int _tex_box;
+	unsigned int _tex_apple_side;
+	unsigned int _tex_apple_top;
 	unsigned int _tex_logo;
 	Uint8 *_keystates;
 	int _ant_model;

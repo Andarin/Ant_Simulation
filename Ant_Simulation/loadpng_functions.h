@@ -1,8 +1,13 @@
 #pragma once
 #include "lodepng.h"
-#include "windows.h"
-#include <SDL.h>
-#include <SDL_image.h>
+#ifdef _WIN32
+	#include "windows.h"
+	#include <SDL.h>
+	#include <SDL_image.h>
+#else
+	#include <SDL/SDL.h>
+	#include <SDL/SDL_image.h>
+#endif
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <iostream>

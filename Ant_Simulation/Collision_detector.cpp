@@ -96,6 +96,7 @@ std::list<std::shared_ptr<Pheromone>> Collision_detector::get_ph_coll(std::share
 	Position pos = ant._pos ;
 	std::tuple<int,int> square = get_in_wich_square (pos,_sub_size_olf);
 
+
 	//Then we look in the squares arround its to search for collisions
 	int x,y,i,j ;
 	std::tie (x,y) = square;
@@ -112,4 +113,5 @@ std::list<std::shared_ptr<Pheromone>> Collision_detector::get_ph_coll(std::share
 		};
 	};
 	return res ;
+
 }

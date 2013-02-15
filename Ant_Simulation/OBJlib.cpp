@@ -1,8 +1,4 @@
-#include <windows.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
-
-#include "objlib.h"
+#include "OBJlib.h"
 
 using namespace std;
 

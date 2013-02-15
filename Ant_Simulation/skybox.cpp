@@ -17,7 +17,7 @@ void init_skybox()
     skybox[SKY_RIGHT]=load_texture_png("src/right.png", 512,256,true);
     skybox[SKY_FRONT]=load_texture_png("src/front.png", 512,256,true);
     skybox[SKY_TOP]=load_texture_png("src/top.png", 512,512,true);
-    skybox[SKY_BOTTOM]=load_texture("src/grass.bmp", true);
+    skybox[SKY_BOTTOM]=load_texture_png("src/grass.png", 512, 512,true);
 }
 
 //delete all of the textures from the skybox array (to avoid memory leaks)

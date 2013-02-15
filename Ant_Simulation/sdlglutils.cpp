@@ -1,7 +1,4 @@
 #include "sdlglutils.h"
-#include <SDL.h>
-#include <SDL_image.h>
-#include <GL/glu.h>
 
 #include <cstring>
 #include <cstdlib>

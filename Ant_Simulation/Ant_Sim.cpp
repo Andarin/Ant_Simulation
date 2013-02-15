@@ -101,6 +101,10 @@ void Ant_Sim::init()
 	set_fog();
 	init_skybox();
 	_tex_board=load_texture_png("src/grass.png", 512, 512, false, true);
+	_tex_colony=load_texture_png("src/gravel.png", 256, 256, false, true);
+	_tex_box=load_texture_png("src/box.png", 256, 256, false, true);
+	_tex_apple_side=load_texture_png("src/apple_side.png", 256, 256, false, true);
+	_tex_apple_top=load_texture_png("src/apple_top.png", 256, 256, false, true);
 	_tex_border=load_texture_png("src/border.png", 1024, 1024);
 	for (int cnt = 0; cnt < _ant_number; cnt++)
 	{
@@ -125,13 +129,33 @@ void Ant_Sim::display(MeshObj *ant_hq)
 	draw_board(board_size, _tex_board);
 	draw_border(board_size, _tex_border);
 
+	// draw a colony
+	glPushMatrix();
+		glTranslatef(100,0,100);
+		draw_colony(100, _tex_colony);
+	glPopMatrix();
+
+	// draw a box
+	glPushMatrix();
+		glTranslatef(220,0,220);
+		draw_box(70, _tex_box, _tex_box);
+	glPopMatrix();
+
+	// draw an apple
+	glPushMatrix();
+		glTranslatef(400,0,400);
+		draw_box(100, _tex_apple_side, _tex_apple_top);
+	glPopMatrix();
+
 	glCallList(_ant_model);
 	for (int cnt = 0; cnt < _ant_number; cnt++) 
 	{
 		glPushMatrix();
 			glTranslatef(_ant_posx[cnt],_ant_posy,_ant_posz[cnt]);
 			glRotatef(_ant_angley,0.0,1.0,0.0);
+
 			if (_high_quality_on) { ant_hq->draw_model(); }
+
 			else { draw_ant(_ant_size); }
 			//
 		glPopMatrix();
@@ -203,7 +227,9 @@ void Ant_Sim::start(void)
 	Uint32 accumulator = 0;
 
 	// better graphics meshes
+
 	MeshObj *ant_hq=new MeshObj("src/fourmi_obj/fourmi3_000041.obj");
+
 
 	while(_running) {
 		////////////////////////////////////////////////////////
