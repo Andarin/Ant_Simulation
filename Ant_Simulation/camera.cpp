@@ -27,12 +27,12 @@ void lock_camera(int board_size)
         camYaw+=360.0;
     if(camYaw>360.0)
         camYaw-=360;
-	camX = max(camX,5);
-	camX = min(camX,board_size-5);
-	camZ = max(camZ,5);
-	camZ = min(camZ,board_size-5);
-	camY = max(camY,5);
-	camY = min(camY,300);
+	camX = std::max<double>(camX,5);
+	camX = std::min<double>(camX,board_size-5);
+	camZ = std::max<double>(camZ,5);
+	camZ = std::min<double>(camZ,board_size-5);
+	camY = std::max<double>(camY,5);
+	camY = std::min<double>(camY,300);
 }
  
 void move_camera(float dist,float dir)

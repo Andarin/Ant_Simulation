@@ -47,7 +47,7 @@ void Colony::update(Uint32 time, Uint32 time_step)
 void Colony::calc_energy_consumption(Uint32 time_step)
 {
 	// energy consumption is linear to egg production
-	_liquid_food = max(_liquid_food-_egg_production_per_m*time_step/60000, 0);
+	_liquid_food = std::max<double>(_liquid_food-_egg_production_per_m*time_step/60000, 0);
 }
 
 void Colony::check_if_queen_starves(void)
