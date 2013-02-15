@@ -4,7 +4,7 @@ Table_of_objects::Table_of_objects()
 {
 }
 
-Table_of_objects::Table_of_objects(int n)
+Table_of_objects::Table_of_objects(int n, int size)
 {
 	std::vector<std::shared_ptr<Pheromone>> row_vect ;
 	row_vect.resize(n);
@@ -34,8 +34,17 @@ void Table_of_objects::add_food (std::shared_ptr<Food> p_food){
 }
 
 void Table_of_objects::add_pheromone (std::shared_ptr<Pheromone> p_pheromone){
+
+	//We first update the list of pheromones as we did it previously for the other lists
 	if (std::find(_pheromone_list.begin(), _pheromone_list.end(), p_pheromone) == _pheromone_list.end())
 		_pheromone_list.push_back (p_pheromone);
+
+	//But we have also to update the matrix of pheromones
+	int x,y ;
+	x = (int) (*p_pheromone)._pos._x;
+	y = (int) (*p_pheromone)._pos._y;
+
+
 }
 
 //Delete functions :

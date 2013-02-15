@@ -90,6 +90,6 @@ private:
 	void set_fog(void);
 	void init(void);
 	void handle_user_input(SDL_Event &event);
-	void display(VirtualAnim*, AnimMesh*);
+	void display(MeshObj*);
 	void clean_up(void);
 };
