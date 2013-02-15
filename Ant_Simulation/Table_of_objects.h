@@ -1,5 +1,5 @@
 #pragma once
-#include "Ant.h"
+#include "ant.h"
 #include "Colony.h"
 #include "Food.h"
 #include "Pheromone.h"

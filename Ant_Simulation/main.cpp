@@ -23,7 +23,6 @@
 //http://www.public-domain-image.com/full-image/textures-and-patterns-public-domain-images-pictures/grass-texture-public-domain-images-pictures/buffalo-grass-texture.jpg-copyright-friendly-photo.html
 //by Titus Tscharntke
 
-#pragma once
 #include "Ant_Sim.h"
 
 int main(int argc, char** argv)
