@@ -1,5 +1,9 @@
 #pragma once
 
+#ifndef M_PI    //if the pi is not defined in the cmath header file
+#define M_PI 3.1415926535       //define it
+#endif
+
 const int screen_width = 960;
 const int screen_height = 640;
 const int board_size = 5000;
