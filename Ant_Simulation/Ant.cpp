@@ -1,4 +1,4 @@
-#include "Ant.h"
+#include "ant.h"
 
 Ant::Ant(Ant_birth_info &ant_birth_info)
 {

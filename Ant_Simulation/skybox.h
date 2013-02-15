@@ -5,8 +5,12 @@
 //this file is functions.h, it's contain the function prototypes
 #pragma once
 #include "lodepng.h"
-#include "windows.h"
-#include <SDL.h>
+#ifdef _WIN32
+	#include "windows.h"
+	#include <SDL.h>
+#else
+	#include <SDL/SDL.h>
+#endif
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <iostream>
