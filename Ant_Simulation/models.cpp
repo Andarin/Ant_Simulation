@@ -168,3 +168,134 @@ void draw_ant(int size)
   glVertex3f(0.85*size,-0.4*size,0.83*size);
  glEnd();
 }
+
+void draw_colony(int size, unsigned int tex_colony)
+{
+  glEnable(GL_TEXTURE_2D);
+
+  glBindTexture(GL_TEXTURE_2D,tex_colony);
+  glBegin(GL_QUADS);
+  glColor3f(1.0,1.0,1.0);
+  glTexCoord2f(1.0,1.0);
+  glVertex3f(-size/2.0,0,-size/2.0);
+  glTexCoord2f(0.0,1.0);
+  glVertex3f(-size/2.0,0,size/2.0);
+  glTexCoord2f(0.0,0.0);
+  glVertex3f(0,size,size/2.0);
+  glTexCoord2f(1.0,0.0);
+  glVertex3f(0,size,-size/2.0);
+  glEnd();
+
+  glBindTexture(GL_TEXTURE_2D,tex_colony);
+  glBegin(GL_QUADS);
+  glColor3f(1.0,1.0,1.0);
+  glTexCoord2f(1.0,1.0);
+  glVertex3f(size/2.0,0,-size/2.0);
+  glTexCoord2f(0.0,1.0);
+  glVertex3f(size/2.0,0,size/2.0);
+  glTexCoord2f(0.0,0.0);
+  glVertex3f(0,size,size/2.0);
+  glTexCoord2f(1.0,0.0);
+  glVertex3f(0,size,-size/2.0);
+  glEnd();
+
+  glBindTexture(GL_TEXTURE_2D,tex_colony);
+  glBegin(GL_QUADS);
+  glColor3f(1.0,1.0,1.0);
+  glTexCoord2f(1.0,1.0);
+  glVertex3f(-size/2.0,0,size/2.0);
+  glTexCoord2f(0.0,1.0);
+  glVertex3f(size/2.0,0,size/2.0);
+  glTexCoord2f(0.0,0.0);
+  glVertex3f(size/2.0,size,0);
+  glTexCoord2f(1.0,0.0);
+  glVertex3f(-size/2.0,size,0);
+  glEnd();
+
+   glBindTexture(GL_TEXTURE_2D,tex_colony);
+  glBegin(GL_QUADS);
+  glColor3f(1.0,1.0,1.0);
+  glTexCoord2f(1.0,1.0);
+  glVertex3f(-size/2.0,0,-size/2.0);
+  glTexCoord2f(0.0,1.0);
+  glVertex3f(size/2.0,0,-size/2.0);
+  glTexCoord2f(0.0,0.0);
+  glVertex3f(size/2.0,size,0);
+  glTexCoord2f(1.0,0.0);
+  glVertex3f(-size/2.0,size,0);
+  glEnd();
+
+  glDisable(GL_TEXTURE_2D);
+}
+
+void draw_box(int size, unsigned int tex_sides, unsigned int tex_top)
+{
+  glEnable(GL_TEXTURE_2D);
+
+  glBindTexture(GL_TEXTURE_2D,tex_sides);
+  glBegin(GL_QUADS);
+  glColor3f(1.0,1.0,1.0);
+  glTexCoord2f(1.0,1.0);
+  glVertex3f(-size/2.0,0,-size/2.0);
+  glTexCoord2f(0.0,1.0);
+  glVertex3f(-size/2.0,0,size/2.0);
+  glTexCoord2f(0.0,0.0);
+  glVertex3f(-size/2.0,size,size/2.0);
+  glTexCoord2f(1.0,0.0);
+  glVertex3f(-size/2.0,size,-size/2.0);
+  glEnd();
+
+  glBindTexture(GL_TEXTURE_2D,tex_sides);
+  glBegin(GL_QUADS);
+  glColor3f(1.0,1.0,1.0);
+  glTexCoord2f(1.0,1.0);
+  glVertex3f(size/2.0,0,-size/2.0);
+  glTexCoord2f(0.0,1.0);
+  glVertex3f(size/2.0,0,size/2.0);
+  glTexCoord2f(0.0,0.0);
+  glVertex3f(size/2.0,size,size/2.0);
+  glTexCoord2f(1.0,0.0);
+  glVertex3f(size/2.0,size,-size/2.0);
+  glEnd();
+
+  glBindTexture(GL_TEXTURE_2D,tex_sides);
+  glBegin(GL_QUADS);
+  glColor3f(1.0,1.0,1.0);
+  glTexCoord2f(1.0,1.0);
+  glVertex3f(-size/2.0,0,size/2.0);
+  glTexCoord2f(0.0,1.0);
+  glVertex3f(size/2.0,0,size/2.0);
+  glTexCoord2f(0.0,0.0);
+  glVertex3f(size/2.0,size,size/2.0);
+  glTexCoord2f(1.0,0.0);
+  glVertex3f(-size/2.0,size,size/2.0);
+  glEnd();
+
+  glBindTexture(GL_TEXTURE_2D,tex_sides);
+  glBegin(GL_QUADS);
+  glColor3f(1.0,1.0,1.0);
+  glTexCoord2f(1.0,1.0);
+  glVertex3f(-size/2.0,0,-size/2.0);
+  glTexCoord2f(0.0,1.0);
+  glVertex3f(size/2.0,0,-size/2.0);
+  glTexCoord2f(0.0,0.0);
+  glVertex3f(size/2.0,size,-size/2.0);
+  glTexCoord2f(1.0,0.0);
+  glVertex3f(-size/2.0,size,-size/2.0);
+  glEnd();
+
+  glBindTexture(GL_TEXTURE_2D,tex_top);
+  glBegin(GL_QUADS);
+  glColor3f(1.0,1.0,1.0);
+  glTexCoord2f(1.0,1.0);
+  glVertex3f(-size/2.0,size,-size/2.0);
+  glTexCoord2f(0.0,1.0);
+  glVertex3f(size/2.0,size,-size/2.0);
+  glTexCoord2f(0.0,0.0);
+  glVertex3f(size/2.0,size,size/2.0);
+  glTexCoord2f(1.0,0.0);
+  glVertex3f(-size/2.0,size,size/2.0);
+  glEnd();
+
+  glDisable(GL_TEXTURE_2D);
+}

@@ -101,6 +101,10 @@ void Ant_Sim::init()
 	set_fog();
 	init_skybox();
 	_tex_board=load_texture_png("src/grass.png", 512, 512, false, true);
+	_tex_colony=load_texture_png("src/gravel.png", 256, 256, false, true);
+	_tex_box=load_texture_png("src/box.png", 256, 256, false, true);
+	_tex_apple_side=load_texture_png("src/apple_side.png", 256, 256, false, true);
+	_tex_apple_top=load_texture_png("src/apple_top.png", 256, 256, false, true);
 	_tex_border=load_texture_png("src/border.png", 1024, 1024);
 	for (int cnt = 0; cnt < _ant_number; cnt++)
 	{
@@ -124,6 +128,24 @@ void Ant_Sim::display(VirtualAnim *anim, AnimMesh *fish)
 	update_camera();
 	draw_board(board_size, _tex_board);
 	draw_border(board_size, _tex_border);
+
+	// draw a colony
+	glPushMatrix();
+		glTranslatef(100,0,100);
+		draw_colony(100, _tex_colony);
+	glPopMatrix();
+
+	// draw a box
+	glPushMatrix();
+		glTranslatef(220,0,220);
+		draw_box(70, _tex_box, _tex_box);
+	glPopMatrix();
+
+	// draw an apple
+	glPushMatrix();
+		glTranslatef(400,0,400);
+		draw_box(100, _tex_apple_side, _tex_apple_top);
+	glPopMatrix();
 
 	glCallList(_ant_model);
 	for (int cnt = 0; cnt < _ant_number; cnt++) 
