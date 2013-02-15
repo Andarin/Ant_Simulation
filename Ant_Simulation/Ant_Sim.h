@@ -86,8 +86,6 @@ private:
 	// just for testing / not important
 	float *_ant_posx;
 	float *_ant_posz;
-	//float _ant_posx[_ant_number];
-	//float _ant_posz[_ant_number];
 	float _ant_posy;
 	float _ant_size;
 	float _ant_angley;
@@ -100,6 +98,6 @@ private:
 	void load_textures(void);
 	void init(void);
 	void handle_user_input(SDL_Event &event);
-	void display(VirtualAnim*, AnimMesh*);
+	void display(MeshObj*);
 	void clean_up(void);
 };

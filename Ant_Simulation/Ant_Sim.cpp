@@ -118,7 +118,7 @@ void Ant_Sim::init()
 	}
 }
 
-void Ant_Sim::display(VirtualAnim *anim, AnimMesh *fish)
+void Ant_Sim::display(MeshObj *ant_hq)
 {
 	// in color_buffer the color of every pixel is saved
 	// in depth buffer the depth of every pixel is saved (which px is in front of which)
@@ -154,16 +154,15 @@ void Ant_Sim::display(VirtualAnim *anim, AnimMesh *fish)
 
 	glCallList(_ant_model);
 	double ant_color[3] =  {0.2, 0.0, 0.0};
+	int freq = 50;
+	double anim_frame = std::abs((_round_cnt%freq)/(0.25*freq)-2)-1;
 	for (int cnt = 0; cnt < _ant_number; cnt++) 
 	{
 		glPushMatrix();
 			glTranslatef(_ant_posx[cnt],_ant_posy,_ant_posz[cnt]);
 			glRotatef(_ant_angley,0.0,1.0,0.0);
-			if (_high_quality_on) 
-			{
-				anim->draw(fish,false,true);
-			}
-			else { draw_ant(_ant_size, ant_color, 0); }
+			if (_high_quality_on) { ant_hq->draw_model(); }
+			else { draw_ant_anim(_ant_size, ant_color, anim_frame); }
 		glPopMatrix();
 	}
 }
@@ -233,9 +232,9 @@ void Ant_Sim::start(void)
 	Uint32 accumulator = 0;
 
 	// better graphics meshes
-	AnimMesh *ant=new AnimMesh(16,"src/fourmi_obj/fourmi2"); //On charge les frames
-    VirtualAnim *anim=new VirtualAnim(); //We create a virtual animation
-    anim->start(0,15,60); // we start the animation
+
+	MeshObj *ant_hq=new MeshObj("src/fourmi_obj/fourmi3_000041.obj");
+
 
 	while(_running) {
 		////////////////////////////////////////////////////////
@@ -262,10 +261,9 @@ void Ant_Sim::start(void)
 		////////////////////////////////////////////////////////
 		/////////////        GRAPHIC RENDERING    //////////////
 		////////////////////////////////////////////////////////
-		display(anim, ant);
+		display(ant_hq);
 		SDL_GL_SwapBuffers(); // blits the buffer to the screen
 	}
-	delete anim;
-    delete ant;
+    delete ant_hq;
 	clean_up();
 }

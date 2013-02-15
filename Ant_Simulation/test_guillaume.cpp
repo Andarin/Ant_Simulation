@@ -27,5 +27,8 @@ int main(int argc, char** argv){
 	double aaa = 3.678;
 	double ccc = aaa/1.233333;
 	int bbb= (int) aaa;
+	if (bbb == 3)
+	{std::list<double> lll ;
+	lll.push_back(aaa);}
 	return 0;
 }
