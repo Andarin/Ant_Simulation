@@ -17,6 +17,7 @@ Ant_Sim::Ant_Sim(int ant_number, int FPS, int cam_velocity)
 	_round_cnt = 0;
 	_mousein = false;
 	_keystates = SDL_GetKeyState( NULL );
+	_max_size_of_pheromone = 300;
 
 	// just for testing / not important
 	_ant_posy = 2;
@@ -90,8 +91,19 @@ void Ant_Sim::set_fog(void)
 	glFogi(GL_FOG_MODE,GL_LINEAR);
 	glFogf(GL_FOG_START,800.0);
 	glFogf(GL_FOG_END,3000.0);
-	float fog_color[] = {0.33,0.5,.80,0.7};
+	//float fog_color[] = {0.33,0.5,.80,0.7};
+	float fog_color[] = {0.7,0.7,.80,0.8};
 	glFogfv(GL_FOG_COLOR,fog_color);
+}
+
+void Ant_Sim::load_textures()
+{
+	_tex_board=load_texture_png("src/grass.png", 512, 512, false, true);
+	_tex_colony=load_texture_png("src/gravel.png", 256, 256, false, true);
+	_tex_box=load_texture_png("src/box.png", 256, 256, false, true);
+	_tex_apple_side=load_texture_png("src/apple_side.png", 256, 256, false, true);
+	_tex_apple_top=load_texture_png("src/apple_top.png", 256, 256, false, true);
+	_tex_border=load_texture_png("src/border.png", 1024, 1024);
 }
 
 void Ant_Sim::init()
@@ -100,12 +112,7 @@ void Ant_Sim::init()
 	set_openGL();
 	set_fog();
 	init_skybox();
-	_tex_board=load_texture_png("src/grass.png", 512, 512, false, true);
-	_tex_colony=load_texture_png("src/gravel.png", 256, 256, false, true);
-	_tex_box=load_texture_png("src/box.png", 256, 256, false, true);
-	_tex_apple_side=load_texture_png("src/apple_side.png", 256, 256, false, true);
-	_tex_apple_top=load_texture_png("src/apple_top.png", 256, 256, false, true);
-	_tex_border=load_texture_png("src/border.png", 1024, 1024);
+	load_textures();
 	for (int cnt = 0; cnt < _ant_number; cnt++)
 	{
 		_ant_posx[cnt] = rand() % (board_size-40) + 20;
@@ -123,9 +130,9 @@ void Ant_Sim::display(MeshObj *ant_hq)
 
 	if(_keystates[SDLK_LSHIFT]) { _recent_cam_velocity += 1; }
 	else { _recent_cam_velocity = _cam_velocity; }
-	camera_control(_recent_cam_velocity,0.5,board_size,screen_width,screen_height,_mousein);
+	_camera.control(_recent_cam_velocity,0.5,board_size,screen_width,screen_height,_mousein);
 	draw_skybox(SKY_BOY_DISTANCE); // don't make it bigger than the far-view-plane (see gluPerspective)
-	update_camera();
+	_camera.update();
 	draw_board(board_size, _tex_board);
 	draw_border(board_size, _tex_border);
 
@@ -148,16 +155,16 @@ void Ant_Sim::display(MeshObj *ant_hq)
 	glPopMatrix();
 
 	glCallList(_ant_model);
+	double ant_color[3] =  {0.2, 0.0, 0.0};
+	int freq = 50;
+	double anim_frame = std::abs((_round_cnt%freq)/(0.25*freq)-2)-1;
 	for (int cnt = 0; cnt < _ant_number; cnt++) 
 	{
 		glPushMatrix();
 			glTranslatef(_ant_posx[cnt],_ant_posy,_ant_posz[cnt]);
 			glRotatef(_ant_angley,0.0,1.0,0.0);
-
 			if (_high_quality_on) { ant_hq->draw_model(); }
-
-			else { draw_ant(_ant_size); }
-			//
+			else { draw_ant_anim(_ant_size, ant_color, anim_frame); }
 		glPopMatrix();
 	}
 }
@@ -193,7 +200,7 @@ void Ant_Sim::handle_user_input(SDL_Event &event)
 		case SDL_KEYUP:
 			switch(event.key.keysym.sym) {
 				case SDLK_p:
-					print_camera_pos(); break;
+					_camera.print(); break;
 				case SDLK_f:
 					_switch_fog_on= !_switch_fog_on;
 					if (_switch_fog_on) { glEnable(GL_FOG); }
@@ -229,7 +236,10 @@ void Ant_Sim::start(void)
 	// better graphics meshes
 
 	MeshObj *ant_hq=new MeshObj("src/fourmi_obj/fourmi3_000041.obj");
-
+		  
+	auto table_obj = std::make_shared<Table_of_objects>(2500, board_size);
+	auto col_dect = std::make_shared<Collision_detector>(table_obj, 
+							_max_size_of_pheromone, _max_size_of_vision, _max_size_of_corps);
 
 	while(_running) {
 		////////////////////////////////////////////////////////
@@ -249,6 +259,10 @@ void Ant_Sim::start(void)
 		{
 			_round_cnt++;
 			move_ants();
+
+			table_obj->update_passive(time, time_step);
+			coll_dect->update_active(time, time_step);
+
 			// operations to hold constant time flux
 			accumulator -= _sim_time_step;
 			time += _sim_time_step;

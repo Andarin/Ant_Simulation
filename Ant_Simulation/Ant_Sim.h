@@ -43,12 +43,14 @@
 #include "OBJlib.h"
 
 // self-created external depencies
-#include "camera.h"
+#include "Camera.h"
 #include "skybox.h"
 #include "loadpng_functions.h"
 #include "models.h"
 #include "general_constants.h"
 #include "Time_machine.h"
+#include "Table_of_objects.h"
+#include "Collision_detector.h"
 
 class Ant_Sim
 {
@@ -60,6 +62,7 @@ public:
 private:
 	int _FPS;
 	Uint32 _sim_time_step;
+	Camera _camera;
 	int _cam_velocity;
 	int _recent_cam_velocity;
 	int _ant_number;
@@ -73,6 +76,9 @@ private:
 	int _round_cnt;
 	bool _running;
 	bool _mousein;
+	double _max_size_of_pheromone;
+	double _max_size_of_vision;
+	double _max_size_of_corps;
 	unsigned int _tex_board;
 	unsigned int _tex_border;
 	unsigned int _tex_colony;
@@ -86,8 +92,6 @@ private:
 	// just for testing / not important
 	float *_ant_posx;
 	float *_ant_posz;
-	//float _ant_posx[_ant_number];
-	//float _ant_posz[_ant_number];
 	float _ant_posy;
 	float _ant_size;
 	float _ant_angley;
@@ -97,6 +101,7 @@ private:
 	void set_window(void);
 	void set_openGL(void);
 	void set_fog(void);
+	void load_textures(void);
 	void init(void);
 	void handle_user_input(SDL_Event &event);
 	void display(MeshObj*);

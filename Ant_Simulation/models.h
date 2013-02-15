@@ -14,7 +14,8 @@
 
 void draw_board(int,unsigned int);
 void draw_border(int,unsigned int);
-void draw_ant(int);
+void draw_ant(int, double[]);
+void draw_ant_anim(int, double[], double);
 void draw_colony(int, unsigned int);
 void draw_box(int, unsigned int, unsigned int);
 
