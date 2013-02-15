@@ -94,18 +94,23 @@ void Ant_Sim::set_fog(void)
 	glFogfv(GL_FOG_COLOR,fog_color);
 }
 
-void Ant_Sim::init()
+void Ant_Sim::load_textures()
 {
-	set_window();
-	set_openGL();
-	set_fog();
-	init_skybox();
 	_tex_board=load_texture_png("src/grass.png", 512, 512, false, true);
 	_tex_colony=load_texture_png("src/gravel.png", 256, 256, false, true);
 	_tex_box=load_texture_png("src/box.png", 256, 256, false, true);
 	_tex_apple_side=load_texture_png("src/apple_side.png", 256, 256, false, true);
 	_tex_apple_top=load_texture_png("src/apple_top.png", 256, 256, false, true);
 	_tex_border=load_texture_png("src/border.png", 1024, 1024);
+}
+
+void Ant_Sim::init()
+{
+	set_window();
+	set_openGL();
+	set_fog();
+	init_skybox();
+	load_textures();
 	for (int cnt = 0; cnt < _ant_number; cnt++)
 	{
 		_ant_posx[cnt] = rand() % (board_size-40) + 20;
@@ -148,6 +153,7 @@ void Ant_Sim::display(VirtualAnim *anim, AnimMesh *fish)
 	glPopMatrix();
 
 	glCallList(_ant_model);
+	double ant_color[3] =  {0.2, 0.0, 0.0};
 	for (int cnt = 0; cnt < _ant_number; cnt++) 
 	{
 		glPushMatrix();
@@ -157,8 +163,7 @@ void Ant_Sim::display(VirtualAnim *anim, AnimMesh *fish)
 			{
 				anim->draw(fish,false,true);
 			}
-			else { draw_ant(_ant_size); }
-			//
+			else { draw_ant(_ant_size, ant_color, 0); }
 		glPopMatrix();
 	}
 }

@@ -97,6 +97,7 @@ private:
 	void set_window(void);
 	void set_openGL(void);
 	void set_fog(void);
+	void load_textures(void);
 	void init(void);
 	void handle_user_input(SDL_Event &event);
 	void display(VirtualAnim*, AnimMesh*);

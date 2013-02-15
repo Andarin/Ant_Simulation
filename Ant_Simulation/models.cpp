@@ -112,11 +112,11 @@ void draw_border(int size, unsigned int tex_border)
   glDisable(GL_TEXTURE_2D);
 }
 
-void draw_ant(int size)
+void draw_ant(int size, double color[], int anim_step)
 {
  glBegin(GL_QUADS);
   // head
-  glColor4f(0.0,0.0,0.0,1.0);
+  glColor4f(color[0],color[1],color[2],1.0);
   glVertex3f(0.0,0.0,0.0);
   glVertex3f(0.35*size,0.0,0.0);
   glVertex3f(0.35*size,0.35*size,0.0);
@@ -138,9 +138,9 @@ void draw_ant(int size)
   glVertex3f(0.35*size,0.0,0.0);
   // left front leg
   glVertex3f(0.0,0.0,0.0);
-  glVertex3f(0.0,0.0,0.14*size);
-  glVertex3f(-0.5*size,-0.4*size,0.14*size);
-  glVertex3f(-0.5*size,-0.4*size,0.0);
+  glVertex3f(0.0,0.0,0.08*size);
+  glVertex3f(-0.5*size,-0.4*size,anim_step*0.3*size-0.28*size);
+  glVertex3f(-0.5*size,-0.4*size,anim_step*0.3*size-0.2*size);
   // left middle leg
   glVertex3f(0.0,0.0,0.43*size);
   glVertex3f(0.0,0.0,0.57*size);
