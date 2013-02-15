@@ -13,6 +13,7 @@ public:
 	int _ant_attack_points;
 	int _ant_armor;
 	double _ant_transport_capability;
+	int _ant_olfactory_sense_radius;
 	int _ant_life_time;
 	double _ant_start_energy;
 	double _ant_energy_consumption_per_m;
