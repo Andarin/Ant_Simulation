@@ -1,6 +1,6 @@
 #include "Collision_detector.h"
 
-Collision_detector::Collision_detector(Table_of_objects env, double solf, double sview, double stouch)
+Collision_detector::Collision_detector(std::shared_ptr<Table_of_objects> env, double solf, double sview, double stouch)
 {
 	_environment = env;
 	_sub_size_olf = solf;
@@ -29,7 +29,7 @@ std::tuple<int,int> Collision_detector::get_in_wich_square (Position pos, double
 
 //Update functions
 
-void Collision_detector::update_environment(Table_of_objects env)
+void Collision_detector::update_environment(std::shared_ptr<Table_of_objects> env)
 {
 	_environment = env;
 }
@@ -38,7 +38,7 @@ void Collision_detector::update_mpfa(void)//This map will be a subdivision of th
 {					
 	_map_ph_for_ant.clear();	//Initialisation of the map to an empty one
 	//We'll fill that map with this pheromone list's items
-	for (std::list<std::shared_ptr<Pheromone>>::iterator it= (_environment._pheromone_list).begin(); it != (_environment._pheromone_list).end(); ++it)
+	for (std::list<std::shared_ptr<Pheromone>>::iterator it= ((*_environment)._pheromone_list).begin(); it != ((*_environment)._pheromone_list).end(); ++it)
 	{
 		//We take at the iterator's place 
 		std::shared_ptr<Pheromone> p_pheromone = *it;
@@ -50,14 +50,14 @@ void Collision_detector::update_mpfa(void)//This map will be a subdivision of th
 		
 		//We place this pheromone in the map accordingly to the square it is located
 		(_map_ph_for_ant.at(square)).push_back(p_pheromone);
-	};
+	}
 }
 
 void Collision_detector::update_mafa(void)
 {
 	_map_ant_for_ant.clear();	//Initialisation of the map to an empty one
 	//We'll fill that map with this ant list's items
-	for (std::list<std::shared_ptr<Ant>>::iterator it= (_environment._ant_list).begin(); it != (_environment._ant_list).end(); ++it)	
+	for (std::list<std::shared_ptr<Ant>>::iterator it= ((*_environment)._ant_list).begin(); it != ((*_environment)._ant_list).end(); ++it)	
 	{
 		//We take a ant from front of the list 
 		std::shared_ptr<Ant> p_ant = *it;
@@ -69,17 +69,45 @@ void Collision_detector::update_mafa(void)
 
 		//We place this pheromone in the map accordingly to the square it is located
 		_map_ant_for_ant.at(square).push_back(p_ant);
-	};
+	}
 }
 
 void Collision_detector::update_mcfa(void)
 {
+	_map_col_for_ant.clear();	//Initialisation of the map to an empty one
+	//We'll fill that map with this ant list's items
+	for (std::list<std::shared_ptr<Colony>>::iterator it= ((*_environment)._colony_list).begin(); it != ((*_environment)._colony_list).end(); ++it)	
+	{
+		//We take a ant from front of the list 
+		std::shared_ptr<Colony> p_colony = *it;
+		Colony colony = *p_colony;
 
+		//We find out in which square (cf 1st commentary line) it is located
+		Position pos_colony = colony._pos;
+		std::tuple<int,int> square = get_in_wich_square (pos_colony, _sub_size_olf);
+
+		//We place this pheromone in the map accordingly to the square it is located
+		_map_col_for_ant.at(square).push_back(p_colony);
+	}
 }
 
 void Collision_detector::update_mffa(void)
 {
+	_map_food_for_ant.clear();	//Initialisation of the map to an empty one
+	//We'll fill that map with this ant list's items
+	for (std::list<std::shared_ptr<Food>>::iterator it= ((*_environment)._food_list).begin(); it != ((*_environment)._food_list).end(); ++it)	
+	{
+		//We take a ant from front of the list 
+		std::shared_ptr<Food> p_food = *it;
+		Food food = *p_food;
 
+		//We find out in which square (cf 1st commentary line) it is located
+		Position pos_food = food._pos;
+		std::tuple<int,int> square = get_in_wich_square (pos_food, _sub_size_olf);
+
+		//We place this pheromone in the map accordingly to the square it is located
+		_map_food_for_ant.at(square).push_back(p_food);
+	}
 }
 
 void Collision_detector::update_all(void)
@@ -105,13 +133,13 @@ std::list<std::shared_ptr<Pheromone>> Collision_detector::get_ph_coll(std::share
 	{
 		for (j=-1; j<2; j++)
 		{
-			std::tuple<int,int> sq (x,y) ;
+			std::tuple<int,int> sq (x+i,y+j) ;
 			for (std::list<std::shared_ptr<Pheromone>>::iterator it= (_map_ph_for_ant.at(sq)).begin(); it != (_map_ph_for_ant.at(sq)).end(); ++it)
 			{
 				res.push_back(*it);
-			};
-		};
-	};
+			}
+		}
+	}
 	return res ;
 
 }

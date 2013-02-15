@@ -10,7 +10,7 @@
 class Table_of_objects					// This table regroup all the objects of the game
 {								// It is created at the beginning and updated during the game
 public:									// We use smart pointers to identify the objects
-	Table_of_objects(int,int);//The first int input is the size of the board and the second is
+	Table_of_objects(int,int);//The second int input is the size of the board and the first is
 	~Table_of_objects(void);	//number of sudivisions of the matrix M representing the map, 
 	Table_of_objects();								//i.e. dim M = n*n
 	//Add functions :
@@ -34,5 +34,18 @@ public:									// We use smart pointers to identify the objects
 	std::list<std::shared_ptr<Food>> _food_list;
 	std::list<std::shared_ptr<Pheromone>> _pheromone_list;
 
+	//Pheromone matrix :
+
 	std::vector<std::vector<std::shared_ptr<Pheromone>>> _pheromone_matrix ;
+
+	//Update functions :
+
+	void update_passive(Uint32,Uint32) ; // for all the passive objects, i.e. colonies, pheromones and food
+
+private:
+
+	// Variables :
+
+	int _board_size;	//Size of the board
+	int _nbr_sub ;		//Number of subdivisions for the pheromone matrix
 };

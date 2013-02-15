@@ -7,12 +7,12 @@
 class Collision_detector				//This object will be used to determine all the
 {									//diverse collisions between the objects in the game.
 public:									//It is build thanks to a Table_of_objects and three 
-	Collision_detector(Table_of_objects, double, double, double);//doubles for the max radius
+	Collision_detector(std::shared_ptr<Table_of_objects>, double, double, double);//doubles for the max radius
 	~Collision_detector(void);			//of resp. olfactive, sight and touch collisions
 
 	//Update functions :
 
-	void update_environment(Table_of_objects); //for _environment
+	void update_environment(std::shared_ptr<Table_of_objects>); //for _environment
 	void update_mpfa(void);		//for _map_ph_for_ant
 	void update_mafa(void);		//for _map_ant_for_ant
 	void update_mcfa(void);		//for _map_col_for_ant
@@ -36,7 +36,7 @@ private:
 	double _sub_size_view;		//size of the sub for the "sight or view" collisions
 	double _sub_size_touch;		//size of the sub for the touch collisions
 
-	Table_of_objects _environment;
+	std::shared_ptr<Table_of_objects> _environment;
 
 	std::map<std::tuple<int,int>,std::list<std::shared_ptr<Pheromone>>> _map_ph_for_ant; //subdivision
 					//of all the pheromones into groups to ease their collisions with an ant

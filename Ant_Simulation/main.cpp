@@ -28,7 +28,7 @@
 int main(int argc, char** argv)
 {
 	// user changeable parameters
-	int ant_number = 500;
+	int ant_number = 1000;
 	int FPS = 40;
 	int cam_velocity = 2;
 

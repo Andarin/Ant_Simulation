@@ -9,6 +9,8 @@ Table_of_objects::Table_of_objects(int n, int size)
 	std::vector<std::shared_ptr<Pheromone>> row_vect ;
 	row_vect.resize(n);
 	_pheromone_matrix.assign(n,row_vect);
+	_nbr_sub = n;
+	_board_size = size;
 }
 
 
@@ -41,10 +43,12 @@ void Table_of_objects::add_pheromone (std::shared_ptr<Pheromone> p_pheromone){
 
 	//But we have also to update the matrix of pheromones
 	int x,y ;
-	x = (int) (*p_pheromone)._pos._x;
-	y = (int) (*p_pheromone)._pos._y;
-
-
+	double size_square ; //size of a square of the pheromone matrix
+	size_square = ((double) _board_size) / ((double) _nbr_sub) ;
+	x = (int) ((*p_pheromone)._pos._x/size_square);
+	y = (int) ((*p_pheromone)._pos._y/size_square);
+	if (_pheromone_matrix [x] [y] != NULL)
+	(*(_pheromone_matrix [x] [y])).merge_pheromone(*p_pheromone);
 }
 
 //Delete functions :
@@ -63,6 +67,32 @@ void Table_of_objects::delete_food (std::shared_ptr<Food> p_food){
 
 void Table_of_objects::delete_pheromone (std::shared_ptr<Pheromone> p_pheromone){
 	_pheromone_list.remove(p_pheromone) ;
+	int x,y ;
+	double size_square ; //size of a square of the pheromone matrix
+	size_square = ((double) _board_size) / ((double) _nbr_sub) ;
+	x = (int) ((*p_pheromone)._pos._x/size_square);
+	y = (int) ((*p_pheromone)._pos._y/size_square);
+	if (_pheromone_matrix[x] [y] == p_pheromone)
+		_pheromone_matrix[x] [y] = NULL;
 }
 
+//Update functions :
+
+void Table_of_objects::update_passive(Uint32 time,Uint32 time_step) {
+	for (std::list<std::shared_ptr<Pheromone>>::iterator it=_pheromone_list.begin(); it != _pheromone_list.end(); ++it)	
+	{
+		(*(*it)).update(time,time_step);
+	}
+
+	for (std::list<std::shared_ptr<Colony>>::iterator it=_colony_list.begin(); it != _colony_list.end(); ++it)	
+	{
+		(*(*it)).update(time,time_step);
+	}
+
+	for (std::list<std::shared_ptr<Food>>::iterator it=_food_list.begin(); it != _food_list.end(); ++it)	
+	{
+		(*(*it)).update(time,time_step);
+	}
+	
+}
 
