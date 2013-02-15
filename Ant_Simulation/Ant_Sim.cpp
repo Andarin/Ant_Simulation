@@ -238,7 +238,7 @@ void Ant_Sim::start(void)
 	MeshObj *ant_hq=new MeshObj("src/fourmi_obj/fourmi3_000041.obj");
 		  
 	auto table_obj = std::make_shared<Table_of_objects>(2500, board_size);
-	auto col_dect = std::make_shared<Collision_detector>(table_obj, 
+	auto coll_dect = std::make_shared<Collision_detector>(table_obj, 
 							_max_size_of_pheromone, _max_size_of_vision, _max_size_of_corps);
 
 	while(_running) {
@@ -260,8 +260,8 @@ void Ant_Sim::start(void)
 			_round_cnt++;
 			move_ants();
 
-			table_obj->update_passive(time, time_step);
-			coll_dect->update_active(time, time_step);
+			table_obj->update_passive(time, _sim_time_step);
+			coll_dect->update_active(time, _sim_time_step);
 
 			// operations to hold constant time flux
 			accumulator -= _sim_time_step;
