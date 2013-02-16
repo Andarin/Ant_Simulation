@@ -1,18 +1,18 @@
 #include "Ant_Sim.h"
 
-Ant_Sim::Ant_Sim(int ant_number, int FPS, int cam_velocity)
+Ant_Sim::Ant_Sim(int ant_number, int play_time)
 {
 	_ant_number = ant_number;
-	_FPS = FPS;
+	_time_remaining = play_time*1000;
 	_sim_time_step = 10; // in milli seconds
-	_cam_velocity = cam_velocity;
-	_recent_cam_velocity = _cam_velocity;
+	_cam_velocity = 2;
 	_switch_fog_on = false;
 	_high_quality_on = false;
 	_ant_posx = new float[_ant_number];
 	_ant_posz = new float[_ant_number];
 
 	// system variables
+	_recent_cam_velocity = _cam_velocity;
 	_running = true;
 	_round_cnt = 0;
 	_mousein = false;
@@ -29,7 +29,7 @@ Ant_Sim::~Ant_Sim(void)
 {
 }
 
-void Ant_Sim::move_ants()
+void Ant_Sim::move_ants(void)
 {
 	int velocity = (_round_cnt%360)/45;	 
 	switch(velocity) {
@@ -74,7 +74,7 @@ void Ant_Sim::set_window(void)
 	SDL_FreeSurface(icon);
 }
 
-void Ant_Sim::set_openGL()
+void Ant_Sim::set_openGL(void)
 {
 	glClearColor(0.2,0.2,0.8,1.0); //background color and alpha
 	glMatrixMode(GL_PROJECTION);
@@ -83,6 +83,9 @@ void Ant_Sim::set_openGL()
 	glMatrixMode(GL_MODELVIEW);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_TEXTURE_2D);
+	//Initialize OpenGL
+	//Texture mapping and blending must be enabled for glFont to work
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void Ant_Sim::set_fog(void)
@@ -91,12 +94,11 @@ void Ant_Sim::set_fog(void)
 	glFogi(GL_FOG_MODE,GL_LINEAR);
 	glFogf(GL_FOG_START,800.0);
 	glFogf(GL_FOG_END,3000.0);
-	//float fog_color[] = {0.33,0.5,.80,0.7};
 	float fog_color[] = {0.7,0.7,.80,0.8};
 	glFogfv(GL_FOG_COLOR,fog_color);
 }
 
-void Ant_Sim::load_textures()
+void Ant_Sim::load_textures(void)
 {
 	_tex_board=load_texture_png("src/grass.png", 512, 512, false, true);
 	_tex_colony=load_texture_png("src/gravel.png", 256, 256, false, true);
@@ -106,13 +108,17 @@ void Ant_Sim::load_textures()
 	_tex_border=load_texture_png("src/border.png", 1024, 1024);
 }
 
-void Ant_Sim::init()
+void Ant_Sim::init(void)
 {
 	set_window();
 	set_openGL();
+	// set glFont
+	_screen_text.Create("src/didactgothic.glf", 1);
 	set_fog();
 	init_skybox();
 	load_textures();
+
+	// just for testing purposes, create random ants
 	for (int cnt = 0; cnt < _ant_number; cnt++)
 	{
 		_ant_posx[cnt] = rand() % (board_size-40) + 20;
@@ -120,18 +126,63 @@ void Ant_Sim::init()
 	}
 }
 
-void Ant_Sim::display()
+void Ant_Sim::draw_text(std::string text, float x, float y)
+{
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_BLEND);
+	glColor3f(1.0F, 1.0F, 0.0F);
+	_screen_text.Begin();
+	_screen_text.DrawString(text, 1.5F, x, y);
+    glDisable(GL_BLEND); 
+}
+
+void Ant_Sim::draw_text_with_number(std::string text, int number, float x, float y)
+{
+	std::stringstream sstm;
+	sstm << text << number;
+	std::string time_remaing_str = sstm.str();
+	draw_text(time_remaing_str, x, y);
+}
+
+void Ant_Sim::draw_hud(void)
+{
+	draw_text("Guillaume and Lucas are awesome !", screen_width-600, screen_height-20);
+	int time_remaining_in_s = _time_remaining/1000;
+	float x_coord = screen_width-320.0;
+	float y_coord = screen_height-50.0;
+	draw_text_with_number("Time remaining: ", time_remaining_in_s, x_coord, y_coord);
+}
+
+void Ant_Sim::switch_to_normal_perspective(int field_of_view_in_degrees)
+{
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(field_of_view_in_degrees,(1.0*screen_width)/screen_height,1.0,10000.0);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+}
+
+void Ant_Sim::switch_to_ortho_perspective(void)
+{
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0, screen_width, 0, screen_height, -100, 8000);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+}
+
+void Ant_Sim::display(void)
 {
 	// in color_buffer the color of every pixel is saved
 	// in depth buffer the depth of every pixel is saved (which px is in front of which)
 	// usually, it makes sense to clean the buffers after every frame
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	glLoadIdentity();
-
+	switch_to_normal_perspective(45);
 	if(_keystates[SDLK_LSHIFT]) { _recent_cam_velocity += 1; }
 	else { _recent_cam_velocity = _cam_velocity; }
 	_camera.control(_recent_cam_velocity,0.5,board_size,screen_width,screen_height,_mousein);
-	draw_skybox(SKY_BOY_DISTANCE); // don't make it bigger than the far-view-plane (see gluPerspective)
+	// don't make it bigger than the far-view-plane (see gluPerspective)
+	draw_skybox(SKY_BOY_DISTANCE); 
 	_camera.update();
 	draw_board(board_size, _tex_board);
 	draw_border(board_size, _tex_border);
@@ -173,6 +224,11 @@ void Ant_Sim::display()
 			else { draw_ant_anim(_ant_size, ant_color, anim_frame); }
 		glPopMatrix();
 	}
+
+	glPushMatrix();
+		switch_to_ortho_perspective();
+		draw_hud();
+	glPopMatrix();
 }
 
 void Ant_Sim::clean_up(void)
@@ -281,6 +337,7 @@ void Ant_Sim::start(void)
 			// operations to hold constant time flux
 			accumulator -= _sim_time_step;
 			time += _sim_time_step;
+			_time_remaining -= _sim_time_step;
 		}
 		////////////////////////////////////////////////////////
 		/////////////        GRAPHIC RENDERING    //////////////

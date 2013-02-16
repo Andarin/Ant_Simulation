@@ -2,7 +2,7 @@
 #include <list>
 #include <memory>
 
-#include "ant.h"
+#include "Ant.h"
 #include "Colony_birth_info.h"
 #include "general_constants.h"
 #include "random_generator.h"
