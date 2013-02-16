@@ -110,7 +110,23 @@ void Collision_detector::update_mffa(void)
 	}
 }
 
-void Collision_detector::update_all(void)
+void Collision_detector::update_active(Uint32 time,Uint32 time_step)	//for the moment only the ants are 'active'
+{
+	for (std::list<std::shared_ptr<Ant>>::iterator it= (*_environment)._ant_list.begin(); it != (*_environment)._ant_list.end(); ++it)
+	{
+		if ((*(*it)).is_alive())
+		{
+			(*(*it)).update(time,time_step,get_ph_coll(*it));
+			while (!(*(*it))._buffer_fresh_phero.empty())
+			{
+				std::shared_ptr<Pheromone> p_pheromone = *(((*(*it))._buffer_fresh_phero).end());
+				(*p_pheromone)._pos = (*(*it))._pos;
+			}
+		}
+	}
+}
+
+void Collision_detector::update_all(std::shared_ptr<Table_of_objects> env)
 {
 
 }
@@ -129,15 +145,12 @@ std::list<std::shared_ptr<Pheromone>> Collision_detector::get_ph_coll(std::share
 	int x,y,i,j ;
 	std::tie (x,y) = square;
 	std::list<std::shared_ptr<Pheromone>> res;
-	for (i=-1; i<2; i++)
+	for (i=0; i<9; i++)
 	{
-		for (j=-1; j<2; j++)
+		std::tuple<int,int> sq (x+ i%3-1,y+ j/3-1) ;
+		for (std::list<std::shared_ptr<Pheromone>>::iterator it= (_map_ph_for_ant.at(sq)).begin(); it != (_map_ph_for_ant.at(sq)).end(); ++it)
 		{
-			std::tuple<int,int> sq (x+i,y+j) ;
-			for (std::list<std::shared_ptr<Pheromone>>::iterator it= (_map_ph_for_ant.at(sq)).begin(); it != (_map_ph_for_ant.at(sq)).end(); ++it)
-			{
-				res.push_back(*it);
-			}
+			res.push_back(*it);
 		}
 	}
 	return res ;

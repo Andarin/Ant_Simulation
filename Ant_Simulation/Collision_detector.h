@@ -17,7 +17,8 @@ public:									//It is build thanks to a Table_of_objects and three
 	void update_mafa(void);		//for _map_ant_for_ant
 	void update_mcfa(void);		//for _map_col_for_ant
 	void update_mffa(void);		//for _map_food_for_ant
-	void update_all(void);		//for all of them
+	void update_active(Uint32,Uint32);   //apply update for all active objects (exple: ants)
+	void update_all(std::shared_ptr<Table_of_objects>);		//for all of them
 
 	//Get functions :
 
