@@ -99,7 +99,6 @@ void Colony::create_ant(Uint32 time)
 	else 
 	{ info._ant_type = ANT_TYPE_NR_OF_SOLDIER; }
 
-	info._pos = _pos;
 	info._speed = _ant_speed;
 	info._attack_points = _ant_attack_points;
 	info._armor = _ant_armor;
@@ -109,9 +108,8 @@ void Colony::create_ant(Uint32 time)
 	info._energy = _ant_start_energy;
 	info._energy_consumption_per_m = _ant_energy_consumption_per_m;
 
-	// where to put it
-	// ????
-	Ant new_ant(info); 
+	std::shared_ptr<Ant> p_ant = std::make_shared<Ant> (info);
+	_buffer_fresh_ant.push_back(p_ant);
 }
 
 double Colony::hand_out_food(double ant_demand)

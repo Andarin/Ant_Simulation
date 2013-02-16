@@ -1,11 +1,12 @@
 #pragma once
-#include <list>
-#include <memory>
 
-#include "ant.h"
+#include "Ant.h"
 #include "Colony_birth_info.h"
 #include "general_constants.h"
 #include "random_generator.h"
+
+#include <list>
+#include <memory>
 
 class Colony
 {
@@ -19,6 +20,11 @@ public:
 	void store_food(double);
 	void change_egg_production(int);
 	bool is_alive(void);
+
+	//A list of the ant that have been recently created
+	//Their positions will be define in table_of_objects
+
+	std::list<std::shared_ptr<Ant>> _buffer_fresh_ant ;
 
 private:
 	int _color;

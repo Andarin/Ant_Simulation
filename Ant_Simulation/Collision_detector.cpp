@@ -114,11 +114,19 @@ void Collision_detector::update_active(Uint32 time,Uint32 time_step)	//for the m
 {
 	for (std::list<std::shared_ptr<Ant>>::iterator it= (*_environment)._ant_list.begin(); it != (*_environment)._ant_list.end(); ++it)
 	{
-		(*(*it)).update(time,time_step,get_ph_coll(*it));
+		if ((*(*it)).is_alive())
+		{
+			(*(*it)).update(time,time_step,get_ph_coll(*it));
+			while (!(*(*it))._buffer_fresh_phero.empty())
+			{
+				std::shared_ptr<Pheromone> p_pheromone = *(((*(*it))._buffer_fresh_phero).end());
+				(*p_pheromone)._pos = (*(*it))._pos;
+			}
+		}
 	}
 }
 
-void Collision_detector::update_all(void)
+void Collision_detector::update_all(std::shared_ptr<Table_of_objects> env)
 {
 
 }

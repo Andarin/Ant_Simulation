@@ -4,6 +4,7 @@
 #include "Colony.h"
 #include "Food.h"
 #include "general_constants.h"
+#include <list>
 #ifdef _WIN32
 	#include "windows.h"
 	#include <SDL.h>
@@ -23,6 +24,11 @@ public:
 	Position _pos;
 	int _color;
 	int _obj_type;
+	bool is_alive(void);
+
+	//A list of the pheromones set by the ant and that have 
+	//not been already registered in Table_of_objects
+	std::list<std::shared_ptr<Pheromone>> _buffer_fresh_phero ;
 
 private:
 	int _ant_type;
@@ -41,6 +47,7 @@ private:
 	void walk(Position new_position);
 	void restore_energy(Colony col);
 	void attack(Game_object target);
-	void set_pheromone(int);
+	void set_pheromone(int,double,double);
 	void destroy(void);
+	bool _is_alive;
 };

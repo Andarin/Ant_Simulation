@@ -8,8 +8,8 @@ public:
 	~Game_object_birth_info(void);	
 
 	int _obj_type;
-	int _size;
-	int _energy;
-	int _energy_consumption_per_m;
+	double _size;
+	double _energy;
+	double _energy_consumption_per_m;
 	Position _pos;
 };

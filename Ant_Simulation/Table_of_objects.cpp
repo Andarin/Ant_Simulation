@@ -18,6 +18,7 @@ Table_of_objects::~Table_of_objects(void)
 {
 }
 
+
 //Add functions :
 
 void Table_of_objects::add_ant (std::shared_ptr<Ant> p_ant){
@@ -48,7 +49,7 @@ void Table_of_objects::add_pheromone (std::shared_ptr<Pheromone> p_pheromone){
 	x = (int) ((*p_pheromone)._pos._x/size_square);
 	y = (int) ((*p_pheromone)._pos._y/size_square);
 	if (_pheromone_matrix [x] [y] != NULL)
-	(*(_pheromone_matrix [x] [y])).merge_pheromone(*p_pheromone);
+		(*(_pheromone_matrix [x] [y])).merge_pheromone(*p_pheromone);
 }
 
 //Delete functions :
@@ -81,17 +82,44 @@ void Table_of_objects::delete_pheromone (std::shared_ptr<Pheromone> p_pheromone)
 void Table_of_objects::update_passive(Uint32 time,Uint32 time_step) {
 	for (std::list<std::shared_ptr<Pheromone>>::iterator it=_pheromone_list.begin(); it != _pheromone_list.end(); ++it)	
 	{
-		(*(*it)).update(time,time_step);
+		if ((*(*it)).is_alive())
+			(*(*it)).update(time,time_step);
+		else
+			_pheromone_list.erase(it);
+			std::shared_ptr<Pheromone> p_pheromone = *it;
+
+			//And we have also to delete it from the matrix if it's there
+			int x,y ;
+			double size_square ; //size of a square of the pheromone matrix
+			size_square = ((double) _board_size) / ((double) _nbr_sub) ;
+			x = (int) ((*p_pheromone)._pos._x/size_square);
+			y = (int) ((*p_pheromone)._pos._y/size_square);
+			if (_pheromone_matrix[x] [y] == p_pheromone)
+				_pheromone_matrix[x] [y] = NULL;
 	}
 
 	for (std::list<std::shared_ptr<Colony>>::iterator it=_colony_list.begin(); it != _colony_list.end(); ++it)	
 	{
-		(*(*it)).update(time,time_step);
+		if ((*(*it)).is_alive())
+		{
+			(*(*it)).update(time,time_step);
+			while (!(*(*it))._buffer_fresh_ant.empty())
+			{
+				std::shared_ptr<Ant> p_ant = *((*(*it))._buffer_fresh_ant.end());
+				(*p_ant)._pos = (*(*it))._pos;
+				(*(*it))._buffer_fresh_ant.pop_back();
+			}
+		}
+		else
+			_colony_list.erase(it);
 	}
 
 	for (std::list<std::shared_ptr<Food>>::iterator it=_food_list.begin(); it != _food_list.end(); ++it)	
 	{
-		(*(*it)).update(time,time_step);
+		if ((*(*it)).is_alive())
+			(*(*it)).update(time,time_step);
+		else
+			_food_list.erase(it);
 	}
 	
 }
