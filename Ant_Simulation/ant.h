@@ -19,7 +19,7 @@ class Ant
 public:
 	Ant(Ant_birth_info&);
 	~Ant(void);
-	void update(Uint32, Uint32);
+	void update(Uint32, Uint32,std::list<std::shared_ptr<Pheromone>>);
 	Position _pos;
 	int _color;
 	int _obj_type;

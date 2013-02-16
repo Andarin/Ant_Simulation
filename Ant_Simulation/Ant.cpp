@@ -21,7 +21,7 @@ Ant::~Ant(void)
 {
 }
 
-void Ant::update(Uint32 time, Uint32 time_step)
+void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Pheromone>> list_ph_coll)
 {
 	_energy -= _energy_consumption_per_m*time_step/60000;
 
