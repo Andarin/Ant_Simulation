@@ -8,7 +8,6 @@ Colony::Colony(Colony_birth_info &colony_birth_info)
 	_ant_transport_capability = colony_birth_info._ant_transport_capability;
 	_ant_life_time = colony_birth_info._ant_life_time;
 	_color = colony_birth_info._color;
-	_ant_olfactory_sense_radius = colony_birth_info._ant_olfactory_sense_radius;
 	_ant_start_energy = colony_birth_info._ant_start_energy;
 	_ant_energy_consumption_per_m = colony_birth_info._ant_energy_consumption_per_m;
 	_pos = colony_birth_info._pos;

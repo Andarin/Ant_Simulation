@@ -13,7 +13,7 @@
 #endif
 #include <vector>
 
-class Colony;
+class Colony; // forward declaration because of circle includes
 
 class Ant
 {
