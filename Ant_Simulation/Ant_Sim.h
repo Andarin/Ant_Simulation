@@ -38,6 +38,8 @@
 #include <GL/glu.h>
 #include <cmath>
 #include <iostream>
+#include <string>
+#include <sstream>
 #include <time.h>
 #include "glext.h"
 #include "OBJlib.h"
@@ -95,6 +97,7 @@ private:
 	float _ant_posy;
 	float _ant_size;
 	float _ant_angley;
+	MeshObj* _ant_hq_array[8];
 
 	// methods
 	void move_ants(void);
@@ -104,6 +107,6 @@ private:
 	void load_textures(void);
 	void init(void);
 	void handle_user_input(SDL_Event &event);
-	void display(MeshObj*);
+	void display();
 	void clean_up(void);
 };

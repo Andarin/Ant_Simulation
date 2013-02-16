@@ -23,6 +23,7 @@ Colony::Colony(Colony_birth_info &colony_birth_info)
 	_proba_that_ant_is_worker_not_solidier = 1.0;
 	_liquid_food = 0.0;
 	_solid_food = 1000.0;
+	_is_alive = true;
 }
 
 Colony::~Colony(void)
@@ -132,6 +133,12 @@ void Colony::change_egg_production(int new_egg_production)
 	_every_XX_ms_egg = 60000/_egg_production_per_m;
 }
 
-void Colony::destroy()
+bool Colony::is_alive(void)
 {
+	return _is_alive;
+}
+
+void Colony::destroy(void)
+{
+	_is_alive = false;
 }

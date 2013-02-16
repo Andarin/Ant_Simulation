@@ -18,6 +18,7 @@ public:
 	double hand_out_food(double);
 	void store_food(double);
 	void change_egg_production(int);
+	bool is_alive(void);
 
 private:
 	int _color;
@@ -29,7 +30,7 @@ private:
 	int _ant_olfactory_sense_radius;
 	double _ant_start_energy;
 	double _ant_energy_consumption_per_m;
-	// a list with times when larvas will devellop to ants
+	// a list with times when larvas will develop to ants
 	std::list<Uint32> larva_list;
 
 	// set inside the class
@@ -42,6 +43,7 @@ private:
 	double _proba_that_ant_is_worker_not_solidier;
 	double _liquid_food;
 	double _solid_food;
+	bool _is_alive;
 
 	void transform_food(Uint32);
 	void check_if_queen_starves(void);
