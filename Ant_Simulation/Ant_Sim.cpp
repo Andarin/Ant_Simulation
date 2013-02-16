@@ -120,7 +120,7 @@ void Ant_Sim::init()
 	}
 }
 
-void Ant_Sim::display(MeshObj *ant_hq)
+void Ant_Sim::display()
 {
 	// in color_buffer the color of every pixel is saved
 	// in depth buffer the depth of every pixel is saved (which px is in front of which)
@@ -155,15 +155,21 @@ void Ant_Sim::display(MeshObj *ant_hq)
 	glPopMatrix();
 
 	glCallList(_ant_model);
+	
+	//for low quality ants
 	double ant_color[3] =  {0.2, 0.0, 0.0};
 	int freq = 50;
 	double anim_frame = std::abs((_round_cnt%freq)/(0.25*freq)-2)-1;
+
+	//for high quality ants
+	int hq_frame = (_round_cnt%40)/5;
+
 	for (int cnt = 0; cnt < _ant_number; cnt++) 
 	{
 		glPushMatrix();
 			glTranslatef(_ant_posx[cnt],_ant_posy,_ant_posz[cnt]);
 			glRotatef(_ant_angley,0.0,1.0,0.0);
-			if (_high_quality_on) { ant_hq->draw_model(); }
+			if (_high_quality_on) { _ant_hq_array[hq_frame]->draw_model(); }
 			else { draw_ant_anim(_ant_size, ant_color, anim_frame); }
 		glPopMatrix();
 	}
@@ -179,7 +185,10 @@ void Ant_Sim::clean_up(void)
 	glDeleteTextures(1,&_tex_border);
 	delete(_ant_posx);
 	delete(_ant_posz);
-
+	for (int i = 0; i <= 7; i++)
+	{
+		delete(_ant_hq_array[i]);
+	}
 	SDL_Quit();
 }
 
@@ -235,7 +244,13 @@ void Ant_Sim::start(void)
 
 	// better graphics meshes
 
-	MeshObj *ant_hq=new MeshObj("src/fourmi_obj/fourmi3_000041.obj");
+	for (int i = 0; i <= 7; i++)
+	{	
+		std::stringstream sstm;
+		sstm << "src/fourmi_obj/fourmi3_0000" << i << "1.obj";
+		std::string file_name = sstm.str();
+		_ant_hq_array[i] = new MeshObj(file_name);
+	}
 		  
 	auto table_obj = std::make_shared<Table_of_objects>(2500, board_size);
 	auto coll_dect = std::make_shared<Collision_detector>(table_obj, 
@@ -260,8 +275,8 @@ void Ant_Sim::start(void)
 			_round_cnt++;
 			move_ants();
 
-			table_obj->update_passive(time, _sim_time_step);
-			coll_dect->update_active(time, _sim_time_step);
+			//table_obj->update_passive(time, _sim_time_step);
+			//coll_dect->update_active(time, _sim_time_step);
 
 			// operations to hold constant time flux
 			accumulator -= _sim_time_step;
@@ -270,9 +285,8 @@ void Ant_Sim::start(void)
 		////////////////////////////////////////////////////////
 		/////////////        GRAPHIC RENDERING    //////////////
 		////////////////////////////////////////////////////////
-		display(ant_hq);
+		display();
 		SDL_GL_SwapBuffers(); // blits the buffer to the screen
 	}
-    delete ant_hq;
 	clean_up();
 }
