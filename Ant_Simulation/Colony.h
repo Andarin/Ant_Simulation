@@ -27,6 +27,8 @@ public:
 	//Their positions will be define in table_of_objects
 	std::list<std::shared_ptr<Ant>> _buffer_fresh_ant;
 
+	double get_size (void);
+
 private:
 	int _color;
 	double _ant_speed;
@@ -50,6 +52,7 @@ private:
 	double _liquid_food;
 	double _solid_food;
 	bool _is_alive;
+	double _size;
 
 	void transform_food(Uint32);
 	void check_if_queen_starves(void);

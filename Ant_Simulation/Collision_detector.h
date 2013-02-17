@@ -18,7 +18,7 @@ public:									//It is build thanks to a Table_of_objects and three
 	void update_mcfa(void);		//for _map_col_for_ant
 	void update_mffa(void);		//for _map_food_for_ant
 	void update_active(Uint32,Uint32);   //apply update for all active objects (exple: ants)
-	void update_all(std::shared_ptr<Table_of_objects>);		//for all of them
+	void update_all(Uint32,Uint32);		//for all of them (except environment)
 
 	//Get functions :
 
@@ -30,6 +30,8 @@ public:									//It is build thanks to a Table_of_objects and three
 	//Others...
 	 //Get the square of a map of a certain double subdivision where position is
 	std::tuple<int,int> get_in_wich_square (Position, double);
+	 //Get the square of the distance between two positions (only considering x and y)
+	double square_distance (Position,Position);
 
 private:
 
@@ -50,6 +52,5 @@ private:
 
 	std::map<std::tuple<int,int>,std::list<std::shared_ptr<Food>>> _map_food_for_ant;//subdivision
 					//of all the foods into groups to ease their collisions with an ant
-
 };
 

@@ -30,6 +30,8 @@ public:
 	//not been already registered in Table_of_objects
 	std::list<std::shared_ptr<Pheromone>> _buffer_fresh_phero ;
 
+	double get_size (void);
+
 private:
 	int _ant_type;
 	double _speed;

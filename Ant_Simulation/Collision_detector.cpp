@@ -21,10 +21,17 @@ std::tuple<int,int> Collision_detector::get_in_wich_square (Position pos, double
 	double y = pos._y;
 	double result_div_x = x / sub ;
 	double result_div_y = y / sub ;
-	int square_x = (int) x ;
-	int square_y = (int) y ;
+	int square_x = (int) result_div_x ;
+	int square_y = (int) result_div_y ;
 	std::tuple<int,int> square (square_x,square_y);
 	return square;
+}
+
+double Collision_detector::square_distance(Position pos1, Position pos2)
+{
+	double x = pos1._x - pos2._x;
+	double y = pos1._y - pos2._y;
+	return (x*x + y*y);
 }
 
 //Update functions
@@ -49,7 +56,14 @@ void Collision_detector::update_mpfa(void)//This map will be a subdivision of th
 		std::tuple<int,int> square = get_in_wich_square (pos_pheromone, _sub_size_olf);
 		
 		//We place this pheromone in the map accordingly to the square it is located
-		(_map_ph_for_ant.at(square)).push_back(p_pheromone);
+		if (_map_ph_for_ant.count(square) == 1)
+			(_map_ph_for_ant.at(square)).push_back(p_pheromone);
+		else
+		{
+			std::list<std::shared_ptr<Pheromone>> l;
+			l.push_back(p_pheromone);
+			_map_ph_for_ant.insert(std::pair<std::tuple<int,int>,std::list<std::shared_ptr<Pheromone>>>(square,l));
+		}
 	}
 }
 
@@ -67,8 +81,15 @@ void Collision_detector::update_mafa(void)
 		Position pos_ant = ant._pos;
 		std::tuple<int,int> square = get_in_wich_square (pos_ant, _sub_size_olf);
 
-		//We place this pheromone in the map accordingly to the square it is located
-		_map_ant_for_ant.at(square).push_back(p_ant);
+		//We place this ant in the map accordingly to the square it is located
+		if (_map_ant_for_ant.count(square) == 1)
+			(_map_ant_for_ant.at(square)).push_back(p_ant);
+		else
+		{
+			std::list<std::shared_ptr<Ant>> l;
+			l.push_back(p_ant);
+			_map_ant_for_ant.insert(std::pair<std::tuple<int,int>,std::list<std::shared_ptr<Ant>>>(square,l));
+		}
 	}
 }
 
@@ -86,8 +107,15 @@ void Collision_detector::update_mcfa(void)
 		Position pos_colony = colony._pos;
 		std::tuple<int,int> square = get_in_wich_square (pos_colony, _sub_size_olf);
 
-		//We place this pheromone in the map accordingly to the square it is located
-		_map_col_for_ant.at(square).push_back(p_colony);
+		//We place this colony in the map accordingly to the square it is located
+		if (_map_col_for_ant.count(square) == 1)
+			(_map_col_for_ant.at(square)).push_back(p_colony);
+		else
+		{
+			std::list<std::shared_ptr<Colony>> l;
+			l.push_back(p_colony);
+			_map_col_for_ant.insert(std::pair<std::tuple<int,int>,std::list<std::shared_ptr<Colony>>>(square,l));
+		}
 	}
 }
 
@@ -106,11 +134,18 @@ void Collision_detector::update_mffa(void)
 		std::tuple<int,int> square = get_in_wich_square (pos_food, _sub_size_olf);
 
 		//We place this pheromone in the map accordingly to the square it is located
-		_map_food_for_ant.at(square).push_back(p_food);
+		if (_map_food_for_ant.count(square) == 1)
+			(_map_food_for_ant.at(square)).push_back(p_food);
+		else
+		{
+			std::list<std::shared_ptr<Food>> l;
+			l.push_back(p_food);
+			_map_food_for_ant.insert(std::pair<std::tuple<int,int>,std::list<std::shared_ptr<Food>>>(square,l));
+		}
 	}
 }
 
-void Collision_detector::update_active(Uint32 time,Uint32 time_step)	//for the moment only the ants are 'active'
+void Collision_detector::update_active(Uint32 time,Uint32 time_step)//for the moment only the ants are 'active'
 {
 	for (std::list<std::shared_ptr<Ant>>::iterator it= (*_environment)._ant_list.begin(); it != (*_environment)._ant_list.end(); ++it)
 	{
@@ -125,14 +160,23 @@ void Collision_detector::update_active(Uint32 time,Uint32 time_step)	//for the m
 		}
 		else
 		{
-
+			//If we erased now at tha it iterator, it would be problematic
+			//because in the 'for' iteration, the path to the next element
+			//would be lost. So that's why we step back with --it before erase
+			auto it_1 = it;
+			--it;
+			((*_environment)._ant_list).erase(it_1);
 		}
 	}
 }
 
-void Collision_detector::update_all(std::shared_ptr<Table_of_objects> env)
+void Collision_detector::update_all(Uint32 time,Uint32 time_step)
 {
-
+	update_mpfa();
+	update_mafa();
+	update_mcfa();
+	update_mffa();
+	update_active(time,time_step);
 }
 
 //Get functions
@@ -146,15 +190,107 @@ std::list<std::shared_ptr<Pheromone>> Collision_detector::get_ph_coll(std::share
 
 
 	//Then we look in the squares arround its to search for collisions
-	int x,y,i,j ;
+	int x,y,i;
 	std::tie (x,y) = square;
 	std::list<std::shared_ptr<Pheromone>> res;
 	for (i=0; i<9; i++)
 	{
-		std::tuple<int,int> sq (x+ i%3-1,y+ j/3-1) ;
-		for (std::list<std::shared_ptr<Pheromone>>::iterator it= (_map_ph_for_ant.at(sq)).begin(); it != (_map_ph_for_ant.at(sq)).end(); ++it)
+		std::tuple<int,int> sq (x+ i%3-1,y+ i/3-1) ;
+		if (_map_ph_for_ant.count(sq) == 1)
 		{
-			res.push_back(*it);
+			for (std::list<std::shared_ptr<Pheromone>>::iterator it= (_map_ph_for_ant.at(sq)).begin(); it != (_map_ph_for_ant.at(sq)).end(); ++it)
+			{
+				double r = (*(*it)).get_size();
+				if ((square_distance ((*p_ant)._pos, (*(*it))._pos) < r*r) && (*(*it)).is_alive())
+					res.push_back(*it);
+			}
+		}
+	}
+	return res ;
+
+}
+
+std::list<std::shared_ptr<Ant>> Collision_detector::get_an_coll(std::shared_ptr<Ant> p_ant)
+{
+	//We get first the square where the ant is
+	Ant ant = *p_ant ;
+	Position pos = ant._pos ;
+	std::tuple<int,int> square = get_in_wich_square (pos,_sub_size_touch);
+
+
+	//Then we look in the squares arround its to search for collisions
+	int x,y,i ;
+	std::tie (x,y) = square;
+	std::list<std::shared_ptr<Ant>> res;
+	for (i=0; i<9; i++)
+	{
+		std::tuple<int,int> sq (x+ i%3-1,y+ i/3-1) ;
+		if (_map_ant_for_ant.count(sq) == 1)
+		{
+			for (std::list<std::shared_ptr<Ant>>::iterator it= (_map_ant_for_ant.at(sq)).begin(); it != (_map_ant_for_ant.at(sq)).end(); ++it)
+			{
+				double r = ((*(*it)).get_size()) + ((*p_ant).get_size());
+				if ((square_distance ((*p_ant)._pos, (*(*it))._pos) < r*r) && (*(*it)).is_alive())
+					res.push_back(*it);
+			}
+		}
+	}
+	return res ;
+
+}
+
+std::list<std::shared_ptr<Colony>> Collision_detector::get_co_coll(std::shared_ptr<Ant> p_ant)
+{
+	//We get first the square where the ant is
+	Ant ant = *p_ant ;
+	Position pos = ant._pos ;
+	std::tuple<int,int> square = get_in_wich_square (pos,_sub_size_olf);
+
+
+	//Then we look in the squares arround its to search for collisions
+	int x,y,i ;
+	std::tie (x,y) = square;
+	std::list<std::shared_ptr<Colony>> res;
+	for (i=0; i<9; i++)
+	{
+		std::tuple<int,int> sq (x+ i%3-1,y+ i/3-1) ;
+		if (_map_col_for_ant.count(sq) == 1)
+		{
+			for (std::list<std::shared_ptr<Colony>>::iterator it= (_map_col_for_ant.at(sq)).begin(); it != (_map_col_for_ant.at(sq)).end(); ++it)
+			{
+				double r = (*(*it)).get_size() + (*p_ant).get_size();
+				if ((square_distance ((*p_ant)._pos, (*(*it))._pos) < r*r) && (*(*it)).is_alive())
+					res.push_back(*it);
+			}
+		}
+	}
+	return res ;
+
+}
+
+std::list<std::shared_ptr<Food>> Collision_detector::get_fo_coll(std::shared_ptr<Ant> p_ant)
+{
+	//We get first the square where the ant is
+	Ant ant = *p_ant ;
+	Position pos = ant._pos ;
+	std::tuple<int,int> square = get_in_wich_square (pos,_sub_size_olf);
+
+
+	//Then we look in the squares arround its to search for collisions
+	int x,y,i ;
+	std::tie (x,y) = square;
+	std::list<std::shared_ptr<Food>> res;
+	for (i=0; i<9; i++)
+	{
+		std::tuple<int,int> sq (x+ i%3-1,y+ i/3-1) ;
+		if (_map_food_for_ant.count(sq) == 1)
+		{
+			for (std::list<std::shared_ptr<Food>>::iterator it= (_map_food_for_ant.at(sq)).begin(); it != (_map_food_for_ant.at(sq)).end(); ++it)
+			{
+				double r = (*(*it)).get_size() + (*p_ant).get_size();
+				if ((square_distance ((*p_ant)._pos, (*(*it))._pos) < r*r) && (*(*it)).is_alive())
+					res.push_back(*it);
+			}
 		}
 	}
 	return res ;

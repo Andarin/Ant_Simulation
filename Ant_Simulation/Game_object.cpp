@@ -24,3 +24,8 @@ void Game_object::destroy(void)
 {
 	_is_alive = false;
 }
+
+double Game_object::get_size(void)
+{
+	return _size;
+}

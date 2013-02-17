@@ -12,6 +12,7 @@ Colony::Colony(Colony_birth_info &colony_birth_info)
 	_ant_energy_consumption_per_m = colony_birth_info._ant_energy_consumption_per_m;
 	_pos = colony_birth_info._pos;
 	_obj_type = OBJECT_TYPE_NR_OF_COLONY;
+	_size = colony_birth_info._size;
 
 	_max_egg_production_per_m = colony_birth_info._colony_max_reproduction_speed;
 	_egg_production_per_m = 60;
@@ -138,4 +139,9 @@ bool Colony::is_alive(void)
 void Colony::destroy(void)
 {
 	_is_alive = false;
+}
+
+double Colony::get_size()
+{
+	return _size;
 }
