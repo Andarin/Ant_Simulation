@@ -116,12 +116,16 @@ void Collision_detector::update_active(Uint32 time,Uint32 time_step)	//for the m
 	{
 		if ((*(*it)).is_alive())
 		{
-			(*(*it)).update(time,time_step,get_ph_coll(*it));
+			(*(*it)).update(time,time_step,get_ph_coll(*it)); //Danger it is not get_ph_coll but physic coll
 			while (!(*(*it))._buffer_fresh_phero.empty())
 			{
-				std::shared_ptr<Pheromone> p_pheromone = *(((*(*it))._buffer_fresh_phero).end());
+				std::shared_ptr<Pheromone> p_pheromone = (((*(*it))._buffer_fresh_phero).back());
 				(*p_pheromone)._pos = (*(*it))._pos;
 			}
+		}
+		else
+		{
+
 		}
 	}
 }
