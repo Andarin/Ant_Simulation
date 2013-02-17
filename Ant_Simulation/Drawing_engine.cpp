@@ -1,59 +1,25 @@
-#include "Ant_Sim.h"
+#include "Drawing_engine.h"
 
-Ant_Sim::Ant_Sim(int ant_number, int play_time)
+Drawing_engine::Drawing_engine(Ant_Sim *ant_sim_ptr, int cam_velocity)
 {
-	_ant_number = ant_number;
-	_time_remaining = play_time*1000;
-	_sim_time_step = 10; // in milli seconds
+	_ant_sim_ptr = ant_sim_ptr;
+
+	// graphic related variables
 	_cam_velocity = 2;
-	_max_size_of_pheromone = 300;
+	_recent_cam_velocity = _cam_velocity;
 
 	// boolean checks
-	_running = true;
 	_mousein = false;
 	_countdown_on = false;
 	_high_quality_on = false;
 	_switch_fog_on = false;
-
-	// graphic related variables
-	_recent_cam_velocity = _cam_velocity;
-	_round_cnt = 0;
-	_keystates = SDL_GetKeyState( NULL );
-	_ant_posx = new float[_ant_number];
-	_ant_posz = new float[_ant_number];
-
-	// just for testing / not important
-	_ant_posy = 2;
-	_ant_size = 10;
-	_ant_angley = 180;
 }
 
-Ant_Sim::~Ant_Sim(void)
+Drawing_engine::~Drawing_engine(void)
 {
 }
 
-void Ant_Sim::move_ants(void)
-{
-	int velocity = (_round_cnt%360)/45;	 
-	switch(velocity) {
-	case 0:
-		for (int cnt = 0; cnt < _ant_number; cnt++) {_ant_posz[cnt] += 1;}
-		break;
-	case 2:
-		for (int cnt = 0; cnt < _ant_number; cnt++) {_ant_posx[cnt] += 1;}
-		break;
-	case 4:
-		for (int cnt = 0; cnt < _ant_number; cnt++) {_ant_posz[cnt] -= 1;}
-		break;
-	case 6:
-		for (int cnt = 0; cnt < _ant_number; cnt++) {_ant_posx[cnt] -= 1;}
-		break;
-	default:
-		_ant_angley += 90/45; break;
-	}
-}
-
-void Ant_Sim::set_window(void)
+void Drawing_engine::set_window(void)
 {
 	SDL_Init(SDL_INIT_EVERYTHING);
 
@@ -77,7 +43,7 @@ void Ant_Sim::set_window(void)
 	SDL_FreeSurface(icon);
 }
 
-void Ant_Sim::set_openGL(void)
+void Drawing_engine::set_openGL(void)
 {
 	glClearColor(0.2,0.2,0.8,1.0); //background color and alpha
 	glMatrixMode(GL_PROJECTION);
@@ -91,7 +57,7 @@ void Ant_Sim::set_openGL(void)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-void Ant_Sim::set_fog(void)
+void Drawing_engine::set_fog(void)
 {
 	if (_switch_fog_on) { glEnable(GL_FOG); }
 	glFogi(GL_FOG_MODE,GL_LINEAR);
@@ -101,7 +67,7 @@ void Ant_Sim::set_fog(void)
 	glFogfv(GL_FOG_COLOR,fog_color);
 }
 
-void Ant_Sim::load_textures(void)
+void Drawing_engine::load_textures(void)
 {
 	_tex_board=load_texture_png("src/grass.png", 512, 512, false, true);
 	_tex_colony=load_texture_png("src/gravel.png", 256, 256, false, true);
@@ -113,7 +79,7 @@ void Ant_Sim::load_textures(void)
 	_tex_result_pointer=load_texture_png("src/result_pointer.png", 128, 128);
 }
 
-void Ant_Sim::load_hq_ants(void)
+void Drawing_engine::load_hq_ants(void)
 {
 	for (int i = 0; i <= 7; i++)
 	{	
@@ -124,7 +90,7 @@ void Ant_Sim::load_hq_ants(void)
 	}
 }
 
-void Ant_Sim::init(void)
+void Drawing_engine::init(void)
 {
 	set_window();
 	set_openGL();
@@ -133,16 +99,10 @@ void Ant_Sim::init(void)
 	set_fog();
 	init_skybox();
 	load_textures();
-
-	// just for testing purposes, create random ants
-	for (int cnt = 0; cnt < _ant_number; cnt++)
-	{
-		_ant_posx[cnt] = rand() % (board_size-40) + 20;
-		_ant_posz[cnt] = rand() % (board_size-40) + 20;
-	}
+	load_hq_ants();
 }
 
-void Ant_Sim::draw_text(std::string text, float x, float y)
+void Drawing_engine::draw_text(std::string text, float x, float y)
 {
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
@@ -152,7 +112,7 @@ void Ant_Sim::draw_text(std::string text, float x, float y)
     glDisable(GL_BLEND); 
 }
 
-void Ant_Sim::draw_text_with_number(std::string text, int number, float x, float y)
+void Drawing_engine::draw_text_with_number(std::string text, int number, float x, float y)
 {
 	std::stringstream sstm;
 	sstm << text << number;
@@ -160,7 +120,7 @@ void Ant_Sim::draw_text_with_number(std::string text, int number, float x, float
 	draw_text(info_str, x, y);
 }
 
-void Ant_Sim::draw_countdown(int time_remaining_in_s)
+void Drawing_engine::draw_countdown(int time_remaining_in_s)
 {
 	int x_pos = (int)(screen_width/4);
 	int y_pos = (int)(screen_height*7/8);
@@ -175,9 +135,9 @@ void Ant_Sim::draw_countdown(int time_remaining_in_s)
     glDisable(GL_BLEND); 
 }
 
-void Ant_Sim::draw_hud(void)
+void Drawing_engine::draw_hud(Uint32 time_remaining)
 {
-	int time_remaining_in_s = (int)_time_remaining/1000;
+	int time_remaining_in_s = (int)time_remaining/1000;
 	float x_coord = screen_width-320.0;
 	float y_coord = screen_height-50.0;
 	draw_text_with_number("Time remaining: ", time_remaining_in_s, x_coord, y_coord);
@@ -186,7 +146,7 @@ void Ant_Sim::draw_hud(void)
 }
 
 
-void Ant_Sim::draw_result(void)
+void Drawing_engine::draw_result(void)
 {
 	glPushMatrix();
 		glTranslatef(400,0,400);
@@ -194,7 +154,7 @@ void Ant_Sim::draw_result(void)
 	glPopMatrix();
 }
 
-void Ant_Sim::switch_to_normal_perspective(int field_of_view_in_degrees)
+void Drawing_engine::switch_to_normal_perspective(int field_of_view_in_degrees)
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -203,7 +163,7 @@ void Ant_Sim::switch_to_normal_perspective(int field_of_view_in_degrees)
 	glLoadIdentity();
 }
 
-void Ant_Sim::switch_to_ortho_perspective(void)
+void Drawing_engine::switch_to_ortho_perspective(void)
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -212,7 +172,7 @@ void Ant_Sim::switch_to_ortho_perspective(void)
 	glLoadIdentity();
 }
 
-void Ant_Sim::display(void)
+void Drawing_engine::display(Uint32 time_remaining, int round_cnt)
 {
 	// in color_buffer the color of every pixel is saved
 	// in depth buffer the depth of every pixel is saved (which px is in front of which)
@@ -259,29 +219,29 @@ void Ant_Sim::display(void)
 	//for low quality ants
 	double ant_color[3] =  {0.2, 0.0, 0.0};
 	int freq = 50;
-	double anim_frame = std::abs((_round_cnt%freq)/(0.25*freq)-2)-1;
+	double anim_frame = std::abs((round_cnt%freq)/(0.25*freq)-2)-1;
 
 	//for high quality ants
-	int hq_frame = (_round_cnt%40)/5;
+	int hq_frame = (round_cnt%40)/5;
 
-	for (int cnt = 0; cnt < _ant_number; cnt++) 
+	for (int cnt = 0; cnt < _ant_sim_ptr->_ant_number; cnt++) 
 	{
 		glPushMatrix();
-			glTranslatef(_ant_posx[cnt],_ant_posy,_ant_posz[cnt]);
-			glRotatef(_ant_angley,0.0,1.0,0.0);
+			glTranslatef(_ant_sim_ptr->_ant_posx[cnt],_ant_sim_ptr->_ant_posy,_ant_sim_ptr->_ant_posz[cnt]);
+			glRotatef(_ant_sim_ptr->_ant_angley,0.0,1.0,0.0);
 			if (_high_quality_on) { _ant_hq_array[hq_frame]->draw_model(); }
-			else { draw_ant_anim(_ant_size, ant_color, anim_frame); }
+			else { draw_ant_anim(_ant_sim_ptr->_ant_size, ant_color, anim_frame); }
 		glPopMatrix();
 	}
 
 	glPushMatrix();
 		switch_to_ortho_perspective();
-		draw_hud();
+		draw_hud(time_remaining);
 	glPopMatrix();
 	glFlush();
 }
 
-void Ant_Sim::clean_up(void)
+void Drawing_engine::clean_up(void)
 {
 	SDL_FreeSurface( _prescreen );
 	SDL_FreeSurface( _screen );
@@ -289,125 +249,13 @@ void Ant_Sim::clean_up(void)
 	kill_skybox();
 	glDeleteTextures(1,&_tex_board);
 	glDeleteTextures(1,&_tex_border);
-	delete(_ant_posx);
-	delete(_ant_posz);
 	for (int i = 0; i <= 7; i++)
 	{
 		delete(_ant_hq_array[i]);
 	}
 }
 
-void Ant_Sim::handle_user_input(SDL_Event &event)
-{
-	switch(event.type) {
-		case SDL_QUIT:
-			if (!_countdown_on) 
-				start_countdown(); 
-			break;
-		case SDL_MOUSEBUTTONDOWN:
-			// left mouse click
-			if (event.button.button ==SDL_BUTTON_LEFT)
-			{
-				_mousein = true;
-				SDL_ShowCursor(SDL_DISABLE);
-				SDL_WarpMouse(screen_width/2,screen_height/2);
-				break;
-			} 
-		case SDL_MOUSEBUTTONUP:
-			_mousein = false;
-			SDL_ShowCursor(SDL_ENABLE);
-			break;
-		case SDL_KEYUP:
-			switch(event.key.keysym.sym) {
-				case SDLK_p:
-					_camera.print(); break;
-				case SDLK_f:
-					_switch_fog_on= !_switch_fog_on;
-					if (_switch_fog_on) { glEnable(GL_FOG); }
-					else {glDisable(GL_FOG); }
-					break;	
-				case SDLK_q:
-					_high_quality_on = !_high_quality_on; break;	
-				case SDLK_n:
-					_sim_time_step = std::min<int>(_sim_time_step+1,300); break;						
-				case SDLK_m:
-					_sim_time_step = std::max<int>(_sim_time_step-1,2); break;
-				case SDLK_ESCAPE:
-					if (!_countdown_on) 
-						start_countdown(); 
-					break;
-				default:
-					break;
-			}
-			break;
-		default:
-			break;
-	}
-}
-
-void Ant_Sim::start(void)
-{
-	init();
-	load_hq_ants();
-
-	// set local variables
-	SDL_Event event;
-	Time_machine time_machine; // to keep control of time flux
-	Uint32 time = 0; // in milli seconds
-	Uint32 accumulator = 0;
-		  
-	auto table_obj = std::make_shared<Table_of_objects>(2500, board_size);
-	auto coll_dect = std::make_shared<Collision_detector>(table_obj, 
-							_max_size_of_pheromone, _max_size_of_vision, _max_size_of_corps);
-
-	while(_running) {
-		////////////////////////////////////////////////////////
-		/////////////         EVENT HANDLING      //////////////
-		////////////////////////////////////////////////////////
-		while(SDL_PollEvent(&event))
-		{
-			handle_user_input(event);
-		}
-		////////////////////////////////////////////////////////
-		/////////////            GAME LOGIC       //////////////
-		////////////////////////////////////////////////////////
-		accumulator += time_machine.return_frame_time();
-		time_machine.print_time_status(_round_cnt, _sim_time_step);
-
-		while ( accumulator >= _sim_time_step )
-		{
-			_round_cnt++;
-			move_ants();
-
-			//table_obj->update_passive(time, _sim_time_step);
-			//coll_dect->update_active(time, _sim_time_step);
-
-			// check if game time is over
-			_time_remaining -= _sim_time_step;
-			if (_time_remaining <= 0)
-				if (!_countdown_on)
-					// game run out of time -> start countdown and show results
-					start_countdown();
-				else
-					// countdown is already over -> finish the simulation
-					_running = false;
-
-			// operations to hold constant time flux
-			accumulator -= _sim_time_step;
-			time += _sim_time_step;
-		}
-		////////////////////////////////////////////////////////
-		/////////////        GRAPHIC RENDERING    //////////////
-		////////////////////////////////////////////////////////
-		display();
-		SDL_GL_SwapBuffers(); // blits the buffer to the screen
-	}
-	clean_up();
-	SDL_Quit();
-}
-
-void Ant_Sim::start_countdown(void)
+void Drawing_engine::start_countdown(void)
 {
 	_countdown_on = true;
-	_time_remaining = 3000;
 }

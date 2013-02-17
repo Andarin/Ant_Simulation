@@ -63,27 +63,38 @@ public:
 	~Ant_Sim(void);
 	void start(void);
 
-private:
+	// just for testing / not important
+	float *_ant_posx;
+	float *_ant_posz;
+	float _ant_posy;
+	float _ant_size;
+	float _ant_angley;
 	int _ant_number;
+
+private:
+	// simulation related variables
+	int _round_cnt;
 	Uint32 _time_remaining;
 	Uint32 _sim_time_step;
-	Camera _camera;
-	int _cam_velocity;
-	int _recent_cam_velocity;
-	bool _high_quality_on;
-	bool _switch_fog_on;
-
-	// system variables
-	SDL_Surface *_prescreen;
-	SDL_Surface *_screen;
-	SDL_Surface *_logo;
-	glfont::GLFont _screen_text;
-	int _round_cnt;
-	bool _running;
-	bool _mousein;
 	double _max_size_of_pheromone;
 	double _max_size_of_vision;
 	double _max_size_of_corps;
+
+	// boolean checks
+	bool _running;
+	bool _mousein;
+	bool _countdown_on;
+	bool _high_quality_on;
+	bool _switch_fog_on;
+
+	// graphic related variables
+	Camera _camera;
+	int _cam_velocity;
+	int _recent_cam_velocity;
+
+	SDL_Surface *_prescreen;
+	SDL_Surface *_screen;
+	SDL_Surface *_logo;
 	unsigned int _tex_board;
 	unsigned int _tex_border;
 	unsigned int _tex_colony;
@@ -91,16 +102,11 @@ private:
 	unsigned int _tex_apple_side;
 	unsigned int _tex_apple_top;
 	unsigned int _tex_logo;
-	Uint8 *_keystates;
-	int _ant_model;
-
-	// just for testing / not important
-	float *_ant_posx;
-	float *_ant_posz;
-	float _ant_posy;
-	float _ant_size;
-	float _ant_angley;
+	unsigned int _tex_result;
+	unsigned int _tex_result_pointer;
+	glfont::GLFont _screen_text;
 	MeshObj* _ant_hq_array[8];
+	Uint8 *_keystates;
 
 	// methods
 	void move_ants(void);
@@ -108,14 +114,18 @@ private:
 	void set_openGL(void);
 	void set_fog(void);
 	void load_textures(void);
+	void load_hq_ants(void);
 	void init(void);
 	void switch_to_normal_perspective(int);
 	void switch_to_ortho_perspective(void);
 	void draw_text(std::string, float, float);
 	void draw_text_with_number(std::string, int, float, float);
 	void draw_text_with_number(std::string, double, float, float);
+	void draw_countdown(int);
+	void draw_result(void);
 	void draw_hud(void);
 	void display(void);
 	void handle_user_input(SDL_Event &event);
 	void clean_up(void);
+	void start_countdown(void);
 };

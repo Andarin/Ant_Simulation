@@ -323,3 +323,21 @@ void draw_box(int size, unsigned int tex_sides, unsigned int tex_top)
 
   glDisable(GL_TEXTURE_2D);
 }
+
+void draw_pic(int size, unsigned int tex_pic)
+{
+  glEnable(GL_TEXTURE_2D);
+
+  glBindTexture(GL_TEXTURE_2D,tex_pic);
+  glBegin(GL_QUADS);
+  glColor3f(1.0,1.0,1.0);
+  glTexCoord2f(1.0,1.0);
+  glVertex3f(-size/2.0,0,-size/2.0);
+  glTexCoord2f(0.0,1.0);
+  glVertex3f(-size/2.0,0,size/2.0);
+  glTexCoord2f(0.0,0.0);
+  glVertex3f(size/2.0,0,size/2.0);
+  glTexCoord2f(1.0,0.0);
+  glVertex3f(size/2.0,0,-size/2.0);
+  glEnd();
+}
