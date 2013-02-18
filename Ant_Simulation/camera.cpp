@@ -7,7 +7,7 @@
 //this file is functions.h, it's contain the actual implementation of the 3D camera
 
 //Edited by Lucas Tittmann, 02/13
-//added some functions and made the camera an object
+//added some functionality and made the camera an object
 
 #include "Camera.h"
 
@@ -137,6 +137,7 @@ std::vector<double> Camera::calculate_click_point(int map_size)
 	}
 
 	std::cout << tmpx << " " << angle_yaw_deg <<" "<<x_on_board<<" "<<z_on_board<< std::endl;
+	std::cout << _camX << " " << _camY << " " << _camZ << std::endl;
 	board_pos.push_back(x_on_board);
 	board_pos.push_back(z_on_board);
 	return board_pos;

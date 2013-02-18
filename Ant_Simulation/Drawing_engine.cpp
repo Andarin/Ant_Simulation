@@ -1,12 +1,12 @@
 #include "Drawing_engine.h"
+#include "Ant_Sim.h"
 
-Drawing_engine::Drawing_engine(Ant_Sim *ant_sim_ptr, int cam_velocity)
+Drawing_engine::Drawing_engine(void)
 {
-	_ant_sim_ptr = ant_sim_ptr;
-
 	// graphic related variables
 	_cam_velocity = 2;
 	_recent_cam_velocity = _cam_velocity;
+	_keystates = SDL_GetKeyState( NULL );
 
 	// boolean checks
 	_mousein = false;
@@ -57,7 +57,7 @@ void Drawing_engine::set_openGL(void)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-void Drawing_engine::set_fog(void)
+void Drawing_engine::init_fog(void)
 {
 	if (_switch_fog_on) { glEnable(GL_FOG); }
 	glFogi(GL_FOG_MODE,GL_LINEAR);
@@ -96,7 +96,7 @@ void Drawing_engine::init(void)
 	set_openGL();
 	// set glFont
 	_screen_text.Create("src/didactgothic.glf", 1);
-	set_fog();
+	init_fog();
 	init_skybox();
 	load_textures();
 	load_hq_ants();
@@ -172,7 +172,7 @@ void Drawing_engine::switch_to_ortho_perspective(void)
 	glLoadIdentity();
 }
 
-void Drawing_engine::display(Uint32 time_remaining, int round_cnt)
+void Drawing_engine::display(Ant_Sim *ant_sim_ptr, Uint32 time_remaining, int round_cnt)
 {
 	// in color_buffer the color of every pixel is saved
 	// in depth buffer the depth of every pixel is saved (which px is in front of which)
@@ -224,13 +224,13 @@ void Drawing_engine::display(Uint32 time_remaining, int round_cnt)
 	//for high quality ants
 	int hq_frame = (round_cnt%40)/5;
 
-	for (int cnt = 0; cnt < _ant_sim_ptr->_ant_number; cnt++) 
+	for (int cnt = 0; cnt < ant_sim_ptr->_ant_number; cnt++) 
 	{
 		glPushMatrix();
-			glTranslatef(_ant_sim_ptr->_ant_posx[cnt],_ant_sim_ptr->_ant_posy,_ant_sim_ptr->_ant_posz[cnt]);
-			glRotatef(_ant_sim_ptr->_ant_angley,0.0,1.0,0.0);
+			glTranslatef(ant_sim_ptr->_ant_posx[cnt],ant_sim_ptr->_ant_posy,ant_sim_ptr->_ant_posz[cnt]);
+			glRotatef(ant_sim_ptr->_ant_angley,0.0,1.0,0.0);
 			if (_high_quality_on) { _ant_hq_array[hq_frame]->draw_model(); }
-			else { draw_ant_anim(_ant_sim_ptr->_ant_size, ant_color, anim_frame); }
+			else { draw_ant_anim(ant_sim_ptr->_ant_size, ant_color, anim_frame); }
 		glPopMatrix();
 	}
 
@@ -258,4 +258,34 @@ void Drawing_engine::clean_up(void)
 void Drawing_engine::start_countdown(void)
 {
 	_countdown_on = true;
+}
+
+void Drawing_engine::print_cam_pos(void)
+{
+	_camera.print();
+}
+
+void Drawing_engine::switch_fog_no_fog(void)
+{
+	_switch_fog_on= !_switch_fog_on;
+	if (_switch_fog_on) { glEnable(GL_FOG); }
+	else {glDisable(GL_FOG); }
+}
+
+void Drawing_engine::switch_good_bad_graphics(void)
+{
+	_high_quality_on = !_high_quality_on;
+}
+
+void Drawing_engine::left_mouse_click(void)
+{
+	_mousein = true;
+	SDL_ShowCursor(SDL_DISABLE);
+	SDL_WarpMouse(screen_width/2,screen_height/2);
+}
+
+void Drawing_engine::left_mouse_unclick(void)
+{
+	_mousein = false;
+	SDL_ShowCursor(SDL_ENABLE);
 }
