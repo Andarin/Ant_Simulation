@@ -76,6 +76,7 @@ bool Ant::is_alive()
 
 double Ant::get_size()
 {
+
 	return _size ;
 }
 

@@ -45,11 +45,11 @@
 #include "glext.h"
 #include "OBJlib.h"
 
-
 // self-created external depencies
+#include "Drawing_engine.h"
 #include "Camera.h"
-#include "skybox.h"
 #include "loadpng_functions.h"
+#include "skybox.h"
 #include "models.h"
 #include "general_constants.h"
 #include "Time_machine.h"
@@ -63,59 +63,40 @@ public:
 	~Ant_Sim(void);
 	void start(void);
 
-private:
-	int _ant_number;
-	Uint32 _time_remaining;
-	Uint32 _sim_time_step;
-	Camera _camera;
-	int _cam_velocity;
-	int _recent_cam_velocity;
-	bool _high_quality_on;
-	bool _switch_fog_on;
-
-	// system variables
-	SDL_Surface *_prescreen;
-	SDL_Surface *_screen;
-	SDL_Surface *_logo;
-	glfont::GLFont _screen_text;
-	int _round_cnt;
-	bool _running;
-	bool _mousein;
-	double _max_size_of_pheromone;
-	double _max_size_of_vision;
-	double _max_size_of_corps;
-	unsigned int _tex_board;
-	unsigned int _tex_border;
-	unsigned int _tex_colony;
-	unsigned int _tex_box;
-	unsigned int _tex_apple_side;
-	unsigned int _tex_apple_top;
-	unsigned int _tex_logo;
-	Uint8 *_keystates;
-	int _ant_model;
-
 	// just for testing / not important
 	float *_ant_posx;
 	float *_ant_posz;
 	float _ant_posy;
 	float _ant_size;
 	float _ant_angley;
-	MeshObj* _ant_hq_array[8];
+	int _ant_number;
+
+private:
+	// simulation related variables
+	int _round_cnt;
+	Uint32 _time_remaining;
+	Uint32 _sim_time_step;
+	double _max_size_of_pheromone;
+	double _max_size_of_vision;
+	double _max_size_of_corps;
+
+	// boolean checks
+	bool _running;
+	bool _mousein;
+	bool _countdown_on;
+	bool _high_quality_on;
+	bool _switch_fog_on;
+
+	// graphic related variables
+	Drawing_engine _drawing_engine;
+	//Camera _camera;
+	Uint8 *_keystates;
 
 	// methods
 	void move_ants(void);
-	void set_window(void);
-	void set_openGL(void);
-	void set_fog(void);
-	void load_textures(void);
 	void init(void);
-	void switch_to_normal_perspective(int);
-	void switch_to_ortho_perspective(void);
-	void draw_text(std::string, float, float);
-	void draw_text_with_number(std::string, int, float, float);
-	void draw_text_with_number(std::string, double, float, float);
-	void draw_hud(void);
-	void display(void);
 	void handle_user_input(SDL_Event &event);
+	void start_countdown(void);
+	void game_logic(void);
 	void clean_up(void);
 };

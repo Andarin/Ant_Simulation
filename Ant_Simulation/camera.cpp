@@ -7,7 +7,7 @@
 //this file is functions.h, it's contain the actual implementation of the 3D camera
 
 //Edited by Lucas Tittmann, 02/13
-//added some functions and made the camera an object
+//added some functionality and made the camera an object
 
 #include "Camera.h"
 
@@ -101,6 +101,47 @@ void Camera::update(void)
 
 void Camera::print(void)
 {
-	cout << "x: " << _camX <<" - y: " << _camY <<" - z: " << _camZ 
-		<< " - camPitch: " << _camPitch << " - camYaw: " << _camYaw << endl;
+	std::cout << "x: " << _camX <<" - y: " << _camY <<" - z: " << _camZ 
+		<< " - camPitch: " << _camPitch << " - camYaw: " << _camYaw << std::endl;
+}
+
+std::vector<double> Camera::calculate_click_point(int map_size)
+{
+	// caculates where on the board was clicked on
+	// returns -1, -1 of coords not on board
+	double x_on_board;
+	double z_on_board;
+	std::vector<double> board_pos;
+    int tmpx,tmpy;
+
+	SDL_GetMouseState(&tmpx,&tmpy);
+	// calculate pitch of mouse pointer in rad
+	float click_pitch_deg = 45.0*(screen_height/2.0 - tmpy)/screen_height;
+	float anti_angle_deg = 90 + _camPitch + click_pitch_deg;
+	float anti_angle_pi = anti_angle_deg / 180 * M_PI;
+	// now we can calculate the distance to the camera
+	float distance = std::tan(anti_angle_pi)*_camY;
+
+	// now calculate the position on the circle
+	float click_yaw_deg = 45.0*(screen_width/2.0 - tmpx)/screen_width;
+	float angle_yaw_deg = 270 - _camYaw - click_yaw_deg;
+	float angle_yaw_pi = angle_yaw_deg / 180 * M_PI;
+
+	x_on_board = _camX + std::cos(angle_yaw_pi)*distance;
+	z_on_board = _camY + std::sin(angle_yaw_pi)*distance;
+
+	// sanitize user input
+	if (anti_angle_deg >= 90
+		|| x_on_board < map_size/50 || x_on_board > map_size*49/50
+		|| z_on_board < map_size/50 || z_on_board > map_size*49/50) 
+	{
+		x_on_board = -1;
+		z_on_board = -1;
+	}
+
+	//std::cout << tmpx << " " << angle_yaw_deg <<" "<<x_on_board<<" "<<z_on_board<< std::endl;
+	//std::cout << _camX << " " << _camY << " " << _camZ << std::endl;
+	board_pos.push_back(x_on_board);
+	board_pos.push_back(z_on_board);
+	return board_pos;
 }

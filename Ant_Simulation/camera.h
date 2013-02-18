@@ -17,8 +17,8 @@
 #include <cstdio>
 #include <iostream>
 #include <cmath>
+#include <vector>
 #include "general_constants.h"
-using namespace std;
 #ifndef CAMERA_H
 #define CAMERA_H
 
@@ -38,8 +38,9 @@ public:
 	void move(float,float);
 	void move_camera_up(float,float);
 	void control(float,float,int,int,int,bool);
-	void update();
-	void print();
+	void update(void);
+	void print(void);
+	std::vector<double> calculate_click_point(int);
 };
 
 #endif

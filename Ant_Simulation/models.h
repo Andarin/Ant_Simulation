@@ -18,5 +18,5 @@ void draw_ant(int, double[]);
 void draw_ant_anim(int, double[], double);
 void draw_colony(int, unsigned int);
 void draw_box(int, unsigned int, unsigned int);
-
+void draw_pic(int, unsigned int);
 #endif
