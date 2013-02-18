@@ -30,7 +30,7 @@ public:									//It is build thanks to a Table_of_objects and three
 	//Others...
 	 //Get the square of a map of a certain double subdivision where position is
 	std::tuple<int,int> get_in_wich_square (Position, double);
-	 //Get the square of the distance between two positions (only considering x and y)
+	 //Get the square of the distance between two positions (only considering x and y axis)
 	double square_distance (Position,Position);
 
 private:

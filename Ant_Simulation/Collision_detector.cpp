@@ -151,7 +151,9 @@ void Collision_detector::update_active(Uint32 time,Uint32 time_step)//for the mo
 	{
 		if ((*(*it)).is_alive())
 		{
-			(*(*it)).update(time,time_step,get_ph_coll(*it)); //Danger it is not get_ph_coll but physic coll
+			(*(*it)).update(time,time_step,get_an_coll(*it),get_co_coll(*it),get_fo_coll(*it));
+			if (!((*(*it)).is_moving()))
+				(*(*it)).update_ph(get_ph_coll(*it));
 			while (!(*(*it))._buffer_fresh_phero.empty())
 			{
 				std::shared_ptr<Pheromone> p_pheromone = (((*(*it))._buffer_fresh_phero).back());
@@ -160,7 +162,7 @@ void Collision_detector::update_active(Uint32 time,Uint32 time_step)//for the mo
 		}
 		else
 		{
-			//If we erased now at tha it iterator, it would be problematic
+			//If we erased now at that it iterator, it would be problematic
 			//because in the 'for' iteration, the path to the next element
 			//would be lost. So that's why we step back with --it before erase
 			auto it_1 = it;

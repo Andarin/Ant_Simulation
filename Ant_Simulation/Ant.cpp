@@ -16,13 +16,14 @@ Ant::Ant(Ant_birth_info &ant_birth_info)
 	_pos = ant_birth_info._pos;
 	_obj_type = OBJECT_TYPE_NR_OF_ANT;
 	_is_alive = true;
+	_is_moving = false;
 }
 
 Ant::~Ant(void)
 {
 }
 
-void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Pheromone>> list_ph_coll)
+void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Ant>> phys_coll_ant,std::list<std::shared_ptr<Colony>> phys_coll_col,std::list<std::shared_ptr<Food>> phys_coll_food)
 {
 	_energy -= _energy_consumption_per_m*time_step/60000;
 
@@ -30,6 +31,18 @@ void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Pheromo
 	{
 		destroy();
 	}
+
+	_phys_coll_ant = phys_coll_ant;
+	_phys_coll_col = phys_coll_col;
+	_phys_coll_food = phys_coll_food;
+
+
+
+}
+
+void Ant::update_ph(std::list<std::shared_ptr<Pheromone>> olf_coll_ph)
+{
+	_olf_coll_ph = olf_coll_ph;
 }
 
 void Ant::set_pheromone(int phero_type,double energy, double consumption)
@@ -63,5 +76,10 @@ bool Ant::is_alive()
 
 double Ant::get_size()
 {
-	return _size
+	return _size ;
+}
+
+bool Ant::is_moving()
+{
+	return _is_moving;
 }
