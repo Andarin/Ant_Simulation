@@ -13,6 +13,7 @@ Drawing_engine::Drawing_engine(void)
 	_countdown_on = false;
 	_high_quality_on = false;
 	_switch_fog_on = false;
+	_building_menu_on = false;
 }
 
 Drawing_engine::~Drawing_engine(void)
@@ -198,7 +199,7 @@ void Drawing_engine::draw_ants(Ant_Sim *ant_sim_ptr, int round_cnt)
 	double anim_frame = std::abs((round_cnt%freq)/(0.25*freq)-2)-1;
 
 	//for high quality ants
-	int hq_frame = (round_cnt%40)/5;
+	int hq_frame = (round_cnt%16)/2;
 
 	for (int cnt = 0; cnt < ant_sim_ptr->_ant_number; cnt++) 
 	{
@@ -245,45 +246,6 @@ void Drawing_engine::draw_result(double result)
 	glPopMatrix();
 }
 
-void Drawing_engine::display(Ant_Sim *ant_sim_ptr, Uint32 time_remaining, int round_cnt)
-{
-	// in color_buffer the color of every pixel is saved
-	// in depth buffer the depth of every pixel is saved (which px is in front of which)
-	// usually, it makes sense to clean the buffers after every frame
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	
-	// switch back to normal cavalier projection with view of 45°
-	switch_to_normal_perspective(45);
-
-	// calculate camera moving speed (with accelaration)
-	if(_keystates[SDLK_LSHIFT]) { _recent_cam_velocity += 1; }
-	else { _recent_cam_velocity = _cam_velocity; }
-	_camera.control(_recent_cam_velocity,0.5,board_size,screen_width,screen_height,_mousein);
-
-	// draw skybox, don't make it bigger than the far-view-plane (see gluPerspective)
-	draw_skybox(SKY_BOY_DISTANCE);
-
-	_camera.update();
-	draw_board(board_size, _tex_board);
-	draw_border(board_size, _tex_border);
-	draw_colonies();
-	draw_obstacles();
-	draw_foods();
-	draw_ants(ant_sim_ptr, round_cnt);
-	draw_location_selected_on_board();
-	if (_countdown_on) 
-	{ 
-		double test_result = std::abs(round_cnt%300-150.0)/150.0;
-		draw_result(test_result); 
-	}
-
-	glPushMatrix();
-		switch_to_ortho_perspective();
-		draw_hud(time_remaining);
-	glPopMatrix();
-	glFlush();
-}
-
 void Drawing_engine::clean_up(void)
 {
 	SDL_FreeSurface( _prescreen );
@@ -292,6 +254,13 @@ void Drawing_engine::clean_up(void)
 	kill_skybox();
 	glDeleteTextures(1,&_tex_board);
 	glDeleteTextures(1,&_tex_border);
+	glDeleteTextures(1,&_tex_colony);
+	glDeleteTextures(1,&_tex_box);
+	glDeleteTextures(1,&_tex_apple_side);
+	glDeleteTextures(1,&_tex_apple_top);
+	glDeleteTextures(1,&_tex_logo);
+	glDeleteTextures(1,&_tex_result);
+	glDeleteTextures(1,&_tex_result_pointer);
 	for (int i = 0; i <= 7; i++)
 	{
 		delete(_ant_hq_array[i]);
@@ -338,4 +307,54 @@ void Drawing_engine::left_mouse_unclick(void)
 {
 	_mousein = false;
 	SDL_ShowCursor(SDL_ENABLE);
+}
+
+void Drawing_engine::go_into_building_menu(void)
+{
+}
+
+void Drawing_engine::draw_building_menu(void)
+{
+
+}
+
+void Drawing_engine::display(Ant_Sim *ant_sim_ptr, Uint32 time_remaining, int round_cnt)
+{
+	// in color_buffer the color of every pixel is saved
+	// in depth buffer the depth of every pixel is saved (which px is in front of which)
+	// usually, it makes sense to clean the buffers after every frame
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	
+	// switch back to normal cavalier projection with view of 45°
+	switch_to_normal_perspective(45);
+
+	// calculate camera moving speed (with accelaration)
+	if(_keystates[SDLK_LSHIFT]) { _recent_cam_velocity += 1; }
+	else { _recent_cam_velocity = _cam_velocity; }
+	_camera.control(_recent_cam_velocity,0.5,board_size,screen_width,screen_height,_mousein);
+
+	// draw skybox, don't make it bigger than the far-view-plane (see gluPerspective)
+	draw_skybox(SKY_BOY_DISTANCE);
+
+	_camera.update();
+	draw_board(board_size, _tex_board);
+	draw_border(board_size, _tex_border);
+	draw_colonies();
+	draw_obstacles();
+	draw_foods();
+	draw_ants(ant_sim_ptr, round_cnt);
+
+	if (_building_menu_on)
+		draw_building_menu();
+	if (_countdown_on) 
+	{ 
+		double test_result = std::abs(round_cnt%300-150.0)/150.0;
+		draw_result(test_result); 
+	}
+
+	glPushMatrix();
+		switch_to_ortho_perspective();
+		draw_hud(time_remaining);
+	glPopMatrix();
+	glFlush();
 }

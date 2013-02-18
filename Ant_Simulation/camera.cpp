@@ -15,9 +15,15 @@ Camera::Camera(void)
 {
 	_camX = 71; 
 	_camY = 128;
-	_camZ = 59;       //current position of the camera
+	_camZ = 59;
 	_camYaw	= 229;       //camera rotation in Y axis
 	_camPitch = -15;     //camera rotation in X axis
+
+	_camX_saved = 71; 
+	_camY_saved = 128;
+	_camZ_saved = 59;
+	_camYaw_saved = 229;    //camera rotation in Y axis
+	_camPitch_saved = -15;  //camera rotation in X axis
 }
 
 Camera::~Camera(void)
@@ -123,7 +129,7 @@ std::vector<double> Camera::calculate_click_point(int map_size)
 	float distance = std::tan(anti_angle_pi)*_camY;
 
 	// now calculate the position on the circle
-	float click_yaw_deg = 45.0*(screen_width/2.0 - tmpx)/screen_width;
+	float click_yaw_deg =60.0*(screen_width/2.0 - tmpx)/screen_width;
 	float angle_yaw_deg = 270 - _camYaw - click_yaw_deg;
 	float angle_yaw_pi = angle_yaw_deg / 180 * M_PI;
 
@@ -144,4 +150,22 @@ std::vector<double> Camera::calculate_click_point(int map_size)
 	board_pos.push_back(x_on_board);
 	board_pos.push_back(z_on_board);
 	return board_pos;
+}
+
+void Camera::save_current_pos(void)
+{
+	_camX_saved = _camX;
+	_camY_saved = _camY;
+	_camZ_saved = _camZ;
+	_camPitch_saved = _camPitch;
+	_camYaw_saved = _camYaw;
+}
+
+void Camera::load_last_pos(void)
+{
+	_camX = _camX_saved;
+	_camY = _camY_saved;
+	_camZ = _camZ_saved;
+	_camPitch = _camPitch_saved;
+	_camYaw = _camYaw_saved;
 }

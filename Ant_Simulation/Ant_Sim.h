@@ -70,6 +70,8 @@ public:
 	float _ant_size;
 	float _ant_angley;
 	int _ant_number;
+	std::shared_ptr<Table_of_objects> _table_obj;
+	std::shared_ptr<Collision_detector> _coll_dect;
 
 private:
 	// simulation related variables
@@ -97,6 +99,8 @@ private:
 	void init(void);
 	void handle_user_input(SDL_Event &event);
 	void start_countdown(void);
-	void game_logic(void);
+	void game_logic(std::shared_ptr<Table_of_objects>, 
+					std::shared_ptr<Collision_detector>,
+					Uint32);
 	void clean_up(void);
 };

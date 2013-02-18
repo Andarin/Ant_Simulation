@@ -109,13 +109,15 @@ void Ant_Sim::start_countdown(void)
 	_time_remaining = 3000;
 }
 
-void Ant_Sim::game_logic(void)
+void Ant_Sim::game_logic( std::shared_ptr<Table_of_objects> table_obj, 
+						  std::shared_ptr<Collision_detector> coll_dect,
+						  Uint32 time)
 {
 	_round_cnt++;
 	move_ants();
 
-	//table_obj->update_passive(time, _sim_time_step);
-	//coll_dect->update_active(time, _sim_time_step);
+	table_obj->update_passive(time, _sim_time_step);
+	coll_dect->update_active(time, _sim_time_step);
 
 	// check if game time is over
 	_time_remaining -= _sim_time_step;
@@ -139,8 +141,8 @@ void Ant_Sim::start(void)
 	Uint32 time = 0; // in milli seconds
 	Uint32 accumulator = 0;
 		  
-	auto table_obj = std::make_shared<Table_of_objects>(2500, board_size);
-	auto coll_dect = std::make_shared<Collision_detector>(table_obj, 
+	auto _table_obj = std::make_shared<Table_of_objects>(2500, board_size);
+	auto _coll_dect = std::make_shared<Collision_detector>(_table_obj, 
 							_max_size_of_pheromone, _max_size_of_vision, _max_size_of_corps);
 
 	while(_running) {
@@ -159,7 +161,7 @@ void Ant_Sim::start(void)
 
 		while ( accumulator >= _sim_time_step )
 		{
-			game_logic();
+			game_logic(_table_obj, _coll_dect, time);
 
 			// operations to hold constant time flux
 			accumulator -= _sim_time_step;
