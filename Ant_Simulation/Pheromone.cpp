@@ -9,10 +9,10 @@ double Pheromone::calc_size_by_energy (double energy)
 	return 300*energy/(energy+1);
 }
 
-void Pheromone::merge_pheromone(Pheromone other_phero)
+void Pheromone::merge_pheromone(std::shared_ptr<Pheromone> p_other_phero)
 {
-	_energy += other_phero._energy;
-	other_phero.destroy();
+	_energy += (*p_other_phero)._energy;
+	(*p_other_phero).destroy();
 }
 
 void Pheromone::update(Uint32 time, Uint32 time_step)

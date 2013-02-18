@@ -8,10 +8,16 @@ public:
 	{
 		_obj_type = OBJECT_TYPE_NR_OF_FOOD;
 		_food_type = food_type;
+		_size = go_birth_info._size ;
 	};
 	~Food(void);
 	void update(Uint32, Uint32);
 	double get_piece(double);
 
 	int _food_type;
+
+	double get_size (){return _size;}
+
+private :
+	double _size;
 };

@@ -16,6 +16,9 @@ public:
 	Position _pos;
 	int _obj_type;
 
+	//Get functions
+	double get_size (void);
+
 protected:
 	int _pheromone_type;
 	double _size;

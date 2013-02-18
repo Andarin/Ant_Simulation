@@ -18,5 +18,6 @@ public:
 	double _ant_energy_consumption_per_m;
 	int _colony_max_reproduction_speed;
 	double _initial_food;
+	double _size;
 };
 

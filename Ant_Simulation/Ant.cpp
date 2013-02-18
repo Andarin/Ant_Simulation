@@ -12,7 +12,7 @@ Ant::Ant(Ant_birth_info &ant_birth_info)
 	_max_energy_storage = ant_birth_info._energy;
 	_energy = ant_birth_info._energy;
 	_energy_consumption_per_m = ant_birth_info._energy_consumption_per_m;
-	_size = 1;
+	_size = 10;
 	_pos = ant_birth_info._pos;
 	_obj_type = OBJECT_TYPE_NR_OF_ANT;
 	_is_alive = true;
@@ -59,4 +59,9 @@ void Ant::destroy(void)
 bool Ant::is_alive()
 {
 	return _is_alive ;
+}
+
+double Ant::get_size()
+{
+	return _size
 }
