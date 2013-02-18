@@ -108,7 +108,7 @@ void Table_of_objects::update_passive(Uint32 time,Uint32 time_step) {
 			if (_pheromone_matrix[x] [y] == p_pheromone)
 				_pheromone_matrix[x] [y] = NULL;
 
-			//If we erased now at tha it iterator, it would be problematic
+			//If we erased now at that it iterator, it would be problematic
 			//because in the 'for' iteration, the path to the next element
 			//would be lost. So that's why we step back with --it before erase
 			auto it_1 = it;
@@ -132,7 +132,7 @@ void Table_of_objects::update_passive(Uint32 time,Uint32 time_step) {
 		}
 		else
 		{
-			//If we erased now at tha it iterator, it would be problematic
+			//If we erased now at that it iterator, it would be problematic
 			//because in the 'for' iteration, the path to the next element
 			//would be lost. So that's why we step back with --it before erase
 			auto it_1 = it;
@@ -147,7 +147,7 @@ void Table_of_objects::update_passive(Uint32 time,Uint32 time_step) {
 			(*(*it)).update(time,time_step);
 		else
 		{
-			//If we erased now at tha it iterator, it would be problematic
+			//If we erased now at that it iterator, it would be problematic
 			//because in the 'for' iteration, the path to the next element
 			//would be lost. So that's why we step back with --it before erase
 			auto it_1 = it;

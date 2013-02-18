@@ -74,6 +74,9 @@ int main(int argc, char** argv){
 
 	auto lllll = C.get_ph_coll(shared_pointer_ant);
 
+	std::array<double,2> tab;
+	tab[0] = 1;
+	tab[1] = 2;
 
 	return 0;
 }

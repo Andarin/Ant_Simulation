@@ -1,5 +1,11 @@
 #pragma once
 #include "Position.h"
+#ifdef _WIN32
+	#include "windows.h"
+	#include <SDL.h>
+#else
+	#include <SDL/SDL.h>
+#endif
 
 class Ant_birth_info
 {
@@ -12,10 +18,9 @@ public:
 	double _speed;
 	int _attack_points;
 	int _armor;
-	int _transport_capability;
-	double _time_of_death;
+	double _transport_capability;
+	Uint32 _time_of_death;
 	int _color;
-	int _energy;
-	int _energy_consumption_per_m;
+	double _energy;
+	double _energy_consumption_per_m;
 };
-

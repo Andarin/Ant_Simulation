@@ -4,7 +4,7 @@ Position::Position(void)
 {
 }
 
-Position::Position(double x, double y, double z, double direction) 
+Position::Position(double x, double y, double z, std::array<double,2> direction) 
 {
 	_x = x;
 	_y = y;

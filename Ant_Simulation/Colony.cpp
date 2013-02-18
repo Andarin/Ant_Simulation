@@ -127,7 +127,7 @@ void Colony::store_food(double amount_delivered)
 
 void Colony::change_egg_production(int new_egg_production)
 {
-	_egg_production_per_m = std::min<double>(new_egg_production, _max_egg_production_per_m);
+	_egg_production_per_m = std::min<int>(new_egg_production, _max_egg_production_per_m);
 	_every_XX_ms_egg = 60000/_egg_production_per_m;
 }
 
