@@ -95,8 +95,8 @@ private:
 	// methods
 	void move_ants(void);
 	void init(void);
-
 	void handle_user_input(SDL_Event &event);
-	void clean_up(void);
 	void start_countdown(void);
+	void game_logic(void);
+	void clean_up(void);
 };

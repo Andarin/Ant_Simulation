@@ -273,7 +273,7 @@ void Drawing_engine::display(Ant_Sim *ant_sim_ptr, Uint32 time_remaining, int ro
 	draw_location_selected_on_board();
 	if (_countdown_on) 
 	{ 
-		double test_result = std::abs(round_cnt%100-50.0)/50.0;
+		double test_result = std::abs(round_cnt%300-150.0)/150.0;
 		draw_result(test_result); 
 	}
 

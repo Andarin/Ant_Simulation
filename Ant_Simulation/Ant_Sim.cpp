@@ -109,10 +109,28 @@ void Ant_Sim::start_countdown(void)
 	_time_remaining = 3000;
 }
 
+void Ant_Sim::game_logic(void)
+{
+	_round_cnt++;
+	move_ants();
+
+	//table_obj->update_passive(time, _sim_time_step);
+	//coll_dect->update_active(time, _sim_time_step);
+
+	// check if game time is over
+	_time_remaining -= _sim_time_step;
+	if (_time_remaining <= 0)
+		if (!_countdown_on)
+			// game run out of time -> start countdown and show results
+			start_countdown();
+		else
+			// countdown is already over -> finish the simulation
+			_running = false;
+}
+
 void Ant_Sim::start(void)
 {
 	init();
-	//load_hq_ants();
 	_drawing_engine.init();
 
 	// set local variables
@@ -141,21 +159,7 @@ void Ant_Sim::start(void)
 
 		while ( accumulator >= _sim_time_step )
 		{
-			_round_cnt++;
-			move_ants();
-
-			//table_obj->update_passive(time, _sim_time_step);
-			//coll_dect->update_active(time, _sim_time_step);
-
-			// check if game time is over
-			_time_remaining -= _sim_time_step;
-			if (_time_remaining <= 0)
-				if (!_countdown_on)
-					// game run out of time -> start countdown and show results
-					start_countdown();
-				else
-					// countdown is already over -> finish the simulation
-					_running = false;
+			game_logic();
 
 			// operations to hold constant time flux
 			accumulator -= _sim_time_step;
