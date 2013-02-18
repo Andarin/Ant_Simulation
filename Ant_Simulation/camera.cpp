@@ -130,14 +130,17 @@ std::vector<double> Camera::calculate_click_point(int map_size)
 	x_on_board = _camX + std::cos(angle_yaw_pi)*distance;
 	z_on_board = _camY + std::sin(angle_yaw_pi)*distance;
 
-	// if angle too high to click on board, return
-	if (anti_angle_deg >= 90) {
+	// sanitize user input
+	if (anti_angle_deg >= 90
+		|| x_on_board < map_size/50 || x_on_board > map_size*49/50
+		|| z_on_board < map_size/50 || z_on_board > map_size*49/50) 
+	{
 		x_on_board = -1;
 		z_on_board = -1;
 	}
 
-	std::cout << tmpx << " " << angle_yaw_deg <<" "<<x_on_board<<" "<<z_on_board<< std::endl;
-	std::cout << _camX << " " << _camY << " " << _camZ << std::endl;
+	//std::cout << tmpx << " " << angle_yaw_deg <<" "<<x_on_board<<" "<<z_on_board<< std::endl;
+	//std::cout << _camX << " " << _camY << " " << _camZ << std::endl;
 	board_pos.push_back(x_on_board);
 	board_pos.push_back(z_on_board);
 	return board_pos;

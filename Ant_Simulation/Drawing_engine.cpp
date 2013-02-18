@@ -145,15 +145,6 @@ void Drawing_engine::draw_hud(Uint32 time_remaining)
 	if (_countdown_on) draw_countdown(time_remaining_in_s);
 }
 
-
-void Drawing_engine::draw_result(void)
-{
-	glPushMatrix();
-		glTranslatef(400,0,400);
-	
-	glPopMatrix();
-}
-
 void Drawing_engine::switch_to_normal_perspective(int field_of_view_in_degrees)
 {
 	glMatrixMode(GL_PROJECTION);
@@ -172,50 +163,35 @@ void Drawing_engine::switch_to_ortho_perspective(void)
 	glLoadIdentity();
 }
 
-void Drawing_engine::display(Ant_Sim *ant_sim_ptr, Uint32 time_remaining, int round_cnt)
+void Drawing_engine::draw_foods(void)
 {
-	// in color_buffer the color of every pixel is saved
-	// in depth buffer the depth of every pixel is saved (which px is in front of which)
-	// usually, it makes sense to clean the buffers after every frame
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	switch_to_normal_perspective(45);
-	if(_keystates[SDLK_LSHIFT]) { _recent_cam_velocity += 1; }
-	else { _recent_cam_velocity = _cam_velocity; }
-	_camera.control(_recent_cam_velocity,0.5,board_size,screen_width,screen_height,_mousein);
-	// don't make it bigger than the far-view-plane (see gluPerspective)
-	draw_skybox(SKY_BOY_DISTANCE); 
-	_camera.update();
-	draw_board(board_size, _tex_board);
-	draw_border(board_size, _tex_border);
-
-	// draw a colony
-	glPushMatrix();
-		glTranslatef(100,0,100);
-		draw_colony(100, _tex_colony);
-	glPopMatrix();
-
-	// draw a box
-	glPushMatrix();
-		glTranslatef(100,0,300);
-		draw_box(70, _tex_box, _tex_box);
-	glPopMatrix();
-
 	// draw an apple
 	glPushMatrix();
-		glTranslatef(400,0,400);
-		draw_box(100, _tex_apple_side, _tex_apple_top);
+	glTranslatef(400,0,400);
+	draw_box(100, _tex_apple_side, _tex_apple_top);
 	glPopMatrix();
-	
-	if(SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(3))
-	// right mouse click
-	{
-		std::vector<double> pos_on_board = _camera.calculate_click_point(board_size);
-		glPushMatrix();
-			glTranslatef(pos_on_board[0],2,pos_on_board[1]);
-			draw_pic(100, _tex_apple_top);
-		glPopMatrix();
-	}
-	
+}
+
+void Drawing_engine::draw_obstacles(void)
+{
+	// draw a box
+	glPushMatrix();
+	glTranslatef(100,0,300);
+	draw_box(70, _tex_box, _tex_box);
+	glPopMatrix();
+}
+
+void Drawing_engine::draw_colonies(void)
+{
+	// draw a colony
+	glPushMatrix();
+	glTranslatef(100,0,100);
+	draw_colony(100, _tex_colony);
+	glPopMatrix();
+}
+
+void Drawing_engine::draw_ants(Ant_Sim *ant_sim_ptr, int round_cnt)
+{
 	//for low quality ants
 	double ant_color[3] =  {0.2, 0.0, 0.0};
 	int freq = 50;
@@ -232,6 +208,73 @@ void Drawing_engine::display(Ant_Sim *ant_sim_ptr, Uint32 time_remaining, int ro
 			if (_high_quality_on) { _ant_hq_array[hq_frame]->draw_model(); }
 			else { draw_ant_anim(ant_sim_ptr->_ant_size, ant_color, anim_frame); }
 		glPopMatrix();
+	}
+}
+
+void Drawing_engine::draw_location_selected_on_board(void)
+{
+	if(SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(3))
+	// right mouse click
+	{
+		std::vector<double> pos_on_board = _camera.calculate_click_point(board_size);
+		// returns {-1, -1} if mouse does not point on board
+		if (pos_on_board[0] != -1)
+		{
+			glPushMatrix();
+				glTranslatef(pos_on_board[0],2,pos_on_board[1]);
+				draw_pic(100, _tex_apple_top);
+			glPopMatrix();
+		}
+	}
+}
+
+void Drawing_engine::draw_result(double result)
+{
+	// result must be given between 0 and 1
+	double disp_result = result*60;
+	glPushMatrix();
+		glTranslatef(200,200,200);
+		glRotatef(135.0,0.0,1.0,0.0);
+		draw_pic(100,_tex_result);
+	glPopMatrix();
+
+	glPushMatrix();
+		glTranslatef(172,166+disp_result,215);
+		glRotatef(135.0,0.0,1.0,0.0);
+		draw_pic(30,_tex_result_pointer);
+	glPopMatrix();
+}
+
+void Drawing_engine::display(Ant_Sim *ant_sim_ptr, Uint32 time_remaining, int round_cnt)
+{
+	// in color_buffer the color of every pixel is saved
+	// in depth buffer the depth of every pixel is saved (which px is in front of which)
+	// usually, it makes sense to clean the buffers after every frame
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	
+	// switch back to normal cavalier projection with view of 45°
+	switch_to_normal_perspective(45);
+
+	// calculate camera moving speed (with accelaration)
+	if(_keystates[SDLK_LSHIFT]) { _recent_cam_velocity += 1; }
+	else { _recent_cam_velocity = _cam_velocity; }
+	_camera.control(_recent_cam_velocity,0.5,board_size,screen_width,screen_height,_mousein);
+
+	// draw skybox, don't make it bigger than the far-view-plane (see gluPerspective)
+	draw_skybox(SKY_BOY_DISTANCE);
+
+	_camera.update();
+	draw_board(board_size, _tex_board);
+	draw_border(board_size, _tex_border);
+	draw_colonies();
+	draw_obstacles();
+	draw_foods();
+	draw_ants(ant_sim_ptr, round_cnt);
+	draw_location_selected_on_board();
+	if (_countdown_on) 
+	{ 
+		double test_result = std::abs(round_cnt%100-50.0)/50.0;
+		draw_result(test_result); 
 	}
 
 	glPushMatrix();
@@ -258,6 +301,13 @@ void Drawing_engine::clean_up(void)
 void Drawing_engine::start_countdown(void)
 {
 	_countdown_on = true;
+
+	// warp to start position to look at the result
+	_camera._camX = 100;
+	_camera._camY = 220;
+	_camera._camZ = 100;
+	_camera._camPitch = 0;
+	_camera._camYaw = 225;
 }
 
 void Drawing_engine::print_cam_pos(void)
