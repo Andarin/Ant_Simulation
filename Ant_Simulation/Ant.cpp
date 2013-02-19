@@ -28,7 +28,8 @@ Ant::~Ant(void)
 void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Ant>> phys_coll_ant,std::list<std::shared_ptr<Colony>> phys_coll_col,std::list<std::shared_ptr<Food>> phys_coll_food)
 {
 	_energy -= _energy_consumption_per_m*time_step/60000;
-	if (_distance_left <= 0)
+	std::list<std::array<double,2>> list_normals = return_normal_board();
+	if (_distance_left <= 0 || !list_normals.empty())
 	{
 		_is_moving = false ;
 	}
@@ -46,7 +47,7 @@ void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Ant>> p
 		if (_is_moving)
 		{
 			_pos._x += (time_step/1000*(_pos._direction[0])*_speed);
-			_pos._y += (time_step/1000*(_pos._direction[1])*_speed);
+			_pos._z += (time_step/1000*(_pos._direction[1])*_speed);
 			_distance_left -= time_step/1000*_speed;
 		}
 		else if (_distance_left <= 0)
@@ -120,13 +121,45 @@ void Ant::scout_AI(Uint32 time)
 	double delta = 2*unif_01() -1;
 	std::array<double,2> vect = _pos._direction;
 	double x = vect[0] - delta*vect[1];
-	double y = vect[1] + delta*vect[0];
+	double z = vect[1] + delta*vect[0];
 	double r = sqrt(1 + delta*delta);
 	x = x/r;
-	y = y/r;
+	z = z/r;
 	_pos._direction[0] = x;
-	_pos._direction[1] = y;
+	_pos._direction[1] = z;
 	Uint32 t = (Uint32) 1000*unif_01();
 	_time_to_move = time + t;
+
+}
+
+std::list<std::array<double,2>> Ant::return_normal_board (void)
+{
+	std::list<std::array<double,2>> res;
+	double x = _pos._x;
+	double z = _pos._z;
+	if (x <= _size)
+	{
+		std::array<double,2> vect = {1,0};
+		res.push_back(vect);
+	}
+	if (x>= board_size - _size)
+	{
+		std::array<double,2> vect = {-1,0};
+		res.push_back(vect);
+	}
+	if (z <= _size)
+	{
+		std::array<double,2> vect = {0,1};
+		res.push_back(vect);
+	}
+	if (z>= board_size - _size)
+	{
+		std::array<double,2> vect = {0,-1};
+		res.push_back(vect);
+	}
+}
+
+std::array<double,2> Ant::find_dir_from_board(std::list<std::array<double,2>> list_norm)
+{
 
 }

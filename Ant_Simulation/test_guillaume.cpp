@@ -41,7 +41,7 @@ int main(int argc, char** argv){
 
 	Game_object_birth_info g ;
 	(g._pos)._x = 34.5;
-	(g._pos)._y = 32.7;
+	(g._pos)._z = 32.7;
 	g._energy = 1 ;
 	g._energy_consumption_per_m = 1 ;
 	auto phero = std::make_shared<Pheromone> (g,5) ;
@@ -60,7 +60,7 @@ int main(int argc, char** argv){
 
 	Colony_birth_info Ci;
 	Ci._pos._x = 30;
-	Ci._pos._y = 30;
+	Ci._pos._z = 30;
 	auto p_col = std::make_shared<Colony>(Ci);
 
 	(*p_table).add_colony(p_col);

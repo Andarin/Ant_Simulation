@@ -41,19 +41,19 @@ void Table_of_objects::add_pheromone (std::shared_ptr<Pheromone> p_pheromone){
 	if (std::find(_pheromone_list.begin(), _pheromone_list.end(), p_pheromone) == _pheromone_list.end())
 	{	
 		//We have also to update the matrix of pheromones
-		int x,y ;
+		int x,z ;
 		double size_square ; //size of a square of the pheromone matrix
 		size_square = ((double) _board_size) / ((double) _nbr_sub) ;
 		x = (int) ((*p_pheromone)._pos._x/size_square);
-		y = (int) ((*p_pheromone)._pos._y/size_square);
+		z = (int) ((*p_pheromone)._pos._z/size_square);
 		//If there is already a pheromone at this place in the matrix
 		//we merge the new one with the ancient one (without adding former)
-		if (_pheromone_matrix [x] [y] != NULL)
-			(*(_pheromone_matrix [x] [y])).merge_pheromone(p_pheromone);
+		if (_pheromone_matrix [x] [z] != NULL)
+			(*(_pheromone_matrix [x] [z])).merge_pheromone(p_pheromone);
 		//Otherwise, we add this pheromone as we did it with the other objects
 		else
 		{
-			_pheromone_matrix [x] [y] = p_pheromone;
+			_pheromone_matrix [x] [z] = p_pheromone;
 			_pheromone_list.push_back (p_pheromone);
 		}
 	}
@@ -75,13 +75,13 @@ void Table_of_objects::delete_food (std::shared_ptr<Food> p_food){
 
 void Table_of_objects::delete_pheromone (std::shared_ptr<Pheromone> p_pheromone){
 	_pheromone_list.remove(p_pheromone) ;
-	int x,y ;
+	int x,z ;
 	double size_square ; //size of a square of the pheromone matrix
 	size_square = ((double) _board_size) / ((double) _nbr_sub) ;
 	x = (int) ((*p_pheromone)._pos._x/size_square);
-	y = (int) ((*p_pheromone)._pos._y/size_square);
-	if (_pheromone_matrix[x] [y] == p_pheromone)
-		_pheromone_matrix[x] [y] = NULL;
+	z = (int) ((*p_pheromone)._pos._z/size_square);
+	if (_pheromone_matrix[x] [z] == p_pheromone)
+		_pheromone_matrix[x] [z] = NULL;
 }
 
 //Update functions :
@@ -100,13 +100,13 @@ void Table_of_objects::update_passive(Uint32 time,Uint32 time_step) {
 			std::shared_ptr<Pheromone> p_pheromone = *it ;
 
 			//And we have also to delete it from the matrix if it's there
-			int x,y ;
+			int x,z ;
 			double size_square ; //size of a square of the pheromone matrix
 			size_square = ((double) _board_size) / ((double) _nbr_sub) ;
 			x = (int) ((*p_pheromone)._pos._x/size_square);
-			y = (int) ((*p_pheromone)._pos._y/size_square);
-			if (_pheromone_matrix[x] [y] == p_pheromone)
-				_pheromone_matrix[x] [y] = NULL;
+			z = (int) ((*p_pheromone)._pos._z/size_square);
+			if (_pheromone_matrix[x] [z] == p_pheromone)
+				_pheromone_matrix[x] [z] = NULL;
 
 			//If we erased now at that it iterator, it would be problematic
 			//because in the 'for' iteration, the path to the next element
