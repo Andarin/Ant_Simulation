@@ -157,9 +157,11 @@ std::list<std::array<double,2>> Ant::return_normal_board (void)
 		std::array<double,2> vect = {0,-1};
 		res.push_back(vect);
 	}
+	return res;
 }
 
 std::array<double,2> Ant::find_dir_from_board(std::list<std::array<double,2>> list_norm)
 {
-
+	std::array<double,2> res ;
+	return res;
 }
