@@ -68,13 +68,14 @@ private:
 	unsigned int _tex_result_pointer;
 	glfont::GLFont _screen_text;
 	MeshObj* _ant_hq_array[8];
+	MeshObj* _apple_hq;
 	Uint8 *_keystates;
 
 	// methods
 	void set_window(void);
 	void set_openGL(void);
 	void load_textures(void);
-	void load_hq_ants(void);
+	void load_hq_models(void);
 	void init_fog(void);
 	void switch_to_normal_perspective(int);
 	void switch_to_ortho_perspective(void);

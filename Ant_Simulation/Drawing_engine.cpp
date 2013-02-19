@@ -80,7 +80,7 @@ void Drawing_engine::load_textures(void)
 	_tex_result_pointer=load_texture_png("src/result_pointer.png", 128, 128);
 }
 
-void Drawing_engine::load_hq_ants(void)
+void Drawing_engine::load_hq_models(void)
 {
 	for (int i = 0; i <= 7; i++)
 	{	
@@ -89,6 +89,8 @@ void Drawing_engine::load_hq_ants(void)
 		std::string file_name = sstm.str();
 		_ant_hq_array[i] = new MeshObj(file_name);
 	}
+
+	_apple_hq = new MeshObj("src/apple/apple.obj");
 }
 
 void Drawing_engine::init(void)
@@ -100,7 +102,7 @@ void Drawing_engine::init(void)
 	init_fog();
 	init_skybox();
 	load_textures();
-	load_hq_ants();
+	load_hq_models();
 }
 
 void Drawing_engine::draw_text(std::string text, float x, float y)
@@ -167,10 +169,11 @@ void Drawing_engine::switch_to_ortho_perspective(void)
 void Drawing_engine::draw_foods(Ant_Sim* ant_sim_ptr)
 {
 	// draw a test apple
-	//glPushMatrix();
-	//glTranslatef(1000,0,1000);
-	//draw_box(100, _tex_apple_side, _tex_apple_top);
-	//glPopMatrix();
+	glPushMatrix();
+	glTranslatef(1000,0,1000);
+	if (_high_quality_on) { _apple_hq->draw_model(); }
+	else { draw_box(100, _tex_apple_side, _tex_apple_top); }
+	glPopMatrix();
 }
 
 void Drawing_engine::draw_obstacles(Ant_Sim* ant_sim_ptr)
@@ -299,6 +302,7 @@ void Drawing_engine::clean_up(void)
 	{
 		delete(_ant_hq_array[i]);
 	}
+	delete(_apple_hq);
 }
 
 void Drawing_engine::start_countdown(void)
