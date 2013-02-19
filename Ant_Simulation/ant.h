@@ -6,6 +6,7 @@
 #include "general_constants.h"
 #include <list>
 #include <vector>
+#include "random_generator.h"
 
 class Colony; // forward declaration because of circle includes
 
@@ -49,16 +50,29 @@ private:
 	double _max_energy_storage;
 	double _energy;
 	double _energy_consumption_per_m;
+	double _food_stored; //quantity of food that the ant's bringing
+	double _max_food_storage;// maximum of this quantity
+	double _distance_left;//distance left before the ant stops to think again
 
 	void think(void);
-	void walk(Position new_position);
 	void restore_energy(Colony col);
 	void attack(Game_object target);
 	void set_pheromone(int,double,double);
 	void destroy(void);
+	void store_food (void);
+	void take_food (void);
 
 	bool _is_alive;
 	bool _is_moving;
+	bool _is_bringing_food;
+	int _objective; //is the objective of the ant, for the moment
+					//there are three possible :
+					//		-scout (to find new foods)
+					//		-go_back_to_colony (to bring back food to colony or
+					//						  to go back to it to get energy...)
+					//		-get_food (to go and take food from an already discovered food)
+
+	Uint32 _time_to_move;//when an ant has stopped this indicates when it has to move again
 
 	//list of olfactive collisions of the ant with pheromones
 
@@ -69,5 +83,11 @@ private:
 	std::list<std::shared_ptr<Ant>> _phys_coll_ant ;//collision with other ants
 	std::list<std::shared_ptr<Colony>> _phys_coll_col ;//collision with colonies
 	std::list<std::shared_ptr<Food>> _phys_coll_food ;//collision with food
+
+	//AI functions
+
+	void scout_AI (Uint32); //AI of the ant when it's trying to find food (is a scout)
+	void back_AI (void); //AI of the ant when it wants to get back home
+	void food_AI (void); //AI of the ant when it wants to go to a known food
 
 };
