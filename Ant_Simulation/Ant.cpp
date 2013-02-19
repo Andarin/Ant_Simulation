@@ -46,9 +46,9 @@ void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Ant>> p
 
 		if (_is_moving)
 		{
-			_pos._x += (time_step/1000*(_pos._direction[0])*_speed);
-			_pos._z += (time_step/1000*(_pos._direction[1])*_speed);
-			_distance_left -= time_step/1000*_speed;
+			_pos._x += (time_step*(_pos._direction[0])*_speed);
+			_pos._z += (time_step*(_pos._direction[1])*_speed);
+			_distance_left -= time_step*_speed;
 		}
 		else if (_distance_left <= 0)
 		{
@@ -59,9 +59,6 @@ void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Ant>> p
 			_is_moving = true;
 		}
 	}
-
-
-
 }
 
 void Ant::update_ph(std::list<std::shared_ptr<Pheromone>> olf_coll_ph)

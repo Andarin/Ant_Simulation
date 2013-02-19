@@ -144,7 +144,7 @@ void Collision_detector::update_mffa(void)
 		}
 	}
 }
-
+ 
 void Collision_detector::update_active(Uint32 time,Uint32 time_step)//for the moment only the ants are 'active'
 {
 	for (std::list<std::shared_ptr<Ant>>::iterator it= (*_environment)._ant_list.begin(); it != (*_environment)._ant_list.end(); ++it)

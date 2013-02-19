@@ -138,7 +138,7 @@ void Ant_Sim::add_colony(void)
 {
 	Colony_birth_info colony_birth_info;
 	std::array<double, 2> dir = {1.0, 0.0};
-	Position pos(800,1,800,dir);
+	Position pos(200,1,200,dir);
 	colony_birth_info._pos = pos;
 	colony_birth_info._color = 0;
 	colony_birth_info._ant_speed = 0.1;
@@ -148,7 +148,7 @@ void Ant_Sim::add_colony(void)
 	colony_birth_info._ant_life_time = 150;
 	colony_birth_info._ant_start_energy = 100;
 	colony_birth_info._ant_energy_consumption_per_m = 100;
-	colony_birth_info._colony_max_reproduction_speed = 300;
+	colony_birth_info._colony_max_reproduction_speed = 10;
 	colony_birth_info._initial_food = 60;
 	colony_birth_info._size = 100;
 	auto new_colony = std::make_shared<Colony>(colony_birth_info);

@@ -20,7 +20,7 @@ const int ANT_TYPE_NR_OF_SOLDIER = 1;
 const int PHERO_TYPE_FOOD = 0;
 const int PHERO_TYPE_ALERT = 1;
 
-//Possible objectives of one ant :
+// Possible objectives of one ant :
 const int SCOUT = 0;//to find new foods
 const int GO_BACK_TO_COLONY = 1;//to bring back food to colony or to go back to it to get energy...
 const int GET_FOOD = 2;//to go and take food from an already discovered food
