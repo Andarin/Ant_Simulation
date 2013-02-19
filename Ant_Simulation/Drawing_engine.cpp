@@ -166,30 +166,24 @@ void Drawing_engine::switch_to_ortho_perspective(void)
 
 void Drawing_engine::draw_foods(Ant_Sim* ant_sim_ptr)
 {
-	// draw an apple
-	glPushMatrix();
-	glTranslatef(400,0,400);
-	draw_box(100, _tex_apple_side, _tex_apple_top);
-	glPopMatrix();
+	// draw a test apple
+	//glPushMatrix();
+	//glTranslatef(1000,0,1000);
+	//draw_box(100, _tex_apple_side, _tex_apple_top);
+	//glPopMatrix();
 }
 
 void Drawing_engine::draw_obstacles(Ant_Sim* ant_sim_ptr)
 {
-	// draw a box
-	glPushMatrix();
-	glTranslatef(100,0,300);
-	draw_box(70, _tex_box, _tex_box);
-	glPopMatrix();
+	// draw a test box
+	//glPushMatrix();
+	//glTranslatef(100,0,300);
+	//draw_box(70, _tex_box, _tex_box);
+	//glPopMatrix();
 }
 
 void Drawing_engine::draw_colonies(Ant_Sim* ant_sim_ptr)
 {
-	// draw a test colony
-	//glPushMatrix();
-	//glTranslatef(100,0,100);
-	//draw_colony(100, _tex_colony);
-	//glPopMatrix();
-	
 	std::list<std::shared_ptr<Colony>> colony_list = (*ant_sim_ptr)._table_obj->_colony_list;
 	for (std::list<std::shared_ptr<Colony>>::iterator col_it = colony_list.begin(); 
 			col_it != colony_list.end() ; ++col_it)
@@ -200,7 +194,26 @@ void Drawing_engine::draw_colonies(Ant_Sim* ant_sim_ptr)
 			draw_colony((*col_it)->get_size(), _tex_colony);
 		glPopMatrix();
 	}
+
+	// draw a test colony
+	//glPushMatrix();
+	//glTranslatef(100,0,100);
+	//draw_colony(100, _tex_colony);
+	//glPopMatrix();
 }
+
+//void Drawing_engine::draw_test_ants(Ant_Sim *ant_sim_ptr,int hq_frame,int anim_frame)
+//{
+//	for (int cnt = 0; cnt < ant_sim_ptr->_ant_number; cnt++) 
+//	{
+//		glPushMatrix();
+//			glTranslatef(ant_sim_ptr->_ant_posx[cnt],ant_sim_ptr->_ant_posy,ant_sim_ptr->_ant_posz[cnt]);
+//			glRotatef(ant_sim_ptr->_ant_angley,0.0,1.0,0.0);
+//			if (_high_quality_on) { _ant_hq_array[hq_frame]->draw_model(); }
+//			else { draw_ant_anim(ant_sim_ptr->_ant_size, ant_color, anim_frame); }
+//		glPopMatrix();
+//	}
+//}
 
 void Drawing_engine::draw_ants(Ant_Sim *ant_sim_ptr, int round_cnt)
 {
@@ -212,17 +225,7 @@ void Drawing_engine::draw_ants(Ant_Sim *ant_sim_ptr, int round_cnt)
 	//for high quality ants
 	int hq_frame = (round_cnt%16)/2;
 
-	// draw a test ants
-	//for (int cnt = 0; cnt < ant_sim_ptr->_ant_number; cnt++) 
-	//{
-	//	glPushMatrix();
-	//		glTranslatef(ant_sim_ptr->_ant_posx[cnt],ant_sim_ptr->_ant_posy,ant_sim_ptr->_ant_posz[cnt]);
-	//		glRotatef(ant_sim_ptr->_ant_angley,0.0,1.0,0.0);
-	//		if (_high_quality_on) { _ant_hq_array[hq_frame]->draw_model(); }
-	//		else { draw_ant_anim(ant_sim_ptr->_ant_size, ant_color, anim_frame); }
-	//	glPopMatrix();
-	//}
-
+	//draw all ants in the environment list
 	std::list<std::shared_ptr<Ant>> ant_list = (*ant_sim_ptr)._table_obj->_ant_list;
 	for (std::list<std::shared_ptr<Ant>>::iterator ant_it = ant_list.begin(); ant_it != ant_list.end() ; ++ant_it)
 	{ 
@@ -238,10 +241,13 @@ void Drawing_engine::draw_ants(Ant_Sim *ant_sim_ptr, int round_cnt)
 			else { draw_ant_anim((*ant_it)->get_size(), ant_color, anim_frame); }
 		glPopMatrix();
 	}
+
+	//draw_test_ants(ant_sim_ptr,hq_frame,anim_frame);
 }
 
 void Drawing_engine::draw_location_selected_on_board(void)
-{
+{ // function to select position on board by mouse click
+  // not yet ready (distortion in the corners)
 	if(SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(3))
 	// right mouse click
 	{
@@ -357,8 +363,10 @@ void Drawing_engine::display(Ant_Sim *ant_sim_ptr, Uint32 time_remaining, int ro
 	switch_to_normal_perspective(45);
 
 	// calculate camera moving speed (with accelaration)
-	if(_keystates[SDLK_LSHIFT]) { _recent_cam_velocity += 1; }
-	else { _recent_cam_velocity = _cam_velocity; }
+	if (_keystates[SDLK_LSHIFT]) 
+		{ _recent_cam_velocity = std::min<int>(_recent_cam_velocity+1,50); }
+	else 
+		{ _recent_cam_velocity = _cam_velocity; }
 	_camera.control(_recent_cam_velocity,0.5,board_size,screen_width,screen_height,_mousein);
 
 	// draw skybox, don't make it bigger than the far-view-plane (see gluPerspective)

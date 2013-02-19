@@ -83,6 +83,7 @@ private:
 	void draw_text_with_number(std::string, double, float, float);
 	void draw_countdown(int);
 	void draw_hud(Uint32);
+	void draw_test_ants(Ant_Sim*,int,int);
 	void draw_ants(Ant_Sim*,int);
 	void draw_foods(Ant_Sim*);
 	void draw_obstacles(Ant_Sim*);

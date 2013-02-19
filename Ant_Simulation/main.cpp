@@ -28,10 +28,9 @@
 int main(int argc, char** argv)
 {
 	// user changeable parameters
-	int ant_number = 1000;
-	int play_time = 300;
+	int play_time = 600;
 
-	Ant_Sim my_sim(ant_number, play_time);
+	Ant_Sim my_sim(play_time);
 	my_sim.start();
 	return 0;
 }

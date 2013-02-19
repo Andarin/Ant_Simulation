@@ -62,19 +62,20 @@
 class Ant_Sim
 {
 public:
-	Ant_Sim(int, int);
+	Ant_Sim(int);
 	~Ant_Sim(void);
 	void start(void);
 
-	// just for testing / not important
-	float *_ant_posx;
-	float *_ant_posz;
-	float _ant_posy;
-	float _ant_size;
-	float _ant_angley;
-	int _ant_number;
 	std::shared_ptr<Table_of_objects> _table_obj;
 	std::shared_ptr<Collision_detector> _coll_dect;
+
+	// just for testing / not important
+	//float *_ant_posx;
+	//float *_ant_posz;
+	//float _ant_posy;
+	//float _ant_size;
+	//float _ant_angley;
+	//int _ant_number;
 
 private:
 	// simulation related variables
@@ -94,7 +95,6 @@ private:
 
 	// graphic related variables
 	Drawing_engine _drawing_engine;
-	//Camera _camera;
 	Uint8 *_keystates;
 
 	// methods
