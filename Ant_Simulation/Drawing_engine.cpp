@@ -184,20 +184,20 @@ void Drawing_engine::draw_obstacles(Ant_Sim* ant_sim_ptr)
 
 void Drawing_engine::draw_colonies(Ant_Sim* ant_sim_ptr)
 {
-	// draw a colony
-	glPushMatrix();
-	glTranslatef(100,0,100);
-	draw_colony(100, _tex_colony);
-	glPopMatrix();
+	// draw a test colony
+	//glPushMatrix();
+	//glTranslatef(100,0,100);
+	//draw_colony(100, _tex_colony);
+	//glPopMatrix();
 	
 	std::list<std::shared_ptr<Colony>> colony_list = (*ant_sim_ptr)._table_obj->_colony_list;
-	for (std::list<std::shared_ptr<Colony>>::iterator col = colony_list.begin(); col != colony_list.end() ; ++col)
+	for (std::list<std::shared_ptr<Colony>>::iterator col_it = colony_list.begin(); 
+			col_it != colony_list.end() ; ++col_it)
 	{ 
-		Position col_pos = (*col)->_pos;
-		std::cout << "food of colony " << (*col)->get_liquid_food()<< std::endl;
+		Position col_pos = (*col_it)->_pos;
 		glPushMatrix();
 			glTranslatef(col_pos._x,col_pos._y,col_pos._z);
-			draw_colony((*col)->get_size(), _tex_colony);
+			draw_colony((*col_it)->get_size(), _tex_colony);
 		glPopMatrix();
 	}
 }
@@ -212,13 +212,25 @@ void Drawing_engine::draw_ants(Ant_Sim *ant_sim_ptr, int round_cnt)
 	//for high quality ants
 	int hq_frame = (round_cnt%16)/2;
 
-	for (int cnt = 0; cnt < ant_sim_ptr->_ant_number; cnt++) 
-	{
+	// draw a test ants
+	//for (int cnt = 0; cnt < ant_sim_ptr->_ant_number; cnt++) 
+	//{
+	//	glPushMatrix();
+	//		glTranslatef(ant_sim_ptr->_ant_posx[cnt],ant_sim_ptr->_ant_posy,ant_sim_ptr->_ant_posz[cnt]);
+	//		glRotatef(ant_sim_ptr->_ant_angley,0.0,1.0,0.0);
+	//		if (_high_quality_on) { _ant_hq_array[hq_frame]->draw_model(); }
+	//		else { draw_ant_anim(ant_sim_ptr->_ant_size, ant_color, anim_frame); }
+	//	glPopMatrix();
+	//}
+
+	std::list<std::shared_ptr<Ant>> ant_list = (*ant_sim_ptr)._table_obj->_ant_list;
+	for (std::list<std::shared_ptr<Ant>>::iterator ant_it = ant_list.begin(); ant_it != ant_list.end() ; ++ant_it)
+	{ 
+		Position ant_pos = (*ant_it)->_pos;
 		glPushMatrix();
-			glTranslatef(ant_sim_ptr->_ant_posx[cnt],ant_sim_ptr->_ant_posy,ant_sim_ptr->_ant_posz[cnt]);
-			glRotatef(ant_sim_ptr->_ant_angley,0.0,1.0,0.0);
+			glTranslatef(ant_pos._x,ant_pos._y,ant_pos._z);
 			if (_high_quality_on) { _ant_hq_array[hq_frame]->draw_model(); }
-			else { draw_ant_anim(ant_sim_ptr->_ant_size, ant_color, anim_frame); }
+			else { draw_ant_anim((*ant_it)->get_size(), ant_color, anim_frame); }
 		glPopMatrix();
 	}
 }

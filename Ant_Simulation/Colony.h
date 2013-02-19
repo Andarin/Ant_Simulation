@@ -31,6 +31,7 @@ public:
 	double get_liquid_food(void);
 	double get_solid_food(void);
 	int get_queen_hp(void);
+	int get_number_of_larvas(void);
 
 private:
 	int _color;
@@ -42,12 +43,12 @@ private:
 	double _ant_start_energy;
 	double _ant_energy_consumption_per_m;
 	// a list with times when larvas will develop to ants
-	std::list<Uint32> larva_list;
+	std::list<Uint32> _larva_list;
 
 	// set inside the class
 	int _egg_production_per_m;
 	int _max_egg_production_per_m;
-	int _every_XX_ms_egg;
+	double _every_XX_ms_egg;
 	Uint32 _egg_time_accumulated;
 	int _larva_dev_time;
 	int _queen_hp;

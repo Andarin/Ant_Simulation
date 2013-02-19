@@ -148,8 +148,8 @@ void Ant_Sim::add_colony(void)
 	colony_birth_info._ant_life_time = 150;
 	colony_birth_info._ant_start_energy = 100;
 	colony_birth_info._ant_energy_consumption_per_m = 100;
-	colony_birth_info._colony_max_reproduction_speed = 30;
-	colony_birth_info._initial_food = 3000;
+	colony_birth_info._colony_max_reproduction_speed = 300;
+	colony_birth_info._initial_food = 60;
 	colony_birth_info._size = 100;
 	auto new_colony = std::make_shared<Colony>(colony_birth_info);
 	(*_table_obj).add_colony(new_colony);

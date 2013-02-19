@@ -19,7 +19,7 @@ Colony::Colony(Colony_birth_info &colony_birth_info)
 	_egg_production_per_m = _max_egg_production_per_m;
 	_every_XX_ms_egg = 60000.0/_egg_production_per_m;
 	_egg_time_accumulated = 0; // in ms
-	_larva_dev_time = 30; // in s
+	_larva_dev_time = 5; // in s
 	_queen_hp = 100;
 	_proba_that_ant_is_worker_not_solidier = 1.0;
 	_solid_food = 0.0;
@@ -61,7 +61,7 @@ void Colony::check_if_queen_starves(void)
 void Colony::lay_egg(Uint32 time, Uint32 time_step)
 {
 	_egg_time_accumulated += time_step;
-	while (_egg_time_accumulated > _every_XX_ms_egg)
+	while (_egg_time_accumulated >= _every_XX_ms_egg)
 	{
 		_egg_time_accumulated -= _every_XX_ms_egg;
 		produce_larva(time);
@@ -70,14 +70,14 @@ void Colony::lay_egg(Uint32 time, Uint32 time_step)
 
 void Colony::produce_larva(Uint32 time)
 {
-	larva_list.push_back(time + _larva_dev_time);
+	_larva_list.push_back(time + _larva_dev_time*1000);
 }
 
 void Colony::test_if_larva_developped(Uint32 time)
 {
-	if (larva_list.front() < time)
+	if (_larva_list.front() < time)
 	{
-		larva_list.pop_front();
+		_larva_list.pop_front();
 		create_ant(time + _ant_life_time);
 	}
 }
@@ -85,7 +85,7 @@ void Colony::test_if_larva_developped(Uint32 time)
 void Colony::transform_food(Uint32 time_step)
 {
 	// one larva transforms one unity of solid food per sec to liquid food
-	double food_transformed = std::min<double>(larva_list.size()*time_step/1000,_solid_food);
+	double food_transformed = std::max<double>(_larva_list.size()*time_step/1000.0,_solid_food);
 	_solid_food -= food_transformed;
 	_liquid_food += food_transformed;
 }
@@ -98,7 +98,6 @@ void Colony::create_ant(Uint32 time)
 	{ info._ant_type = ANT_TYPE_NR_OF_WORKER; }
 	else 
 	{ info._ant_type = ANT_TYPE_NR_OF_SOLDIER; }
-
 	info._speed = _ant_speed;
 	info._attack_points = _ant_attack_points;
 	info._armor = _ant_armor;
@@ -107,7 +106,6 @@ void Colony::create_ant(Uint32 time)
 	info._color = _color;
 	info._energy = _ant_start_energy;
 	info._energy_consumption_per_m = _ant_energy_consumption_per_m;
-
 	std::shared_ptr<Ant> p_ant = std::make_shared<Ant> (info);
 	_buffer_fresh_ant.push_back(p_ant);
 }
@@ -159,4 +157,9 @@ double Colony::get_solid_food()
 int Colony::get_queen_hp()
 {
 	return _queen_hp;
+}
+
+int Colony::get_number_of_larvas()
+{
+	return _larva_list.size();
 }
