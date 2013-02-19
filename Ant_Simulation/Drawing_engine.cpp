@@ -229,6 +229,11 @@ void Drawing_engine::draw_ants(Ant_Sim *ant_sim_ptr, int round_cnt)
 		Position ant_pos = (*ant_it)->_pos;
 		glPushMatrix();
 			glTranslatef(ant_pos._x,ant_pos._y,ant_pos._z);
+			double ant_angle_rad = M_PI;
+			if (ant_pos._direction[1] != -1)
+				ant_angle_rad = 2*atan(ant_pos._direction[0]/(1+ant_pos._direction[1]));
+			double ant_angle_deg = 180 + ant_angle_rad * 180 / M_PI;
+			glRotated(ant_angle_deg, 0.0, 1.0, 0.0);
 			if (_high_quality_on) { _ant_hq_array[hq_frame]->draw_model(); }
 			else { draw_ant_anim((*ant_it)->get_size(), ant_color, anim_frame); }
 		glPopMatrix();
