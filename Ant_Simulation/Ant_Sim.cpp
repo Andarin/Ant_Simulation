@@ -27,7 +27,7 @@ Ant_Sim::~Ant_Sim(void)
 {
 }
 
-void Ant_Sim::move_ants(void)
+void Ant_Sim::move_test_ants(void)
 {
 	int velocity = (_round_cnt%360)/45;	 
 	switch(velocity) {
@@ -50,12 +50,18 @@ void Ant_Sim::move_ants(void)
 
 void Ant_Sim::init(void)
 {
+	_table_obj = std::make_shared<Table_of_objects>(2500, board_size);
+	_coll_dect = std::make_shared<Collision_detector>(_table_obj, 
+							_max_size_of_pheromone, _max_size_of_vision, _max_size_of_corps);
+
 	// just for testing purposes, create random ants
 	for (int cnt = 0; cnt < _ant_number; cnt++)
 	{
 		_ant_posx[cnt] = rand() % (board_size-40) + 20;
 		_ant_posz[cnt] = rand() % (board_size-40) + 20;
 	}
+
+	add_colony();
 }
 
 void Ant_Sim::clean_up(void)
@@ -109,15 +115,13 @@ void Ant_Sim::start_countdown(void)
 	_time_remaining = 3000;
 }
 
-void Ant_Sim::game_logic( std::shared_ptr<Table_of_objects> table_obj, 
-						  std::shared_ptr<Collision_detector> coll_dect,
-						  Uint32 time)
+void Ant_Sim::game_logic(Uint32 time)
 {
 	_round_cnt++;
-	move_ants();
+	move_test_ants();
 
-	table_obj->update_passive(time, _sim_time_step);
-	coll_dect->update_active(time, _sim_time_step);
+	_table_obj->update_passive(time, _sim_time_step);
+	_coll_dect->update_active(time, _sim_time_step);
 
 	// check if game time is over
 	_time_remaining -= _sim_time_step;
@@ -130,6 +134,27 @@ void Ant_Sim::game_logic( std::shared_ptr<Table_of_objects> table_obj,
 			_running = false;
 }
 
+void Ant_Sim::add_colony(void)
+{
+	Colony_birth_info colony_birth_info;
+	std::array<double, 2> dir = {1.0, 0.0};
+	Position pos(800,1,800,dir);
+	colony_birth_info._pos = pos;
+	colony_birth_info._color = 0;
+	colony_birth_info._ant_speed = 0.1;
+	colony_birth_info._ant_attack_points = 1;
+	colony_birth_info._ant_armor = 1;
+	colony_birth_info._ant_transport_capability = 1;
+	colony_birth_info._ant_life_time = 150;
+	colony_birth_info._ant_start_energy = 100;
+	colony_birth_info._ant_energy_consumption_per_m = 100;
+	colony_birth_info._colony_max_reproduction_speed = 30;
+	colony_birth_info._initial_food = 3000;
+	colony_birth_info._size = 100;
+	auto new_colony = std::make_shared<Colony>(colony_birth_info);
+	(*_table_obj).add_colony(new_colony);
+}
+
 void Ant_Sim::start(void)
 {
 	init();
@@ -140,10 +165,6 @@ void Ant_Sim::start(void)
 	Time_machine time_machine; // to keep control of time flux
 	Uint32 time = 0; // in milli seconds
 	Uint32 accumulator = 0;
-		  
-	auto _table_obj = std::make_shared<Table_of_objects>(2500, board_size);
-	auto _coll_dect = std::make_shared<Collision_detector>(_table_obj, 
-							_max_size_of_pheromone, _max_size_of_vision, _max_size_of_corps);
 
 	while(_running) {
 		////////////////////////////////////////////////////////
@@ -161,7 +182,7 @@ void Ant_Sim::start(void)
 
 		while ( accumulator >= _sim_time_step )
 		{
-			game_logic(_table_obj, _coll_dect, time);
+			game_logic(time);
 
 			// operations to hold constant time flux
 			accumulator -= _sim_time_step;

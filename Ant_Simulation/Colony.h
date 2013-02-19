@@ -28,14 +28,17 @@ public:
 	std::list<std::shared_ptr<Ant>> _buffer_fresh_ant;
 
 	double get_size (void);
+	double get_liquid_food(void);
+	double get_solid_food(void);
+	int get_queen_hp(void);
 
 private:
 	int _color;
-	double _ant_speed;
+	double _ant_speed; // in m/s
 	int _ant_attack_points;
 	int _ant_armor;
 	double _ant_transport_capability;
-	int _ant_life_time;
+	int _ant_life_time; // in s
 	double _ant_start_energy;
 	double _ant_energy_consumption_per_m;
 	// a list with times when larvas will develop to ants
@@ -61,5 +64,5 @@ private:
 	void produce_larva(Uint32);
 	void test_if_larva_developped(Uint32);
 	void create_ant(Uint32);
-	void destroy();
+	void destroy(void);
 };

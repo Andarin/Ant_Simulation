@@ -164,7 +164,7 @@ void Drawing_engine::switch_to_ortho_perspective(void)
 	glLoadIdentity();
 }
 
-void Drawing_engine::draw_foods(void)
+void Drawing_engine::draw_foods(Ant_Sim* ant_sim_ptr)
 {
 	// draw an apple
 	glPushMatrix();
@@ -173,7 +173,7 @@ void Drawing_engine::draw_foods(void)
 	glPopMatrix();
 }
 
-void Drawing_engine::draw_obstacles(void)
+void Drawing_engine::draw_obstacles(Ant_Sim* ant_sim_ptr)
 {
 	// draw a box
 	glPushMatrix();
@@ -182,13 +182,24 @@ void Drawing_engine::draw_obstacles(void)
 	glPopMatrix();
 }
 
-void Drawing_engine::draw_colonies(void)
+void Drawing_engine::draw_colonies(Ant_Sim* ant_sim_ptr)
 {
 	// draw a colony
 	glPushMatrix();
 	glTranslatef(100,0,100);
 	draw_colony(100, _tex_colony);
 	glPopMatrix();
+	
+	std::list<std::shared_ptr<Colony>> colony_list = (*ant_sim_ptr)._table_obj->_colony_list;
+	for (std::list<std::shared_ptr<Colony>>::iterator col = colony_list.begin(); col != colony_list.end() ; ++col)
+	{ 
+		Position col_pos = (*col)->_pos;
+		std::cout << "food of colony " << (*col)->get_liquid_food()<< std::endl;
+		glPushMatrix();
+			glTranslatef(col_pos._x,col_pos._y,col_pos._z);
+			draw_colony((*col)->get_size(), _tex_colony);
+		glPopMatrix();
+	}
 }
 
 void Drawing_engine::draw_ants(Ant_Sim *ant_sim_ptr, int round_cnt)
@@ -339,9 +350,9 @@ void Drawing_engine::display(Ant_Sim *ant_sim_ptr, Uint32 time_remaining, int ro
 	_camera.update();
 	draw_board(board_size, _tex_board);
 	draw_border(board_size, _tex_border);
-	draw_colonies();
-	draw_obstacles();
-	draw_foods();
+	draw_colonies(ant_sim_ptr);
+	draw_obstacles(ant_sim_ptr);
+	draw_foods(ant_sim_ptr);
 	draw_ants(ant_sim_ptr, round_cnt);
 
 	if (_building_menu_on)
