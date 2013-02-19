@@ -15,7 +15,7 @@ public:
 
 	Position _pos;
 	int _ant_type;
-	double _speed;
+	double _speed; //as usual speeds, in m.s-1
 	int _attack_points;
 	int _armor;
 	double _transport_capability;
