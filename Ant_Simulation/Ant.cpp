@@ -118,6 +118,15 @@ void Ant::scout_AI(Uint32 time)
 {
 	_distance_left = 50 + 150*unif_01() ;
 	double delta = 2*unif_01() -1;
-
+	std::array<double,2> vect = _pos._direction;
+	double x = vect[0] - delta*vect[1];
+	double y = vect[1] + delta*vect[0];
+	double r = sqrt(1 + delta*delta);
+	x = x/r;
+	y = y/r;
+	_pos._direction[0] = x;
+	_pos._direction[1] = y;
+	Uint32 t = (Uint32) 1000*unif_01();
+	_time_to_move = time + t;
 
 }
