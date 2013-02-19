@@ -28,19 +28,31 @@ public:
 	Camera(void);
 	~Camera(void);
 
+	//current position of the camera
 	float _camX; 
 	float _camY;
-	float _camZ;       //current position of the camera
+	float _camZ;
 	float _camYaw;       //camera rotation in Y axis
 	float _camPitch;     //camera rotation in X axis
 
-	void lock(int);
-	void move(float,float);
-	void move_camera_up(float,float);
 	void control(float,float,int,int,int,bool);
 	void update(void);
 	void print(void);
 	std::vector<double> calculate_click_point(int);
+	void save_current_pos(void);
+	void load_last_pos(void);
+
+private:
+	//saved position of the camera
+	float _camX_saved; 
+	float _camY_saved;
+	float _camZ_saved;
+	float _camYaw_saved;   //camera rotation in Y axis
+
+	void lock(int);
+	void move(float,float);
+	void move_camera_up(float,float);
+	float _camPitch_saved; //camera rotation in X axis
 };
 
 #endif

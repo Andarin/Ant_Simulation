@@ -52,6 +52,7 @@ private:
 	bool _countdown_on;
 	bool _high_quality_on;
 	bool _switch_fog_on;
+	bool _building_menu_on;
 
 	SDL_Surface *_prescreen;
 	SDL_Surface *_screen;
@@ -88,4 +89,6 @@ private:
 	void draw_colonies(void);
 	void draw_location_selected_on_board(void);
 	void draw_result(double);
+	void go_into_building_menu(void);
+	void draw_building_menu(void);
 };
