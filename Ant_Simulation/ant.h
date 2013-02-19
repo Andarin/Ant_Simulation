@@ -61,6 +61,12 @@ private:
 	void destroy(void);
 	void store_food (void);
 	void take_food (void);
+	//return the normal vector of the boards the ant is in collision with
+	std::list<std::array<double,2>> return_normal_board (void);
+
+	//When an ant is in collision with a board this function gives
+	//the new direction the ant should take (list must be not empty)
+	std::array<double,2> find_dir_from_board (std::list<std::array<double,2>>);
 
 	bool _is_alive;
 	bool _is_moving;
