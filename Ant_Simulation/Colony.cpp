@@ -2,27 +2,27 @@
 
 Colony::Colony(Colony_birth_info &colony_birth_info)
 {
+	_pos = colony_birth_info._pos;
+	_color = colony_birth_info._color;
 	_ant_speed = colony_birth_info._ant_speed;
 	_ant_attack_points = colony_birth_info._ant_attack_points;
 	_ant_armor = colony_birth_info._ant_armor;
 	_ant_transport_capability = colony_birth_info._ant_transport_capability;
 	_ant_life_time = colony_birth_info._ant_life_time;
-	_color = colony_birth_info._color;
 	_ant_start_energy = colony_birth_info._ant_start_energy;
 	_ant_energy_consumption_per_m = colony_birth_info._ant_energy_consumption_per_m;
-	_pos = colony_birth_info._pos;
+	_max_egg_production_per_m = colony_birth_info._colony_max_reproduction_speed;
+	_liquid_food = colony_birth_info._initial_food;
 	_obj_type = OBJECT_TYPE_NR_OF_COLONY;
 	_size = colony_birth_info._size;
 
-	_max_egg_production_per_m = colony_birth_info._colony_max_reproduction_speed;
-	_egg_production_per_m = 60;
-	_every_XX_ms_egg = 60000/_egg_production_per_m;
+	_egg_production_per_m = _max_egg_production_per_m;
+	_every_XX_ms_egg = 60000.0/_egg_production_per_m;
 	_egg_time_accumulated = 0; // in ms
 	_larva_dev_time = 30; // in s
 	_queen_hp = 100;
 	_proba_that_ant_is_worker_not_solidier = 1.0;
-	_liquid_food = 0.0;
-	_solid_food = 1000.0;
+	_solid_food = 0.0;
 	_is_alive = true;
 }
 
@@ -48,7 +48,7 @@ void Colony::update(Uint32 time, Uint32 time_step)
 void Colony::calc_energy_consumption(Uint32 time_step)
 {
 	// energy consumption is linear to egg production
-	_liquid_food = std::max<double>(_liquid_food-_egg_production_per_m*time_step/60000, 0);
+	_liquid_food = std::max<double>(_liquid_food-time_step/_every_XX_ms_egg, 0);
 }
 
 void Colony::check_if_queen_starves(void)
@@ -103,7 +103,7 @@ void Colony::create_ant(Uint32 time)
 	info._attack_points = _ant_attack_points;
 	info._armor = _ant_armor;
 	info._transport_capability = _ant_transport_capability;
-	info._time_of_death = time + _ant_life_time;
+	info._time_of_death = time + _ant_life_time*1000;
 	info._color = _color;
 	info._energy = _ant_start_energy;
 	info._energy_consumption_per_m = _ant_energy_consumption_per_m;
@@ -144,4 +144,19 @@ void Colony::destroy(void)
 double Colony::get_size()
 {
 	return _size;
+}
+
+double Colony::get_liquid_food()
+{
+	return _liquid_food;
+}
+
+double Colony::get_solid_food()
+{
+	return _solid_food;
+}
+
+int Colony::get_queen_hp()
+{
+	return _queen_hp;
 }

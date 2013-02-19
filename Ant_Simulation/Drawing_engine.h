@@ -84,9 +84,9 @@ private:
 	void draw_countdown(int);
 	void draw_hud(Uint32);
 	void draw_ants(Ant_Sim*,int);
-	void draw_foods(void);
-	void draw_obstacles(void);
-	void draw_colonies(void);
+	void draw_foods(Ant_Sim*);
+	void draw_obstacles(Ant_Sim*);
+	void draw_colonies(Ant_Sim*);
 	void draw_location_selected_on_board(void);
 	void draw_result(double);
 	void go_into_building_menu(void);

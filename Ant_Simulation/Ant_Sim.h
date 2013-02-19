@@ -55,6 +55,9 @@
 #include "Time_machine.h"
 #include "Table_of_objects.h"
 #include "Collision_detector.h"
+#include "Colony.h"
+#include "Colony_birth_info.h"
+#include "Position.h"
 
 class Ant_Sim
 {
@@ -95,12 +98,11 @@ private:
 	Uint8 *_keystates;
 
 	// methods
-	void move_ants(void);
+	void move_test_ants(void);
 	void init(void);
+	void add_colony(void);
 	void handle_user_input(SDL_Event &event);
 	void start_countdown(void);
-	void game_logic(std::shared_ptr<Table_of_objects>, 
-					std::shared_ptr<Collision_detector>,
-					Uint32);
+	void game_logic(Uint32);
 	void clean_up(void);
 };
