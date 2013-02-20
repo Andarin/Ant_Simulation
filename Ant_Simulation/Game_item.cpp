@@ -29,3 +29,8 @@ double Game_item::get_size(void)
 {
 	return _size;
 }
+
+double Game_item::get_energy(void)
+{
+	return _energy;
+}
