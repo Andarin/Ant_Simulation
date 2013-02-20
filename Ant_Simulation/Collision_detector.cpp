@@ -159,6 +159,8 @@ void Collision_detector::update_active(Uint32 time,Uint32 time_step)//for the mo
 			{
 				std::shared_ptr<Pheromone> p_pheromone = (((*(*it))._buffer_fresh_phero).back());
 				(*p_pheromone)._pos = (*(*it))._pos;
+				(*_environment).add_pheromone(p_pheromone);
+				(*(*it))._buffer_fresh_phero.pop_back() ;
 			}
 		}
 		else
