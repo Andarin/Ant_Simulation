@@ -11,6 +11,7 @@ Colony::Colony(Colony_birth_info &colony_birth_info)
 	_ant_life_time = colony_birth_info._ant_life_time;
 	_ant_start_energy = colony_birth_info._ant_start_energy;
 	_ant_energy_consumption_per_m = colony_birth_info._ant_energy_consumption_per_m;
+	_ant_max_distance_before_stop = colony_birth_info._ant_max_distance_before_stop;
 	_max_egg_production_per_m = colony_birth_info._colony_max_reproduction_speed;
 	_liquid_food = colony_birth_info._initial_food;
 	_obj_type = OBJECT_TYPE_NR_OF_COLONY;
@@ -106,7 +107,7 @@ void Colony::create_ant(Uint32 time)
 	info._color = _color;
 	info._energy = _ant_start_energy;
 	info._energy_consumption_per_m = _ant_energy_consumption_per_m;
-	info._max_distance_before_stop = 200 ;
+	info._max_distance_before_stop = _ant_max_distance_before_stop;
 	std::shared_ptr<Ant> p_ant = std::make_shared<Ant> (info);
 	_buffer_fresh_ant.push_back(p_ant);
 }

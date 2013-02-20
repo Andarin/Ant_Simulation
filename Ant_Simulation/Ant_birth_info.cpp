@@ -2,14 +2,14 @@
 
 Ant_birth_info::Ant_birth_info()
 {	
-	_ant_type = -1;
-	_speed = -1;
-	_attack_points = -1;
-	_armor = -1;
-	_transport_capability = -1;
-	_time_of_death = -1;
-	_color = -1;
-	_max_distance_before_stop = -1;
+	_ant_type = 0;
+	_speed = 0;
+	_attack_points = 0;
+	_armor = 0;
+	_transport_capability = 0;
+	_time_of_death = 0;
+	_color = 0;
+	_max_distance_before_stop = 0;
 }
 
 Ant_birth_info::~Ant_birth_info(void) 
