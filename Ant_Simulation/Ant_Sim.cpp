@@ -163,12 +163,12 @@ void Ant_Sim::add_colony(void)
 	colony_birth_info._ant_start_energy = 100;
 	colony_birth_info._ant_energy_consumption_per_m = 100;
 	colony_birth_info._ant_max_distance_before_stop = 200;
-	colony_birth_info._colony_max_reproduction_speed = 100;
+	colony_birth_info._colony_max_reproduction_speed = 200;
 	colony_birth_info._initial_food = 1000;
 	colony_birth_info._size = 100;
 	auto new_colony_ptr = std::make_shared<Colony>(colony_birth_info);
 	(*_table_items).add_colony(new_colony_ptr);
-	colony_birth_info.read_from_file("Ant_Sim_parameter.txt");
+	colony_birth_info.read_from_file("Ant_Sim_parameters.txt");
 }
 
 void Ant_Sim::add_food(double amount, int x, int y, int z)

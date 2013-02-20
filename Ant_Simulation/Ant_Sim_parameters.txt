@@ -1,0 +1,51 @@
+Ant Simulation Project by Guillaume Martinet and Lucas Tittmann
+under GNU GPL v3
+is a project to simulate a colony of ants, represented in simple OpenGL 3D.
+
+Check out the latest version at Github: https://github.com/Andarin/Ant_Simulation
+
+With this file you can change:
+1. Display resolution
+2. Duration of the simulation
+3. Board size
+4. Control parameters of your colony
+
+Use with caution and only change the numbers. Don't make spaces behind or in
+front of the numbers. There is a security copy in case you broke this file
+called "Ant_Sim_parameters_copy.txt"
+
+1. Display resolution
+SCREEN_WIDTH
+960
+SCREEN_HEIGHT
+640
+
+2. Duration of the simulation in seconds
+PLAY_TIME (standard is 600)
+600
+
+3. Board size in millimeters
+BOARD_SIZE (standard is 5000)
+5000
+
+4. Control parameters of your colony
+COLONY_POSITION_X (should be between 100 and BOARD_SIZE-100; standard is 200)
+200
+COLONY_POSITION_Y (should be between 100 and BOARD_SIZE-100; standard is 200)
+200
+ANT_SPEED (in meter per second; standard is 0.1)
+0.1
+ANT_LIFE_TIME (in seconds; standard is 150)
+150
+ANT_START_ENERGY (standard is 100)
+100
+ANT_TRANSPORT_CAPABILITY (standard is 1)
+1
+ANT_ATTACK_POINTS (standard is 1)
+1
+ANT_ARMOR (standard is 1)
+1
+colony_birth_info._ant_energy_consumption_per_m = 100;
+colony_birth_info._ant_max_distance_before_stop = 200;
+colony_birth_info._colony_max_reproduction_speed = 100;
+colony_birth_info._initial_food = 1000;

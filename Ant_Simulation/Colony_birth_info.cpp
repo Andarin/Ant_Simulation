@@ -29,6 +29,6 @@ void Colony_birth_info::read_from_file(std::string file_name)
 	{
 		lines.push_back(line);
 	}
-	double reproduction_speed = atof(lines[0].c_str());
+	double reproduction_speed = atof(lines[19].c_str());
 	std::cout << reproduction_speed+3 << std::endl;
 }
