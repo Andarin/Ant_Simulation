@@ -5,7 +5,7 @@ class Game_item_birth_info
 {
 public:
 	Game_item_birth_info(void);
-	~Game_item_birth_info(void);	
+	~Game_item_birth_info(void);
 
 	int _obj_type;
 	double _size;

@@ -2,7 +2,7 @@ Ant Simulation Project by Guillaume Martinet and Lucas Tittmann
 under GNU GPL v3
 is a project to simulate a colony of ants, represented in simple OpenGL 3D.
 
-Visit us at Github: https://github.com/Andarin/Ant_Simulation
+Check out the latest version at Github: https://github.com/Andarin/Ant_Simulation
 Operating system: Tested under Windows XP, Linux (Ubuntu 64bit), Windows 7 64bit
 
 The aim of the simulation is to have at the end as much food as possible (solid and liquid)

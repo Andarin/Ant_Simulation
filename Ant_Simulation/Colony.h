@@ -42,6 +42,7 @@ private:
 	int _ant_life_time; // in s
 	double _ant_start_energy;
 	double _ant_energy_consumption_per_m;
+	double _ant_max_distance_before_stop;
 	// a list with times when larvas will develop to ants
 	std::list<Uint32> _larva_list;
 
