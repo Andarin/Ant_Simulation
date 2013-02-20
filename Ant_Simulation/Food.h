@@ -1,23 +1,18 @@
 #pragma once
-#include "Game_object.h"
+#include "Game_item.h"
 
-class Food : public Game_object
+class Food : public Game_item
 {
 public:
-	Food(Game_object_birth_info go_birth_info, int food_type):Game_object(go_birth_info)
+	Food(Game_item_birth_info go_birth_info):Game_item(go_birth_info)
 	{
 		_obj_type = OBJECT_TYPE_NR_OF_FOOD;
-		_food_type = food_type;
-		_size = go_birth_info._size ;
+		_size = calculate_size(_energy);
 	};
 	~Food(void);
 	void update(Uint32, Uint32);
 	double get_piece(double);
 
-	int _food_type;
-
-	double get_size (){return _size;}
-
 private :
-	double _size;
+	double calculate_size(double energy);
 };

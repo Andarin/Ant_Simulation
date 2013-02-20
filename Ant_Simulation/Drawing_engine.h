@@ -83,7 +83,7 @@ private:
 	void draw_text_with_number(std::string, int, float, float);
 	void draw_text_with_number(std::string, double, float, float);
 	void draw_countdown(int);
-	void draw_hud(Uint32);
+	void draw_hud(Uint32, Ant_Sim*);
 	void draw_test_ants(Ant_Sim*,int,int);
 	void draw_ants(Ant_Sim*,int);
 	void draw_foods(Ant_Sim*);
@@ -91,6 +91,7 @@ private:
 	void draw_colonies(Ant_Sim*);
 	void draw_location_selected_on_board(void);
 	void draw_result(double);
-	void go_into_building_menu(void);
 	void draw_building_menu(void);
+	void go_into_building_menu(void);
+	double calc_result(Ant_Sim*);
 };

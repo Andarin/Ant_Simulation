@@ -30,7 +30,7 @@ Camera::~Camera(void)
 {
 }
 
-void Camera::lock(int board_size)
+void Camera::lock(int BOARD_SIZE)
 {
     //set campitch between -90 and 90 and set camyaw between 0 and 360 degrees
     if(_camPitch>90)
@@ -42,9 +42,9 @@ void Camera::lock(int board_size)
     if(_camYaw>360.0)
         _camYaw-=360;
 	_camX = std::max<double>(_camX,5);
-	_camX = std::min<double>(_camX,board_size-5);
+	_camX = std::min<double>(_camX,BOARD_SIZE-5);
 	_camZ = std::max<double>(_camZ,5);
-	_camZ = std::min<double>(_camZ,board_size-5);
+	_camZ = std::min<double>(_camZ,BOARD_SIZE-5);
 	_camY = std::max<double>(_camY,5);
 	_camY = std::min<double>(_camY,300);
 }
@@ -63,7 +63,7 @@ void Camera::move_camera_up(float dist,float dir)
     _camY+=sin(rad)*dist;   
 }
  
-void Camera::control(float movevel, float mousevel, int board_size, 
+void Camera::control(float movevel, float mousevel, int BOARD_SIZE, 
 					int screen_w, int screen_h, bool mouse_in_window)
 {
     if(mouse_in_window)  //if the mouse is in the screen
@@ -75,7 +75,7 @@ void Camera::control(float movevel, float mousevel, int board_size,
         SDL_GetMouseState(&tmpx,&tmpy); //get the current position of the cursor
         _camYaw += mousevel*(MidX-tmpx);   //get the rotation
         _camPitch += mousevel*(MidY-tmpy); //this is for X
-        lock(board_size);
+        lock(BOARD_SIZE);
         SDL_WarpMouse(MidX,MidY);       //move back the cursor to the center of the screen
         Uint8* state=SDL_GetKeyState(NULL);     //which key is pressed?
         if(state[SDLK_w])
@@ -122,14 +122,14 @@ std::vector<double> Camera::calculate_click_point(int map_size)
 
 	SDL_GetMouseState(&tmpx,&tmpy);
 	// calculate pitch of mouse pointer in rad
-	float click_pitch_deg = 45.0*(screen_height/2.0 - tmpy)/screen_height;
+	float click_pitch_deg = 45.0*(SCREEN_HEIGHT/2.0 - tmpy)/SCREEN_HEIGHT;
 	float anti_angle_deg = 90 + _camPitch + click_pitch_deg;
 	float anti_angle_pi = anti_angle_deg / 180 * M_PI;
 	// now we can calculate the distance to the camera
 	float distance = std::tan(anti_angle_pi)*_camY;
 
 	// now calculate the position on the circle
-	float click_yaw_deg =60.0*(screen_width/2.0 - tmpx)/screen_width;
+	float click_yaw_deg =60.0*(SCREEN_WIDTH/2.0 - tmpx)/SCREEN_WIDTH;
 	float angle_yaw_deg = 270 - _camYaw - click_yaw_deg;
 	float angle_yaw_pi = angle_yaw_deg / 180 * M_PI;
 

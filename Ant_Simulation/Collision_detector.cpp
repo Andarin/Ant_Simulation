@@ -1,6 +1,6 @@
 #include "Collision_detector.h"
 
-Collision_detector::Collision_detector(std::shared_ptr<Table_of_objects> env, double solf, double sview, double stouch)
+Collision_detector::Collision_detector(std::shared_ptr<Table_of_items> env, double solf, double sview, double stouch)
 {
 	_environment = env;
 	_sub_size_olf = solf;
@@ -36,7 +36,7 @@ double Collision_detector::square_distance(Position pos1, Position pos2)
 
 //Update functions
 
-void Collision_detector::update_environment(std::shared_ptr<Table_of_objects> env)
+void Collision_detector::update_environment(std::shared_ptr<Table_of_items> env)
 {
 	_environment = env;
 }

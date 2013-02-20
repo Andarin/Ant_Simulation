@@ -85,7 +85,7 @@ void Colony::test_if_larva_developped(Uint32 time)
 void Colony::transform_food(Uint32 time_step)
 {
 	// one larva transforms one unity of solid food per sec to liquid food
-	double food_transformed = std::max<double>(_larva_list.size()*time_step/1000.0,_solid_food);
+	double food_transformed = std::min<double>(_larva_list.size()*time_step/1000.0,_solid_food);
 	_solid_food -= food_transformed;
 	_liquid_food += food_transformed;
 }

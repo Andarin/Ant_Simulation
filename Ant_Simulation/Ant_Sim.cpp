@@ -57,11 +57,12 @@ Ant_Sim::~Ant_Sim(void)
 
 void Ant_Sim::init(void)
 {
-	_table_obj = std::make_shared<Table_of_objects>(2500, board_size);
-	_coll_dect = std::make_shared<Collision_detector>(_table_obj, 
+	_table_items = std::make_shared<Table_of_items>(2500, BOARD_SIZE);
+	_coll_dect = std::make_shared<Collision_detector>(_table_items, 
 							_max_size_of_pheromone, _max_size_of_vision, _max_size_of_corps);
 
 	add_colony();
+	add_start_food(50);
 
 	////////// calculate test ants ///////////////////////////////
 	// in order to see them, also uncomment the test variables in Ant_Sim.h and 
@@ -70,8 +71,8 @@ void Ant_Sim::init(void)
 	//
 	//for (int cnt = 0; cnt < _ant_number; cnt++)
 	//{
-	//	_ant_posx[cnt] = rand() % (board_size-40) + 20;
-	//	_ant_posz[cnt] = rand() % (board_size-40) + 20;
+	//	_ant_posx[cnt] = rand() % (BOARD_SIZE-40) + 20;
+	//	_ant_posz[cnt] = rand() % (BOARD_SIZE-40) + 20;
 	//}
 	//////////////////////////////////////////////////////////////
 }
@@ -132,7 +133,7 @@ void Ant_Sim::game_logic(Uint32 time)
 	_round_cnt++;
 	//move_test_ants();
 
-	_table_obj->update_passive(time, _sim_time_step);
+	_table_items->update_passive(time, _sim_time_step);
 	_coll_dect->update_active(time, _sim_time_step);
 
 	// check if game time is over
@@ -163,9 +164,46 @@ void Ant_Sim::add_colony(void)
 	colony_birth_info._colony_max_reproduction_speed = 10;
 	colony_birth_info._initial_food = 60;
 	colony_birth_info._size = 100;
-	auto new_colony = std::make_shared<Colony>(colony_birth_info);
-	(*_table_obj).add_colony(new_colony);
+	auto new_colony_ptr = std::make_shared<Colony>(colony_birth_info);
+	(*_table_items).add_colony(new_colony_ptr);
 }
+
+void Ant_Sim::add_food(double amount, int x, int y, int z)
+{
+	Game_item_birth_info go_info;
+	go_info._energy = amount;
+	go_info._size = amount;
+	go_info._energy_consumption_per_m = 0;
+	std::array<double, 2> dir = {1.0, 0.0};
+	Position pos(x,y,z,dir);
+	go_info._pos = pos;
+	auto new_food_ptr = std::make_shared<Food>(go_info);
+	(*_table_items).add_food(new_food_ptr);
+}
+
+void Ant_Sim::add_start_food(int number_of_items)
+{
+	for (int cnt = 0; cnt < number_of_items; cnt++)
+	{
+		double x = unif_01() * (BOARD_SIZE-400) + 200;
+		double z = unif_01() * (BOARD_SIZE-400) + 200;
+		double amount = unif_01() * 200;
+		add_food(amount,x,0,z);
+	}
+}
+
+//void Ant_Sim::add_obstacle(double size, int x, int y, int z)
+//{
+//	Game_item_birth_info go_info;
+//	go_info._energy = size;
+//	go_info._size = size;
+//	go_info._energy_consumption_per_m = 0;
+//	std::array<double, 2> dir = {1.0, 0.0};
+//	Position pos(x,y,z,dir);
+//	go_info._pos = pos;
+//	auto new_obst_ptr = std::make_shared<Obstacle>(go_info);
+//	(*_table_items).add_obstacle(new_obst_ptr);
+//}
 
 void Ant_Sim::start(void)
 {

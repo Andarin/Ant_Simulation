@@ -1,16 +1,16 @@
 #pragma once
 #include <memory>
 
-#include "Game_object_birth_info.h"
+#include "Game_item_birth_info.h"
 #include "models.h"
 #include "Position.h"
 #include "general_constants.h"
 
-class Game_object
+class Game_item
 {
 public:
-	Game_object(Game_object_birth_info go_birth_info);
-	~Game_object(void);
+	Game_item(Game_item_birth_info go_birth_info);
+	~Game_item(void);
 	bool is_alive(void);
 
 	Position _pos;
