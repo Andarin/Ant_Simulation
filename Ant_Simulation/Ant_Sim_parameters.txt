@@ -33,19 +33,25 @@ COLONY_POSITION_X (should be between 100 and BOARD_SIZE-100; standard is 200)
 200
 COLONY_POSITION_Y (should be between 100 and BOARD_SIZE-100; standard is 200)
 200
+COLONY_REPRODUCTION_SPEED_PER_MINUTE (standard is 20)
+# attention! at the moment, the simulation is very calculation intensive,
+# therefore you be carefull when increasing this value, it can get slow fast
+20
+COLONY_INITIAL_FOOD (standard is 1000)
+1000
 ANT_SPEED (in meter per second; standard is 0.1)
-0.1
-ANT_LIFE_TIME (in seconds; standard is 150)
-150
+0.5
+ANT_LIFE_TIME (in seconds; standard is 300)
+300
 ANT_START_ENERGY (standard is 100)
 100
+ANT_ENERGY_CONSUMPTION_PER_MINUTE (standard is 50)
+50
+ANT_MAX_DISTANCE_BEFORE_STOP (standard is 200)
+200
 ANT_TRANSPORT_CAPABILITY (standard is 1)
 1
 ANT_ATTACK_POINTS (standard is 1)
 1
 ANT_ARMOR (standard is 1)
 1
-colony_birth_info._ant_energy_consumption_per_m = 100;
-colony_birth_info._ant_max_distance_before_stop = 200;
-colony_birth_info._colony_max_reproduction_speed = 100;
-colony_birth_info._initial_food = 1000;
