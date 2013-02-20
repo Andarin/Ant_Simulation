@@ -21,7 +21,7 @@ Ant::Ant(Ant_birth_info &ant_birth_info)
 	_pos._direction [0] = 1/sq2 ;
 	_pos._direction [1] = 1/sq2 ;
 	_max_distance_before_stop = ant_birth_info._max_distance_before_stop;
-	_objective = ANT_STATUS_GET_FOOD ;
+	_objective = 0 ; //ANT_STATUS_GET_FOOD
 	_food_stored = 0;
 	_time_to_move = 0 ;
 }
