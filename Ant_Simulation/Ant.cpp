@@ -17,8 +17,10 @@ Ant::Ant(Ant_birth_info &ant_birth_info)
 	_obj_type = OBJECT_TYPE_NR_OF_ANT;
 	_is_alive = true;
 	_is_moving = false;
-	_pos._direction [0] = 0 ;
-	_pos._direction [1] = 1 ;
+	double sq2 = sqrt(2.0);
+	_pos._direction [0] = 1/sq2 ;
+	_pos._direction [1] = 1/sq2 ;
+	_max_distance_before_stop = ant_birth_info._max_distance_before_stop;
 }
 
 Ant::~Ant(void)
@@ -114,7 +116,7 @@ bool Ant::is_moving()
 
 void Ant::scout_AI(Uint32 time)
 {
-	_distance_left = 50 + 150*unif_01() ;
+	_distance_left = 50 + (_max_distance_before_stop - 50.0)*unif_01() ;
 	double delta = 2*unif_01() -1;
 	std::array<double,2> vect = _pos._direction;
 	double x = vect[0] - delta*vect[1];
@@ -157,8 +159,12 @@ std::list<std::array<double,2>> Ant::return_normal_board (void)
 	return res;
 }
 
-std::array<double,2> Ant::find_dir_from_board(std::list<std::array<double,2>> list_norm)
+std::array<double,2> Ant::find_dir_from_board(std::list<std::array<double,2>> list_norm)//list_norm is supposed not empty
 {
 	std::array<double,2> res ;
+	while (!list_norm.empty())
+	{
+		
+	}
 	return res;
 }

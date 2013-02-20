@@ -53,6 +53,7 @@ private:
 	double _food_stored; //quantity of food that the ant's bringing
 	double _max_food_storage;// maximum of this quantity
 	double _distance_left;//distance left before the ant stops to think again
+	double _max_distance_before_stop;
 
 	void think(void);
 	void restore_energy(Colony col);
