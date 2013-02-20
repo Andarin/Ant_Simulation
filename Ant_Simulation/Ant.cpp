@@ -21,6 +21,9 @@ Ant::Ant(Ant_birth_info &ant_birth_info)
 	_pos._direction [0] = 1/sq2 ;
 	_pos._direction [1] = 1/sq2 ;
 	_max_distance_before_stop = ant_birth_info._max_distance_before_stop;
+	_objective = ANT_STATUS_GET_FOOD ;
+	_food_stored = 0;
+	_time_to_move = 0 ;
 }
 
 Ant::~Ant(void)
@@ -60,7 +63,12 @@ void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Ant>> p
 		}
 		else if (_distance_left <= 0)
 		{
-			scout_AI (time);
+			if (_objective == ANT_STATUS_SCOUT)
+				scout_AI (time);
+			else if (_objective == ANT_STATUS_BACK_TO_COLONY)
+				back_AI();
+			else if (_objective == ANT_STATUS_GET_FOOD)
+				food_AI();
 		}
 		else if (_time_to_move <= time)
 		{
@@ -128,7 +136,25 @@ void Ant::scout_AI(Uint32 time)
 	_pos._direction[1] = vect[1];
 	Uint32 t = (Uint32) (1000*unif_01());
 	_time_to_move = time + t;
+	set_pheromone (1,0.5,0.5);
+}
 
+void Ant::back_AI()
+{
+	_distance_left = 50 + (_max_distance_before_stop - 50.0)*unif_01() ;
+	_pos._direction = direction_phero();
+	if (_food_stored > 0)
+	{
+		set_pheromone (1,2,0.5);
+	}
+
+}
+
+void Ant::food_AI()
+{
+	_distance_left = 50 + (_max_distance_before_stop - 50.0)*unif_01() ;
+	_pos._direction = direction_phero();
+	set_pheromone (1,1,0.5);
 }
 
 //Board interaction functions :
@@ -255,5 +281,113 @@ std::array<double,2> Ant::add_unif_noise_30 (std::array<double,2> dir)
 	double r = sqrt(1 + delta*delta);
 	res[0] = x/r;
 	res[1] = z/r;
+	return res;
+}
+
+std::array<double,2> Ant::add_triangle_noise_30 (std::array<double,2> dir)
+{
+	std::array<double,2> res;
+	double delta;
+	double draw = unif_01();
+	if (draw <= 0.5)
+	{
+		delta = sqrt(draw/2.0) - 0.5;
+	}
+	else
+	{
+		delta = 0.5 - sqrt((1-draw)/2.0);
+	}
+	double x = dir[0] - delta*dir[1];
+	double z = dir[1] + delta*dir[0];
+	double r = sqrt(1 + delta*delta);
+	res[0] = x/r;
+	res[1] = z/r;
+	return res;
+}
+
+//Pheromone observation functions :
+
+void Ant::update_pheros_lists ()
+{
+	std::list<std::array<double,2>> res_dir ;
+	std::list<double> res_nrj ;
+	double x_ant = _pos._x;
+	double z_ant = _pos._z;
+	double x_dir_ant = _pos._direction[0];
+	double z_dir_ant = _pos._direction[1];
+	for (std::list<std::shared_ptr<Pheromone>>::iterator it = _olf_coll_ph.begin() ; it != _olf_coll_ph.end() ; ++it)
+	{
+		double x_phero = (*(*it))._pos._x;
+		double z_phero = (*(*it))._pos._z;
+		double x_dir = x_phero - x_ant ;
+		double z_dir = z_phero - z_ant ;
+		double r = sqrt (x_dir*x_dir + z_dir*z_dir) ;
+		std::array<double,2> vect = {x_dir/r,z_dir/r};
+		double energy = (*(*it)).get_energy();
+		if (x_dir_ant*x_dir + z_dir_ant*z_dir > sqrt(0.5))
+		{
+			res_dir.push_back(vect);
+			res_nrj.push_back(energy);
+		}
+	}
+}
+
+int Ant::rank_chosen_phero ()//this list is not empty
+{
+	int res;
+	double total_energy = 0.0 ;
+	std::list<double> list_energy = _phero_energies;
+	//we calcul first the total energy
+	for (std::list<double>::iterator it = list_energy.begin() ; it != list_energy.end() ; ++it)
+	{
+		total_energy += *it ;
+	}
+
+	//now we choose randomly the pheromone depending on its energy
+
+	double draw = unif_01()*total_energy;
+	double cumulate_energy = 0.0 ;
+	int incr = 0 ;
+
+	for (std::list<double>::iterator it = list_energy.begin() ; it != list_energy.end() ; ++it)
+	{
+		if (draw >= cumulate_energy && draw <= (cumulate_energy +*it))
+		{
+			res = incr;
+		}
+		cumulate_energy += *it ;
+		incr += 1 ;
+	}
+
+	return res ;
+}
+
+std::array<double,2> Ant::direction_phero (void)
+{
+	update_pheros_lists();
+	std::array<double,2> res;
+	if (!_phero_dir.empty())
+	{
+		std::list<std::array<double,2>>::iterator it = _phero_dir.begin();
+		int N = rank_chosen_phero ();
+		std::advance(it,N);
+		res = *it;
+	}
+	else 
+	{
+		double draw = unif_01();
+		if (draw <= 0.5)
+		{
+			res[0] = -_pos._direction[1];
+			res[1] = _pos._direction[0];
+		}
+		else
+		{
+			res[0] = _pos._direction[1];
+			res[1] = -_pos._direction[0];
+		}
+	}
+
+	res = add_triangle_noise_30 (res);
 	return res;
 }

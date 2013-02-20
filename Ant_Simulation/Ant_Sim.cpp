@@ -135,7 +135,7 @@ void Ant_Sim::game_logic(Uint32 time)
 	//move_test_ants();
 
 	_table_items->update_passive(time, _sim_time_step);
-	_coll_dect->update_active(time, _sim_time_step);
+	_coll_dect->update_all(time, _sim_time_step);
 
 	// check if game time is over
 	_time_remaining -= _sim_time_step;

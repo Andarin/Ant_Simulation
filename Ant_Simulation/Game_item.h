@@ -18,6 +18,7 @@ public:
 
 	//Get functions
 	double get_size (void);
+	double get_energy (void);
 
 protected:
 	int _pheromone_type;

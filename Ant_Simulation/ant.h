@@ -72,6 +72,9 @@ private:
 	 //Add an uniform noise from -30° to 30°
 	std::array<double,2> add_unif_noise_30 (std::array<double,2>);
 
+	 //Add a triangular noise from -30° to 30°
+	std::array<double,2> add_triangle_noise_30 (std::array<double,2>);
+
 	//Board interaction functions :
 	 //These functions are used when a ant encountered a board of the game
 
@@ -93,7 +96,6 @@ private:
 
 	bool _is_alive;
 	bool _is_moving;
-	bool _is_bringing_food;
 	int _objective; //is the objective of the ant, for the moment
 					//there are three possible :
 					//		-scout (to find new foods)
@@ -107,6 +109,14 @@ private:
 
 	std::list<std::shared_ptr<Pheromone>> _olf_coll_ph ;
 
+	//list of the directions of the phero's that might be chosen
+
+	std::list<std::array<double,2>> _phero_dir ;
+
+	//list of the energies of these ones
+
+	std::list<double> _phero_energies ;
+
 	//lists of the objects in physical collisions with the ant
 
 	std::list<std::shared_ptr<Ant>> _phys_coll_ant ;//collision with other ants
@@ -116,8 +126,25 @@ private:
 	//AI functions
 
 	void scout_AI (Uint32); //AI of the ant when it's trying to find food (is a scout)
-	void back_AI (void); //AI of the ant when it wants to get back home
-	void food_AI (void); //AI of the ant when it wants to go to a known food
+	void back_AI(); //AI of the ant when it wants to get back home
+	void food_AI(); //AI of the ant when it wants to go to a known food
 
+	 //common function for back_AI and food_AI to deal with the pheromones
+	void dir_choice_according_to_phero (void) ;
 
+	//Pheromone observation functions
+	 //These functions deal with the interacton of the ant with the phero's
+
+	 //Update the _phero_dir and _phero_energies lists
+
+	void update_pheros_lists (void) ;
+
+	 //From the list of the energies of the pheromones
+	 //gives the random draw of the pheromone the ant
+	 //should go to, return its rank in the list
+	int rank_chosen_phero (void);
+	
+	 //gives the direction to the chosen pheromone with a random noise
+	 //if there is no pheromone in the vision field return another direction
+	std::array<double,2> direction_phero (void);
 };

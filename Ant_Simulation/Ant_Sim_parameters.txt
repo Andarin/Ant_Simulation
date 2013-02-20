@@ -59,4 +59,6 @@ ANT_TRANSPORT_CAPABILITY (standard is 1)
 ANT_ATTACK_POINTS (standard is 1)
 1
 ANT_ARMOR (standard is 1)
+
 1
+
