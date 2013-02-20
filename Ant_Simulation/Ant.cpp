@@ -31,9 +31,15 @@ void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Ant>> p
 {
 	_energy -= _energy_consumption_per_m*time_step/60000;
 	std::list<std::array<double,2>> list_normals = return_normal_board();
-	if (_distance_left <= 0 || !list_normals.empty())
+	if (_distance_left <= 0)
 	{
 		_is_moving = false ;
+	}
+
+	if (!list_normals.empty())
+	{
+		board_manager(list_normals);
+		_is_moving = true;
 	}
 
 	if (time > _time_of_death || _energy <= 0)
@@ -117,19 +123,15 @@ bool Ant::is_moving()
 void Ant::scout_AI(Uint32 time)
 {
 	_distance_left = 50 + (_max_distance_before_stop - 50.0)*unif_01() ;
-	double delta = 2*unif_01() -1;
-	std::array<double,2> vect = _pos._direction;
-	double x = vect[0] - delta*vect[1];
-	double z = vect[1] + delta*vect[0];
-	double r = sqrt(1 + delta*delta);
-	x = x/r;
-	z = z/r;
-	_pos._direction[0] = x;
-	_pos._direction[1] = z;
-	Uint32 t = (Uint32) 1000*unif_01();
+	std::array<double,2> vect = add_unif_noise_45(_pos._direction);
+	_pos._direction[0] = vect[0];
+	_pos._direction[1] = vect[1];
+	Uint32 t = (Uint32) (1000*unif_01());
 	_time_to_move = time + t;
 
 }
+
+//Board interaction functions :
 
 std::list<std::array<double,2>> Ant::return_normal_board (void)
 {
@@ -161,10 +163,97 @@ std::list<std::array<double,2>> Ant::return_normal_board (void)
 
 std::array<double,2> Ant::find_dir_from_board(std::list<std::array<double,2>> list_norm)//list_norm is supposed not empty
 {
-	std::array<double,2> res ;
+	std::array<double,2> res = {0,0};
 	while (!list_norm.empty())
 	{
-		
+		std::array<double,2> vect = list_norm.back() ;
+		res[0] += vect[0];
+		res[1] += vect[1];
+		list_norm.pop_back();
 	}
+	double x = res[0];
+	double z = res[1];
+	double r = sqrt(x*x + z*z);
+	res[0] = x/r;
+	res[1] = z/r;
+	return res;
+}
+
+std::array<double,2> Ant::rand_dir_from_board (std::array<double,2> dir)//we suppose dir is a direction (so normalized to 1)
+{
+	//We first test if we are just on a board and not on a corner
+	std::array<double,2> res = {0,0};
+	//And we give a determinist deviation of 30° according
+	//from where the ant come from...
+	if (dir[0] == 0)
+	{
+		if (_pos._direction[0] <= 0)
+		{
+			res[0] = -0.5;
+			res[1] = dir[1]*(sqrt(3.0)/2);
+		}
+		else
+		{
+			res[0] = 0.5;
+			res[1] = dir[1]*(sqrt(3.0)/2);
+		}
+	}
+	else if (dir[1] = 0)
+	{
+		if (_pos._direction[1] <= 0)
+		{
+			res[1] = -0.5;
+			res[0] = dir[1]*(sqrt(3.0)/2);
+		}
+		else
+		{
+			res[1] = 0.5;
+			res[0] = dir[1]*(sqrt(3.0)/2);
+		}
+	}
+	//else we are in a corner, in this case we don't add a 30° deviation
+	else
+	{
+		res = dir;
+	}
+
+	//In all the cases we add a 30° uniform noise
+
+	res = add_unif_noise_30 (res);
+
+	return res;
+}
+
+void Ant::board_manager (std::list<std::array<double,2>> list_norm) //the input is the list of normals
+{
+	_distance_left = 50 + (_max_distance_before_stop - 50.0)*unif_01() ;
+	std::array<double,2> dir = find_dir_from_board(list_norm);
+	dir = rand_dir_from_board(dir);
+	_pos._direction = dir;
+}
+
+//Random noise functions
+
+std::array<double,2> Ant::add_unif_noise_45 (std::array<double,2> dir)
+{
+	std::array<double,2> res;
+	double delta = 2*unif_01() -1;
+	double x = dir[0] - delta*dir[1];
+	double z = dir[1] + delta*dir[0];
+	double r = sqrt(1 + delta*delta);
+	res[0] = x/r;
+	res[1] = z/r;
+	return res;
+}
+
+std::array<double,2> Ant::add_unif_noise_30 (std::array<double,2> dir)
+{
+	std::array<double,2> res;
+	double delta = unif_01() -0.5;
+	double x = dir[0] - delta*dir[1];
+	double z = dir[1] + delta*dir[0];
+	double r = sqrt(1 + delta*delta);
+	res[0] = x/r;
+	res[1] = z/r;
 	return res;
 }

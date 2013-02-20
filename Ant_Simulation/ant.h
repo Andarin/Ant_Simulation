@@ -62,12 +62,34 @@ private:
 	void destroy(void);
 	void store_food (void);
 	void take_food (void);
-	//return the normal vector of the boards the ant is in collision with
+	//Random noise functions:
+	 //These functions are use to add some random noise to a direction
+	 //decision with divers probability laws...
+
+	 //Add an uniform noise from -45° to 45°
+	std::array<double,2> add_unif_noise_45 (std::array<double,2>);
+
+	 //Add an uniform noise from -30° to 30°
+	std::array<double,2> add_unif_noise_30 (std::array<double,2>);
+
+	//Board interaction functions :
+	 //These functions are used when a ant encountered a board of the game
+
+	 //return the normal vector of the boards the ant is in collision with
 	std::list<std::array<double,2>> return_normal_board (void);
 
-	//When an ant is in collision with a board this function gives
-	//the new direction the ant should take (list must be not empty)
+	 //When an ant is in collision with a board this function gives
+	 //the new direction the ant should take (list must be not empty)
 	std::array<double,2> find_dir_from_board (std::list<std::array<double,2>>);
+
+	 //But to make this choie of direction more natural, we have created
+	 //this next function to add a bit more randomization to the direction
+	 //and to choose according to the past direction the ant had
+	std::array<double,2> rand_dir_from_board (std::array<double,2>);
+
+	 //This function regroups all these previous functions to
+	 //to manage the general reaction of an ant encountering a board
+	void board_manager (std::list<std::array<double,2>>);
 
 	bool _is_alive;
 	bool _is_moving;
@@ -96,5 +118,6 @@ private:
 	void scout_AI (Uint32); //AI of the ant when it's trying to find food (is a scout)
 	void back_AI (void); //AI of the ant when it wants to get back home
 	void food_AI (void); //AI of the ant when it wants to go to a known food
+
 
 };
