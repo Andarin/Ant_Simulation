@@ -46,18 +46,22 @@
 #include "OBJlib.h"
 
 // self-created external depencies
-#include "Drawing_engine.h"
 #include "Camera.h"
-#include "loadpng_functions.h"
-#include "skybox.h"
-#include "models.h"
-#include "general_constants.h"
-#include "Time_machine.h"
-#include "Table_of_objects.h"
 #include "Collision_detector.h"
 #include "Colony.h"
 #include "Colony_birth_info.h"
+#include "Drawing_engine.h"
+#include "Food.h"
+#include "Game_item.h"
+#include "Game_item_birth_info.h"
+#include "Obstacle.h"
 #include "Position.h"
+#include "Table_of_items.h"
+#include "Time_machine.h"
+#include "general_constants.h"
+#include "loadpng_functions.h"
+#include "models.h"
+#include "skybox.h"
 
 class Ant_Sim
 {
@@ -66,7 +70,7 @@ public:
 	~Ant_Sim(void);
 	void start(void);
 
-	std::shared_ptr<Table_of_objects> _table_obj;
+	std::shared_ptr<Table_of_items> _table_items;
 	std::shared_ptr<Collision_detector> _coll_dect;
 
 	// just for testing / not important
@@ -101,6 +105,9 @@ private:
 	void move_test_ants(void);
 	void init(void);
 	void add_colony(void);
+	void add_food(double,int,int,int);
+	void add_start_food(int);
+	void add_obstacle(double,int,int,int);
 	void handle_user_input(SDL_Event &event);
 	void start_countdown(void);
 	void game_logic(Uint32);

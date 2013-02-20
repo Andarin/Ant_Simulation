@@ -138,59 +138,60 @@ void draw_ant(int size, double color[])
 
 void draw_ant_anim(int size, double color[], double anim_step)
 {
- glBegin(GL_QUADS);
-  // head
-  glColor4f(color[0],color[1],color[2],1.0);
-  glVertex3f(0.0,0.0,0.0);
-  glVertex3f(0.35*size,0.0,0.0);
-  glVertex3f(0.35*size,0.35*size,0.0);
-  glVertex3f(0.0,0.35*size,0.0);
-  // antenna
-  glVertex3f(0.35*size,0.35*size,0.0);
-  glVertex3f(0.6*size,0.5*size,-0.1*size);
-  glVertex3f(0.6*size,0.54*size,-0.1*size);
-  glVertex3f(0.31*size,0.35*size,0.0);
+	double change_in_y = 0.3;
+	glBegin(GL_QUADS);
+	// head
+	glColor4f(color[0],color[1],color[2],1.0);
+	glVertex3f(0.0,change_in_y,0.0);
+	glVertex3f(0.35*size,change_in_y,0.0);
+	glVertex3f(0.35*size,change_in_y+0.35*size,0.0);
+	glVertex3f(0.0,change_in_y+0.35*size,0.0);
+	// antenna
+	glVertex3f(0.35*size,change_in_y+0.35*size,0.0);
+	glVertex3f(0.6*size,change_in_y+0.5*size,-0.1*size);
+	glVertex3f(0.6*size,change_in_y+0.54*size,-0.1*size);
+	glVertex3f(0.31*size,change_in_y+0.35*size,0.0);
 
-  glVertex3f(0.0,0.35*size,0.0);
-  glVertex3f(-0.15*size,0.5*size,-0.1*size);
-  glVertex3f(-0.15*size,0.54*size,-0.1*size);
-  glVertex3f(0.04*size,0.35*size,0.0);
-  // body
-  glVertex3f(0.0,0.0,0.0);
-  glVertex3f(0.0,0.0,size);
-  glVertex3f(0.35*size,0.0,size);
-  glVertex3f(0.35*size,0.0,0.0);
-  // left front leg
-  glVertex3f(0.0,0.0,0.0);
-  glVertex3f(0.0,0.0,0.1*size);
-  glVertex3f(-0.5*size,-0.4*size,0.6*anim_step*size-0.05*size);
-  glVertex3f(-0.5*size,-0.4*size,0.6*anim_step*size+0.1*size);
-  // left middle leg
-  glVertex3f(0.0,0.0,0.43*size);
-  glVertex3f(0.0,0.0,0.57*size);
-  glVertex3f(-0.5*size,-0.4*size,-0.6*anim_step*size+0.53*size);
-  glVertex3f(-0.5*size,-0.4*size,-0.6*anim_step*size+0.43*size);
-  // left back leg
-  glVertex3f(0.0,0.0,0.9*size);
-  glVertex3f(0.0,0.0,size);
-  glVertex3f(-0.5*size,-0.4*size,0.6*anim_step*size+0.95*size);
-  glVertex3f(-0.5*size,-0.4*size,0.6*anim_step*size+1.05*size);
-  // right front leg
-  glVertex3f(0.35*size,0.0,0.0);
-  glVertex3f(0.35*size,0.0,0.14*size);
-  glVertex3f(0.85*size,-0.4*size,-0.6*anim_step*size-0.05*size);
-  glVertex3f(0.85*size,-0.4*size,-0.6*anim_step*size+0.1*size);
-  // right middle leg
-  glVertex3f(0.35*size,0.0,0.43*size);
-  glVertex3f(0.35*size,0.0,0.57*size);
-  glVertex3f(0.85*size,-0.4*size,0.6*anim_step*size+0.53*size);
-  glVertex3f(0.85*size,-0.4*size,0.6*anim_step*size+0.43*size);
-  // right back leg
-  glVertex3f(0.35*size,0.0,0.83*size);
-  glVertex3f(0.35*size,0.0,size);
-  glVertex3f(0.85*size,-0.4*size,-0.6*anim_step*size+0.95*size);
-  glVertex3f(0.85*size,-0.4*size,-0.6*anim_step*size+1.05*size);
- glEnd();
+	glVertex3f(0.0,change_in_y+0.35*size,0.0);
+	glVertex3f(-0.15*size,change_in_y+0.5*size,-0.1*size);
+	glVertex3f(-0.15*size,change_in_y+0.54*size,-0.1*size);
+	glVertex3f(0.04*size,change_in_y+0.35*size,0.0);
+	// body
+	glVertex3f(0.0,change_in_y,0.0);
+	glVertex3f(0.0,change_in_y,size);
+	glVertex3f(0.35*size,change_in_y,size);
+	glVertex3f(0.35*size,change_in_y,0.0);
+	// left front leg
+	glVertex3f(0.0,change_in_y,0.0);
+	glVertex3f(0.0,change_in_y,0.1*size);
+	glVertex3f(-0.5*size,change_in_y-0.4*size,0.6*anim_step*size-0.05*size);
+	glVertex3f(-0.5*size,change_in_y-0.4*size,0.6*anim_step*size+0.1*size);
+	// left middle leg
+	glVertex3f(0.0,change_in_y,0.43*size);
+	glVertex3f(0.0,change_in_y,0.57*size);
+	glVertex3f(-0.5*size,change_in_y-0.4*size,-0.6*anim_step*size+0.53*size);
+	glVertex3f(-0.5*size,change_in_y-0.4*size,-0.6*anim_step*size+0.43*size);
+	// left back leg
+	glVertex3f(0.0,change_in_y,0.9*size);
+	glVertex3f(0.0,change_in_y,size);
+	glVertex3f(-0.5*size,change_in_y-0.4*size,0.6*anim_step*size+0.95*size);
+	glVertex3f(-0.5*size,change_in_y-0.4*size,0.6*anim_step*size+1.05*size);
+	// right front leg
+	glVertex3f(0.35*size,change_in_y,0.0);
+	glVertex3f(0.35*size,change_in_y,0.14*size);
+	glVertex3f(0.85*size,change_in_y-0.4*size,-0.6*anim_step*size-0.05*size);
+	glVertex3f(0.85*size,change_in_y-0.4*size,-0.6*anim_step*size+0.1*size);
+	// right middle leg
+	glVertex3f(0.35*size,change_in_y,0.43*size);
+	glVertex3f(0.35*size,change_in_y,0.57*size);
+	glVertex3f(0.85*size,change_in_y-0.4*size,0.6*anim_step*size+0.53*size);
+	glVertex3f(0.85*size,change_in_y-0.4*size,0.6*anim_step*size+0.43*size);
+	// right back leg
+	glVertex3f(0.35*size,change_in_y,0.83*size);
+	glVertex3f(0.35*size,change_in_y,size);
+	glVertex3f(0.85*size,change_in_y-0.4*size,-0.6*anim_step*size+0.95*size);
+	glVertex3f(0.85*size,change_in_y-0.4*size,-0.6*anim_step*size+1.05*size);
+	glEnd();
 }
 
 void draw_colony(int size, unsigned int tex_colony)

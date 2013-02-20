@@ -25,16 +25,16 @@ void Drawing_engine::set_window(void)
 	SDL_Init(SDL_INIT_EVERYTHING);
 
 	// create prescreen to show logo while everything is initialized
-	_prescreen = SDL_SetVideoMode(screen_width, screen_height, 32, SDL_SWSURFACE);
+	_prescreen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_SWSURFACE);
 	_logo = load_image("src/logo.png");
 	apply_surface( 200, 150, _logo, _prescreen );
 	SDL_Flip( _prescreen ); 
 
 	// set up the real screen
-	_screen = SDL_SetVideoMode(screen_width, screen_height, 32, SDL_SWSURFACE|SDL_OPENGL);
+	_screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_SWSURFACE|SDL_OPENGL);
 	// SDL_SWSURFACE|SDL_OPENGL means: do both options
 	// for full screen:
-	//screen = SDL_SetVideoMode(screen_width, screen_height, 32, SDL_SWSURFACE|SDL_FULLSCREEN);
+	//screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_SWSURFACE|SDL_FULLSCREEN);
 	SDL_WM_SetCaption( "Ant Simulation", NULL );
 	SDL_Surface *icon;
 	icon = SDL_LoadBMP("src/icon.bmp");
@@ -49,7 +49,7 @@ void Drawing_engine::set_openGL(void)
 	glClearColor(0.2,0.2,0.8,1.0); //background color and alpha
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(45,(1.0*screen_width)/screen_height,1.0,10000.0);
+	gluPerspective(45,(1.0*SCREEN_WIDTH)/SCREEN_HEIGHT,1.0,10000.0);
 	glMatrixMode(GL_MODELVIEW);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_TEXTURE_2D);
@@ -111,7 +111,7 @@ void Drawing_engine::draw_text(std::string text, float x, float y)
 	glEnable(GL_BLEND);
 	glColor3f(1.0F, 1.0F, 0.0F);
 	_screen_text.Begin();
-	_screen_text.DrawString(text, 1.5F, x, y);
+	_screen_text.DrawString(text, 1.2F, x, y);
     glDisable(GL_BLEND); 
 }
 
@@ -123,10 +123,18 @@ void Drawing_engine::draw_text_with_number(std::string text, int number, float x
 	draw_text(info_str, x, y);
 }
 
+void Drawing_engine::draw_text_with_number(std::string text, double number, float x, float y)
+{
+	std::stringstream sstm;
+	sstm << text << number;
+	std::string info_str = sstm.str();
+	draw_text(info_str, x, y);
+}
+
 void Drawing_engine::draw_countdown(int time_remaining_in_s)
 {
-	int x_pos = (int)(screen_width/4);
-	int y_pos = (int)(screen_height*7/8);
+	int x_pos = (int)(SCREEN_WIDTH/6);
+	int y_pos = (int)(SCREEN_HEIGHT*7/8);
 	std::stringstream sstm;
 	sstm << "Time until shutdown: " << time_remaining_in_s;
 	std::string time_remaing_str = sstm.str();
@@ -138,21 +146,72 @@ void Drawing_engine::draw_countdown(int time_remaining_in_s)
     glDisable(GL_BLEND); 
 }
 
-void Drawing_engine::draw_hud(Uint32 time_remaining)
+void Drawing_engine::draw_hud(Uint32 time_remaining, Ant_Sim *ant_sim_ptr)
 {
-	int time_remaining_in_s = (int)time_remaining/1000;
-	float x_coord = screen_width-320.0;
-	float y_coord = screen_height-50.0;
-	draw_text_with_number("Time remaining: ", time_remaining_in_s, x_coord, y_coord);
+	int larva_number = 0;
+	int ant_number = (*ant_sim_ptr)._table_items->_ant_list.size();
+	int queen_hp = 0;
+	double liquid_food = 0;
+	double solid_food = 0;
+	std::list<std::shared_ptr<Colony>> colony_list = (*ant_sim_ptr)._table_items->_colony_list;
+	for (std::list<std::shared_ptr<Colony>>::iterator col_it = colony_list.begin(); 
+			col_it != colony_list.end() ; ++col_it)
+		{ 
+			// 0 is the "color" of the player
+			if ((*col_it)->_color == 0)
+			{
+				larva_number += (*col_it)->get_number_of_larvas();
+				queen_hp += (*col_it)->get_queen_hp();
+				liquid_food += (*col_it)->get_liquid_food();
+				solid_food += (*col_it)->get_solid_food();
+			}
+		}
 
+	int time_remaining_in_s = (int)time_remaining/1000;
+
+	float x_coord = SCREEN_WIDTH-250.0;
+	float line_distance = 30;
+	float y_coord = SCREEN_HEIGHT-20.0;
+	draw_text_with_number("Time remaining: ", time_remaining_in_s, x_coord, y_coord);
+	y_coord -= line_distance;
+	draw_text_with_number("Larvas: ", larva_number, x_coord, y_coord);
+	y_coord -= line_distance;
+	draw_text_with_number("Ants: ", ant_number, x_coord, y_coord);
+	y_coord -= line_distance;
+	draw_text_with_number("Queen HP: ", queen_hp, x_coord, y_coord);
+	y_coord -= line_distance;
+	double solid_food_rounded = std::floor(100*solid_food)/100.0;
+	double liquid_food_rounded = std::floor(100*liquid_food)/100.0;
+	draw_text_with_number("Solid Food: ", solid_food, x_coord, y_coord);
+	y_coord -= line_distance;
+	draw_text_with_number("Liquid Food: ", liquid_food_rounded, x_coord, y_coord);
+	
 	if (_countdown_on) draw_countdown(time_remaining_in_s);
+}
+
+double Drawing_engine::calc_result(Ant_Sim *ant_sim_ptr)
+{
+	double liquid_food = 0;
+	double solid_food = 0;
+	std::list<std::shared_ptr<Colony>> colony_list = (*ant_sim_ptr)._table_items->_colony_list;
+	for (std::list<std::shared_ptr<Colony>>::iterator col_it = colony_list.begin(); 
+			col_it != colony_list.end() ; ++col_it)
+	{ 
+		// 0 is the "color" of the player
+		if ((*col_it)->_color == 0)
+		{
+			liquid_food += (*col_it)->get_liquid_food();
+			solid_food += (*col_it)->get_solid_food();
+		}
+	}
+	return std::min<double>((liquid_food + solid_food)/1000.0,1.0);
 }
 
 void Drawing_engine::switch_to_normal_perspective(int field_of_view_in_degrees)
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(field_of_view_in_degrees,(1.0*screen_width)/screen_height,1.0,10000.0);
+	gluPerspective(field_of_view_in_degrees,(1.0*SCREEN_WIDTH)/SCREEN_HEIGHT,1.0,10000.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
@@ -161,19 +220,33 @@ void Drawing_engine::switch_to_ortho_perspective(void)
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0, screen_width, 0, screen_height, -1, 8000);
+	glOrtho(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT, -1, 8000);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
 
 void Drawing_engine::draw_foods(Ant_Sim* ant_sim_ptr)
 {
-	// draw a test apple
-	glPushMatrix();
-	glTranslatef(1000,0,1000);
-	if (_high_quality_on) { _apple_hq->draw_model(); }
-	else { draw_box(100, _tex_apple_side, _tex_apple_top); }
-	glPopMatrix();
+	std::list<std::shared_ptr<Food>> food_list = (*ant_sim_ptr)._table_items->_food_list;
+	for (std::list<std::shared_ptr<Food>>::iterator food_it = food_list.begin(); 
+			food_it != food_list.end() ; ++food_it)
+	{ 
+		Position food_pos = (*food_it)->_pos;
+		glPushMatrix();
+			glTranslatef(food_pos._x,food_pos._y,food_pos._z);
+			if (_high_quality_on) 
+				{ _apple_hq->draw_model(); }
+			else 
+				{ draw_box((*food_it)->get_size(), _tex_apple_side, _tex_apple_top); }
+		glPopMatrix();
+	}
+
+	//// draw a test apple
+	//glPushMatrix();
+	//glTranslatef(1000,0,1000);
+	//if (_high_quality_on) { _apple_hq->draw_model(); }
+	//else { draw_box(100, _tex_apple_side, _tex_apple_top); }
+	//glPopMatrix();
 }
 
 void Drawing_engine::draw_obstacles(Ant_Sim* ant_sim_ptr)
@@ -187,7 +260,7 @@ void Drawing_engine::draw_obstacles(Ant_Sim* ant_sim_ptr)
 
 void Drawing_engine::draw_colonies(Ant_Sim* ant_sim_ptr)
 {
-	std::list<std::shared_ptr<Colony>> colony_list = (*ant_sim_ptr)._table_obj->_colony_list;
+	std::list<std::shared_ptr<Colony>> colony_list = (*ant_sim_ptr)._table_items->_colony_list;
 	for (std::list<std::shared_ptr<Colony>>::iterator col_it = colony_list.begin(); 
 			col_it != colony_list.end() ; ++col_it)
 	{ 
@@ -229,7 +302,7 @@ void Drawing_engine::draw_ants(Ant_Sim *ant_sim_ptr, int round_cnt)
 	int hq_frame = (round_cnt%16)/2;
 
 	//draw all ants in the environment list
-	std::list<std::shared_ptr<Ant>> ant_list = (*ant_sim_ptr)._table_obj->_ant_list;
+	std::list<std::shared_ptr<Ant>> ant_list = (*ant_sim_ptr)._table_items->_ant_list;
 	for (std::list<std::shared_ptr<Ant>>::iterator ant_it = ant_list.begin(); ant_it != ant_list.end() ; ++ant_it)
 	{ 
 		Position ant_pos = (*ant_it)->_pos;
@@ -254,7 +327,7 @@ void Drawing_engine::draw_location_selected_on_board(void)
 	if(SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(3))
 	// right mouse click
 	{
-		std::vector<double> pos_on_board = _camera.calculate_click_point(board_size);
+		std::vector<double> pos_on_board = _camera.calculate_click_point(BOARD_SIZE);
 		// returns {-1, -1} if mouse does not point on board
 		if (pos_on_board[0] != -1)
 		{
@@ -310,9 +383,9 @@ void Drawing_engine::start_countdown(void)
 	_countdown_on = true;
 
 	// warp to start position to look at the result
-	_camera._camX = 100;
+	_camera._camX = 85;
 	_camera._camY = 220;
-	_camera._camZ = 100;
+	_camera._camZ = 105;
 	_camera._camPitch = 0;
 	_camera._camYaw = 225;
 }
@@ -338,7 +411,7 @@ void Drawing_engine::left_mouse_click(void)
 {
 	_mousein = true;
 	SDL_ShowCursor(SDL_DISABLE);
-	SDL_WarpMouse(screen_width/2,screen_height/2);
+	SDL_WarpMouse(SCREEN_WIDTH/2,SCREEN_HEIGHT/2);
 }
 
 void Drawing_engine::left_mouse_unclick(void)
@@ -371,14 +444,14 @@ void Drawing_engine::display(Ant_Sim *ant_sim_ptr, Uint32 time_remaining, int ro
 		{ _recent_cam_velocity = std::min<int>(_recent_cam_velocity+1,50); }
 	else 
 		{ _recent_cam_velocity = _cam_velocity; }
-	_camera.control(_recent_cam_velocity,0.5,board_size,screen_width,screen_height,_mousein);
+	_camera.control(_recent_cam_velocity,0.5,BOARD_SIZE,SCREEN_WIDTH,SCREEN_HEIGHT,_mousein);
 
 	// draw skybox, don't make it bigger than the far-view-plane (see gluPerspective)
 	draw_skybox(SKY_BOY_DISTANCE);
 
 	_camera.update();
-	draw_board(board_size, _tex_board);
-	draw_border(board_size, _tex_border);
+	draw_board(BOARD_SIZE, _tex_board);
+	draw_border(BOARD_SIZE, _tex_border);
 	draw_colonies(ant_sim_ptr);
 	draw_obstacles(ant_sim_ptr);
 	draw_foods(ant_sim_ptr);
@@ -388,13 +461,13 @@ void Drawing_engine::display(Ant_Sim *ant_sim_ptr, Uint32 time_remaining, int ro
 		draw_building_menu();
 	if (_countdown_on) 
 	{ 
-		double test_result = std::abs(round_cnt%300-150.0)/150.0;
-		draw_result(test_result); 
+		double result = calc_result(ant_sim_ptr);
+		draw_result(result); 
 	}
 
 	glPushMatrix();
 		switch_to_ortho_perspective();
-		draw_hud(time_remaining);
+		draw_hud(time_remaining, ant_sim_ptr);
 	glPopMatrix();
 	glFlush();
 }

@@ -12,7 +12,13 @@ double Food::get_piece(double ant_demand)
 {
 	double food_consumed = std::min<double>(ant_demand, _energy);
 	_energy -= food_consumed;
+	_size = calculate_size(_energy);
 	if (_energy == 0)
 		{ destroy(); }
 	return food_consumed;
+}
+
+double Food::calculate_size(double energy)
+{
+	return energy/2.5;
 }

@@ -30,7 +30,7 @@ public:
 	int _obj_type;
 
 	//A list of the pheromones set by the ant and that have 
-	//not been already registered in Table_of_objects
+	//not been already registered in Table_of_items
 	std::list<std::shared_ptr<Pheromone>> _buffer_fresh_phero ;
 
 	//Get functions :
@@ -57,7 +57,7 @@ private:
 
 	void think(void);
 	void restore_energy(Colony col);
-	void attack(Game_object target);
+	void attack(Game_item target);
 	void set_pheromone(int,double,double);
 	void destroy(void);
 	void store_food (void);

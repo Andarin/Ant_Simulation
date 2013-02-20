@@ -7,12 +7,12 @@
 #include <vector>
 #include <algorithm>	
 
-class Table_of_objects					// This table regroup all the objects of the game
+class Table_of_items					// This table regroup all the objects of the game
 {								// It is created at the beginning and updated during the game
 public:									// We use smart pointers to identify the objects
-	Table_of_objects(int,int);//The second int input is the size of the board and the first is
-	~Table_of_objects(void);	//number of sudivisions of the matrix M representing the map, 
-	Table_of_objects();								//i.e. dim M = n*n
+	Table_of_items(int,int);//The second int input is the size of the board and the first is
+	~Table_of_items(void);	//number of sudivisions of the matrix M representing the map, 
+	Table_of_items();								//i.e. dim M = n*n
 	//Add functions :
 
 	void add_ant (std::shared_ptr<Ant>);

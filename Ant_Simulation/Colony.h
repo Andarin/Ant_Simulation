@@ -24,7 +24,7 @@ public:
 	bool is_alive(void);
 
 	//A list of the ant that have been recently created
-	//Their positions will be define in table_of_objects
+	//Their positions will be define in table_of_items
 	std::list<std::shared_ptr<Ant>> _buffer_fresh_ant;
 
 	double get_size (void);
@@ -32,9 +32,9 @@ public:
 	double get_solid_food(void);
 	int get_queen_hp(void);
 	int get_number_of_larvas(void);
+	int _color;
 
 private:
-	int _color;
 	double _ant_speed; // in m/s
 	int _ant_attack_points;
 	int _ant_armor;

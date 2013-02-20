@@ -71,7 +71,7 @@ void Ant::update_ph(std::list<std::shared_ptr<Pheromone>> olf_coll_ph)
 
 void Ant::set_pheromone(int phero_type,double energy, double consumption)
 {//When an ant set a pheromone it can choose its type, energy and its consumption per minute to some extent
-	Game_object_birth_info info;
+	Game_item_birth_info info;
 	info._energy = energy;
 	info._energy_consumption_per_m = consumption;
 	info._obj_type = OBJECT_TYPE_NR_OF_PHEROMONE;
@@ -140,7 +140,7 @@ std::list<std::array<double,2>> Ant::return_normal_board (void)
 		std::array<double,2> vect = {1,0};
 		res.push_back(vect);
 	}
-	if (x>= board_size - _size)
+	if (x>= BOARD_SIZE - _size)
 	{
 		std::array<double,2> vect = {-1,0};
 		res.push_back(vect);
@@ -150,7 +150,7 @@ std::list<std::array<double,2>> Ant::return_normal_board (void)
 		std::array<double,2> vect = {0,1};
 		res.push_back(vect);
 	}
-	if (z>= board_size - _size)
+	if (z>= BOARD_SIZE - _size)
 	{
 		std::array<double,2> vect = {0,-1};
 		res.push_back(vect);

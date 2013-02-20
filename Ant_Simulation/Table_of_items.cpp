@@ -1,10 +1,10 @@
-#include "Table_of_objects.h"
+#include "Table_of_items.h"
 
-Table_of_objects::Table_of_objects()
+Table_of_items::Table_of_items()
 {
 }
 
-Table_of_objects::Table_of_objects(int n, int size)
+Table_of_items::Table_of_items(int n, int size)
 {
 	std::vector<std::shared_ptr<Pheromone>> row_vect ;
 	row_vect.resize(n);
@@ -14,29 +14,29 @@ Table_of_objects::Table_of_objects(int n, int size)
 }
 
 
-Table_of_objects::~Table_of_objects(void)
+Table_of_items::~Table_of_items(void)
 {
 }
 
 
 //Add functions :
 
-void Table_of_objects::add_ant (std::shared_ptr<Ant> p_ant){
+void Table_of_items::add_ant (std::shared_ptr<Ant> p_ant){
 	if (std::find(_ant_list.begin(), _ant_list.end(), p_ant) == _ant_list.end())
 		_ant_list.push_back (p_ant);
 }
 
-void Table_of_objects::add_colony (std::shared_ptr<Colony> p_colony){
+void Table_of_items::add_colony (std::shared_ptr<Colony> p_colony){
 	if (std::find(_colony_list.begin(), _colony_list.end(), p_colony) == _colony_list.end())
 		_colony_list.push_back (p_colony);
 }
 
-void Table_of_objects::add_food (std::shared_ptr<Food> p_food){
+void Table_of_items::add_food (std::shared_ptr<Food> p_food){
 	if (std::find(_food_list.begin(), _food_list.end(), p_food) == _food_list.end())
 		_food_list.push_back (p_food);
 }
 
-void Table_of_objects::add_pheromone (std::shared_ptr<Pheromone> p_pheromone){
+void Table_of_items::add_pheromone (std::shared_ptr<Pheromone> p_pheromone){
 
 	if (std::find(_pheromone_list.begin(), _pheromone_list.end(), p_pheromone) == _pheromone_list.end())
 	{	
@@ -61,19 +61,19 @@ void Table_of_objects::add_pheromone (std::shared_ptr<Pheromone> p_pheromone){
 
 //Delete functions :
 
-void Table_of_objects::delete_ant (std::shared_ptr<Ant> p_ant){
+void Table_of_items::delete_ant (std::shared_ptr<Ant> p_ant){
 	_ant_list.remove(p_ant) ;
 }
 
-void Table_of_objects::delete_colony (std::shared_ptr<Colony> p_colony){
+void Table_of_items::delete_colony (std::shared_ptr<Colony> p_colony){
 	_colony_list.remove(p_colony) ;
 }
 
-void Table_of_objects::delete_food (std::shared_ptr<Food> p_food){
+void Table_of_items::delete_food (std::shared_ptr<Food> p_food){
 	_food_list.remove(p_food) ;
 }
 
-void Table_of_objects::delete_pheromone (std::shared_ptr<Pheromone> p_pheromone){
+void Table_of_items::delete_pheromone (std::shared_ptr<Pheromone> p_pheromone){
 	_pheromone_list.remove(p_pheromone) ;
 	int x,z ;
 	double size_square ; //size of a square of the pheromone matrix
@@ -86,7 +86,7 @@ void Table_of_objects::delete_pheromone (std::shared_ptr<Pheromone> p_pheromone)
 
 //Update functions :
 
-void Table_of_objects::update_passive(Uint32 time,Uint32 time_step) {
+void Table_of_items::update_passive(Uint32 time,Uint32 time_step) {
 	//We decided not to use the delete function to reduce the complexity
 	//Indeed, if we used this, we would have a quadratic complexity
 	//because delete has already a linear complexity. So our function

@@ -1,11 +1,11 @@
 #pragma once
 #include "Position.h"
 
-class Game_object_birth_info
+class Game_item_birth_info
 {
 public:
-	Game_object_birth_info(void);
-	~Game_object_birth_info(void);	
+	Game_item_birth_info(void);
+	~Game_item_birth_info(void);	
 
 	int _obj_type;
 	double _size;
