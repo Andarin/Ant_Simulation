@@ -21,6 +21,7 @@ Ant::Ant(Ant_birth_info &ant_birth_info)
 	_pos._direction [0] = 1/sq2 ;
 	_pos._direction [1] = 1/sq2 ;
 	_max_distance_before_stop = ant_birth_info._max_distance_before_stop;
+	_objective = ANT_STATUS_GET_FOOD ;
 }
 
 Ant::~Ant(void)
@@ -60,7 +61,12 @@ void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Ant>> p
 		}
 		else if (_distance_left <= 0)
 		{
-			scout_AI (time);
+			if (_objective == ANT_STATUS_SCOUT)
+				scout_AI (time);
+			else if (_objective == ANT_STATUS_BACK_TO_COLONY)
+				back_AI();
+			else if (_objective == ANT_STATUS_GET_FOOD)
+				food_AI();
 		}
 		else if (_time_to_move <= time)
 		{
@@ -131,14 +137,22 @@ void Ant::scout_AI(Uint32 time)
 	set_pheromone (1,0.5,0.5);
 }
 
-void Ant::back_AI(Uint32 time)
+void Ant::back_AI()
 {
+	_distance_left = 50 + (_max_distance_before_stop - 50.0)*unif_01() ;
+	_pos._direction = direction_phero();
+	if (_food_stored > 0)
+	{
+		set_pheromone (1,2,0.5);
+	}
 
 }
 
-void Ant::food_AI(Uint32 time)
+void Ant::food_AI()
 {
-
+	_distance_left = 50 + (_max_distance_before_stop - 50.0)*unif_01() ;
+	_pos._direction = direction_phero();
+	set_pheromone (1,1,0.5);
 }
 
 //Board interaction functions :
@@ -348,5 +362,30 @@ int Ant::rank_chosen_phero ()//this list is not empty
 
 std::array<double,2> Ant::direction_phero (void)
 {
+	update_pheros_lists();
+	std::array<double,2> res;
+	if (!_phero_dir.empty())
+	{
+		std::list<std::array<double,2>>::iterator it = _phero_dir.begin();
+		int N = rank_chosen_phero ();
+		std::advance(it,N);
+		res = *it;
+	}
+	else 
+	{
+		double draw = unif_01();
+		if (draw <= 0.5)
+		{
+			res[0] = -_pos._direction[1];
+			res[1] = _pos._direction[0];
+		}
+		else
+		{
+			res[0] = _pos._direction[1];
+			res[1] = -_pos._direction[0];
+		}
+	}
 
+	res = add_triangle_noise_30 (res);
+	return res;
 }

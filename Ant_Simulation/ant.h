@@ -96,7 +96,6 @@ private:
 
 	bool _is_alive;
 	bool _is_moving;
-	bool _is_bringing_food;
 	int _objective; //is the objective of the ant, for the moment
 					//there are three possible :
 					//		-scout (to find new foods)
@@ -127,8 +126,8 @@ private:
 	//AI functions
 
 	void scout_AI (Uint32); //AI of the ant when it's trying to find food (is a scout)
-	void back_AI (Uint32); //AI of the ant when it wants to get back home
-	void food_AI (Uint32); //AI of the ant when it wants to go to a known food
+	void back_AI(); //AI of the ant when it wants to get back home
+	void food_AI(); //AI of the ant when it wants to go to a known food
 
 	 //common function for back_AI and food_AI to deal with the pheromones
 	void dir_choice_according_to_phero (void) ;
