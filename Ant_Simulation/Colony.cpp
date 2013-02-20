@@ -2,6 +2,7 @@
 
 Colony::Colony(Colony_birth_info &colony_birth_info)
 {
+	// variables set by the given birth information
 	_pos = colony_birth_info._pos;
 	_color = colony_birth_info._color;
 	_ant_speed = colony_birth_info._ant_speed;
@@ -14,13 +15,16 @@ Colony::Colony(Colony_birth_info &colony_birth_info)
 	_ant_max_distance_before_stop = colony_birth_info._ant_max_distance_before_stop;
 	_max_egg_production_per_m = colony_birth_info._colony_max_reproduction_speed;
 	_liquid_food = colony_birth_info._initial_food;
-	_obj_type = OBJECT_TYPE_NR_OF_COLONY;
+	_larva_dev_time = colony_birth_info._larva_dev_time; // in s
 	_size = colony_birth_info._size;
 
+	// variables set inside the colony
+	_obj_type = OBJECT_TYPE_NR_OF_COLONY;
+	_food_found = false;
+	_food_found_timer = 0;
 	_egg_production_per_m = _max_egg_production_per_m;
 	_every_XX_ms_egg = 60000.0/_egg_production_per_m;
 	_egg_time_accumulated = 0; // in ms
-	_larva_dev_time = 5; // in s
 	_queen_hp = 100;
 	_proba_that_ant_is_worker_not_solidier = 1.0;
 	_solid_food = 0.0;
@@ -33,13 +37,14 @@ Colony::~Colony(void)
 
 void Colony::update(Uint32 time, Uint32 time_step)
 {
-	check_if_queen_starves();
+	check_if_queen_starves(time_step);
 	if (_queen_hp <= 0) 
 	{
 		destroy();
 	}
 	else {
 		calc_energy_consumption(time_step);
+		update_alarm_status(time_step);
 		lay_egg(time, time_step);
 		test_if_larva_developped(time);
 		transform_food(time_step);
@@ -52,11 +57,18 @@ void Colony::calc_energy_consumption(Uint32 time_step)
 	_liquid_food = std::max<double>(_liquid_food-time_step/_every_XX_ms_egg, 0);
 }
 
-void Colony::check_if_queen_starves(void)
+void Colony::update_alarm_status(Uint32 time_step)
+{
+	_food_found_timer = std::max<Uint32>(_food_found_timer-time_step,0);
+	if (_food_found_timer <= 0)
+		_food_found = false;
+}
+
+void Colony::check_if_queen_starves(Uint32 time_step)
 {
 	// Queen looses health if there is no food
 	if (_liquid_food == 0)
-		{ _queen_hp -= 2; }
+		{ _queen_hp -= time_step/600; }
 }
 
 void Colony::lay_egg(Uint32 time, Uint32 time_step)
@@ -108,6 +120,10 @@ void Colony::create_ant(Uint32 time)
 	info._energy = _ant_start_energy;
 	info._energy_consumption_per_m = _ant_energy_consumption_per_m;
 	info._max_distance_before_stop = _ant_max_distance_before_stop;
+	if (_food_found)
+		info._ant_status = ANT_STATUS_GET_FOOD;
+	else
+		info._ant_status = ANT_STATUS_SCOUT;
 	std::shared_ptr<Ant> p_ant = std::make_shared<Ant> (info);
 	_buffer_fresh_ant.push_back(p_ant);
 }
@@ -123,6 +139,8 @@ double Colony::hand_out_food(double ant_demand)
 void Colony::store_food(double amount_delivered)
 {
 	_solid_food += amount_delivered;
+	_food_found = true;
+	_food_found_timer = 30000;
 }
 
 void Colony::change_egg_production(int new_egg_production)

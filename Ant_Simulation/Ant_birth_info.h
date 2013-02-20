@@ -24,4 +24,5 @@ public:
 	double _energy;
 	double _energy_consumption_per_m;
 	double _max_distance_before_stop;
+	int _ant_status;
 };

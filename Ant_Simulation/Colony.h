@@ -1,8 +1,8 @@
 #pragma once
-
+// external libs
 #include <list>
 #include <memory>
-
+// self created libs
 #include "Ant.h"
 #include "Colony_birth_info.h"
 #include "general_constants.h"
@@ -57,11 +57,18 @@ private:
 	double _liquid_food;
 	double _solid_food;
 	bool _is_alive;
+	// alarm colony if an ant returned with food
+	// hence all the spawning ants will follow the path to the food
+	bool _food_found;
+	// stop time since last food found in order to return to
+	// scout-mode when food source is exhausted
+	Uint32 _food_found_timer; // in ms
 	double _size;
 
 	void transform_food(Uint32);
-	void check_if_queen_starves(void);
+	void check_if_queen_starves(Uint32);
 	void calc_energy_consumption(Uint32);
+	void update_alarm_status(Uint32);
 	void lay_egg(Uint32, Uint32);
 	void produce_larva(Uint32);
 	void test_if_larva_developped(Uint32);

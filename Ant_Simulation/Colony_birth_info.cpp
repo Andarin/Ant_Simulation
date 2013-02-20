@@ -13,6 +13,7 @@ Colony_birth_info::Colony_birth_info(void)
 	_ant_max_distance_before_stop = 0;
 	_colony_max_reproduction_speed = 0;
 	_initial_food = 0;
+	_larva_dev_time = 0;
 	_size = 0;
 }
 
@@ -33,15 +34,16 @@ void Colony_birth_info::read_from_file(std::string file_name)
 
 	// transform lines into numbers and pass them to the variables
 	_ant_speed = atof(lines[42].c_str());
-	_ant_attack_points = atof(lines[54].c_str());
-	_ant_armor = atof(lines[56].c_str());
-	_ant_transport_capability = atof(lines[52].c_str());
-	_ant_life_time = atof(lines[44].c_str());
-	_ant_start_energy = atof(lines[46].c_str());
-	_ant_energy_consumption_per_m = atof(lines[48].c_str());
-	_ant_max_distance_before_stop = atof(lines[50].c_str());
+	_ant_attack_points = atof(lines[59].c_str());
+	_ant_armor = atof(lines[61].c_str());
+	_ant_transport_capability = atof(lines[57].c_str());
+	_ant_life_time = atof(lines[49].c_str());
+	_ant_start_energy = atof(lines[51].c_str());
+	_ant_energy_consumption_per_m = atof(lines[53].c_str());
+	_ant_max_distance_before_stop = atof(lines[55].c_str());
 	_colony_max_reproduction_speed = atof(lines[38].c_str());
 	_initial_food = atof(lines[40].c_str());
+	_larva_dev_time = atof(lines[47].c_str());
 
 	// Set colony position
 	double colony_x = atof(lines[32].c_str());
