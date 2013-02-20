@@ -24,6 +24,7 @@ public:
 	double _ant_max_distance_before_stop;
 	int _colony_max_reproduction_speed;
 	double _initial_food;
+	double _larva_dev_time;
 	double _size;
 };
 

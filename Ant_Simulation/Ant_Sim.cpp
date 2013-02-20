@@ -151,20 +151,6 @@ void Ant_Sim::game_logic(Uint32 time)
 void Ant_Sim::add_colony(void)
 {
 	Colony_birth_info colony_birth_info;
-	std::array<double, 2> dir = {1.0, 0.0};
-	Position pos(200,1,200,dir);
-	colony_birth_info._pos = pos;
-	colony_birth_info._color = 0;
-	colony_birth_info._ant_speed = 0.1;
-	colony_birth_info._ant_attack_points = 1;
-	colony_birth_info._ant_armor = 1;
-	colony_birth_info._ant_transport_capability = 1;
-	colony_birth_info._ant_life_time = 150;
-	colony_birth_info._ant_start_energy = 100;
-	colony_birth_info._ant_energy_consumption_per_m = 100;
-	colony_birth_info._ant_max_distance_before_stop = 200;
-	colony_birth_info._colony_max_reproduction_speed = 10;
-	colony_birth_info._initial_food = 1000;
 	colony_birth_info._size = 100;
 	colony_birth_info.read_from_file("Ant_Sim_parameters.txt");
 	auto new_colony_ptr = std::make_shared<Colony>(colony_birth_info);

@@ -10,6 +10,7 @@ Ant_birth_info::Ant_birth_info()
 	_time_of_death = 0;
 	_color = 0;
 	_max_distance_before_stop = 0;
+	_ant_status = 0;
 }
 
 Ant_birth_info::~Ant_birth_info(void) 
