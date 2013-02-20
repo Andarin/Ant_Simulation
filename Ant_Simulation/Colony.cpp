@@ -106,6 +106,7 @@ void Colony::create_ant(Uint32 time)
 	info._color = _color;
 	info._energy = _ant_start_energy;
 	info._energy_consumption_per_m = _ant_energy_consumption_per_m;
+	info._max_distance_before_stop = 200 ;
 	std::shared_ptr<Ant> p_ant = std::make_shared<Ant> (info);
 	_buffer_fresh_ant.push_back(p_ant);
 }

@@ -9,6 +9,7 @@ Ant_birth_info::Ant_birth_info()
 	_transport_capability = -1;
 	_time_of_death = -1;
 	_color = -1;
+	_max_distance_before_stop = -1;
 }
 
 Ant_birth_info::~Ant_birth_info(void) 

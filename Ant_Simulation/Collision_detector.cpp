@@ -14,7 +14,7 @@ Collision_detector::~Collision_detector(void)
 
 }
 
-std::tuple<int,int> Collision_detector::get_in_wich_square (Position pos, double sub)
+std::tuple<int,int> Collision_detector::get_in_which_square (Position pos, double sub)
 										//get the square (of size sub)
 {										//in the map where is located the object at pos
 	double x = pos._x;
@@ -53,7 +53,7 @@ void Collision_detector::update_mpfa(void)//This map will be a subdivision of th
 
 		//We find out in which square (cf 1st commentary line) it is located
 		Position pos_pheromone = pheromone._pos;
-		std::tuple<int,int> square = get_in_wich_square (pos_pheromone, _sub_size_olf);
+		std::tuple<int,int> square = get_in_which_square (pos_pheromone, _sub_size_olf);
 		
 		//We place this pheromone in the map accordingly to the square it is located
 		if (_map_ph_for_ant.count(square) == 1)
@@ -79,7 +79,7 @@ void Collision_detector::update_mafa(void)
 
 		//We find out in which square (cf 1st commentary line) it is located
 		Position pos_ant = ant._pos;
-		std::tuple<int,int> square = get_in_wich_square (pos_ant, _sub_size_olf);
+		std::tuple<int,int> square = get_in_which_square (pos_ant, _sub_size_olf);
 
 		//We place this ant in the map accordingly to the square it is located
 		if (_map_ant_for_ant.count(square) == 1)
@@ -105,7 +105,7 @@ void Collision_detector::update_mcfa(void)
 
 		//We find out in which square (cf 1st commentary line) it is located
 		Position pos_colony = colony._pos;
-		std::tuple<int,int> square = get_in_wich_square (pos_colony, _sub_size_olf);
+		std::tuple<int,int> square = get_in_which_square (pos_colony, _sub_size_olf);
 
 		//We place this colony in the map accordingly to the square it is located
 		if (_map_col_for_ant.count(square) == 1)
@@ -131,7 +131,7 @@ void Collision_detector::update_mffa(void)
 
 		//We find out in which square (cf 1st commentary line) it is located
 		Position pos_food = food._pos;
-		std::tuple<int,int> square = get_in_wich_square (pos_food, _sub_size_olf);
+		std::tuple<int,int> square = get_in_which_square (pos_food, _sub_size_olf);
 
 		//We place this pheromone in the map accordingly to the square it is located
 		if (_map_food_for_ant.count(square) == 1)
@@ -151,7 +151,8 @@ void Collision_detector::update_active(Uint32 time,Uint32 time_step)//for the mo
 	{
 		if ((*(*it)).is_alive())
 		{
-			(*(*it)).update(time,time_step,get_an_coll(*it),get_co_coll(*it),get_fo_coll(*it));
+			std::list<std::shared_ptr<Ant>> coll_between_ants ;
+			(*(*it)).update(time,time_step,coll_between_ants,get_co_coll(*it),get_fo_coll(*it));
 			if (!((*(*it)).is_moving()))
 				(*(*it)).update_ph(get_ph_coll(*it));
 			while (!(*(*it))._buffer_fresh_phero.empty())
@@ -188,7 +189,7 @@ std::list<std::shared_ptr<Pheromone>> Collision_detector::get_ph_coll(std::share
 	//We get first the square where the ant is
 	Ant ant = *p_ant ;
 	Position pos = ant._pos ;
-	std::tuple<int,int> square = get_in_wich_square (pos,_sub_size_olf);
+	std::tuple<int,int> square = get_in_which_square (pos,_sub_size_olf);
 
 
 	//Then we look in the squares arround its to search for collisions
@@ -217,7 +218,7 @@ std::list<std::shared_ptr<Ant>> Collision_detector::get_an_coll(std::shared_ptr<
 	//We get first the square where the ant is
 	Ant ant = *p_ant ;
 	Position pos = ant._pos ;
-	std::tuple<int,int> square = get_in_wich_square (pos,_sub_size_touch);
+	std::tuple<int,int> square = get_in_which_square (pos,_sub_size_touch);
 
 
 	//Then we look in the squares arround its to search for collisions
@@ -246,7 +247,7 @@ std::list<std::shared_ptr<Colony>> Collision_detector::get_co_coll(std::shared_p
 	//We get first the square where the ant is
 	Ant ant = *p_ant ;
 	Position pos = ant._pos ;
-	std::tuple<int,int> square = get_in_wich_square (pos,_sub_size_olf);
+	std::tuple<int,int> square = get_in_which_square (pos,_sub_size_olf);
 
 
 	//Then we look in the squares arround its to search for collisions
@@ -275,7 +276,7 @@ std::list<std::shared_ptr<Food>> Collision_detector::get_fo_coll(std::shared_ptr
 	//We get first the square where the ant is
 	Ant ant = *p_ant ;
 	Position pos = ant._pos ;
-	std::tuple<int,int> square = get_in_wich_square (pos,_sub_size_olf);
+	std::tuple<int,int> square = get_in_which_square (pos,_sub_size_olf);
 
 
 	//Then we look in the squares arround its to search for collisions
