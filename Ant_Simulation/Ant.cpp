@@ -19,6 +19,7 @@ Ant::Ant(Ant_birth_info &ant_birth_info)
 	_is_moving = false;
 	_pos._direction [0] = 0 ;
 	_pos._direction [1] = 1 ;
+	_max_distance_before_stop = ant_birth_info._max_distance_before_stop;
 }
 
 Ant::~Ant(void)
@@ -114,7 +115,7 @@ bool Ant::is_moving()
 
 void Ant::scout_AI(Uint32 time)
 {
-	_distance_left = 50 + 150*unif_01() ;
+	_distance_left = 50 + (_max_distance_before_stop - 50.0)*unif_01() ;
 	double delta = 2*unif_01() -1;
 	std::array<double,2> vect = _pos._direction;
 	double x = vect[0] - delta*vect[1];
