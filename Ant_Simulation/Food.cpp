@@ -20,5 +20,5 @@ double Food::get_piece(double ant_demand)
 
 double Food::calculate_size(double energy)
 {
-	return energy/2.5;
+	return energy/2.0;
 }

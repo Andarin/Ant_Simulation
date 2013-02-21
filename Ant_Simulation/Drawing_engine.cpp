@@ -259,7 +259,7 @@ void Drawing_engine::draw_food(Ant_Sim* ant_sim_ptr)
 			glTranslatef(food_pos._x,food_pos._y,food_pos._z);
 			if (_high_quality_on)
 			{
-				int apple_size = std::max<double>(((*food_it)->get_size())/40,4);
+				int apple_size = 4-std::min<double>(((*food_it)->get_size())/20,4);
 				_apple_hq_array[apple_size]->draw_model(); 
 			}
 			else 

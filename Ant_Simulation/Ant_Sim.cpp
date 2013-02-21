@@ -176,7 +176,7 @@ void Ant_Sim::add_start_food(int number_of_items)
 	{
 		double x = unif_01() * (BOARD_SIZE-400) + 200;
 		double z = unif_01() * (BOARD_SIZE-400) + 200;
-		double amount = unif_01() * 200;
+		double amount = std::max<double>(unif_01()*200,10);
 		add_food(amount,x,0,z);
 	}
 }
