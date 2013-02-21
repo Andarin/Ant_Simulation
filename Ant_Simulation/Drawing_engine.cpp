@@ -26,7 +26,7 @@ void Drawing_engine::set_window(void)
 
 	// create prescreen to show logo while everything is initialized
 	_prescreen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_SWSURFACE);
-	_logo = load_image("src/logo.png");
+	_logo = load_image("data/logo.png");
 	apply_surface( 200, 150, _logo, _prescreen );
 	SDL_Flip( _prescreen ); 
 
@@ -37,7 +37,7 @@ void Drawing_engine::set_window(void)
 	//screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_SWSURFACE|SDL_FULLSCREEN);
 	SDL_WM_SetCaption( "Ant Simulation", NULL );
 	SDL_Surface *icon;
-	icon = SDL_LoadBMP("src/icon.bmp");
+	icon = SDL_LoadBMP("data/icon.bmp");
 	Uint32 colorkey = SDL_MapRGB(icon->format, 111,111,111);
 	SDL_SetColorKey(icon, SDL_SRCCOLORKEY, colorkey);              
 	SDL_WM_SetIcon(icon,NULL);
@@ -70,14 +70,14 @@ void Drawing_engine::init_fog(void)
 
 void Drawing_engine::load_textures(void)
 {
-	_tex_board=load_texture_png("src/grass.png", 512, 512, false, true);
-	_tex_colony=load_texture_png("src/gravel.png", 256, 256, false, true);
-	_tex_box=load_texture_png("src/box.png", 256, 256, false, true);
-	_tex_apple_side=load_texture_png("src/apple_side.png", 256, 256, false, true);
-	_tex_apple_top=load_texture_png("src/apple_top.png", 256, 256, false, true);
-	_tex_border=load_texture_png("src/border.png", 1024, 1024);
-	_tex_result=load_texture_png("src/result.png", 512, 512);
-	_tex_result_pointer=load_texture_png("src/result_pointer.png", 128, 128);
+	_tex_board=load_texture_png("data/grass.png", 512, 512, false, true);
+	_tex_colony=load_texture_png("data/gravel.png", 256, 256, false, true);
+	_tex_box=load_texture_png("data/box.png", 256, 256, false, true);
+	_tex_apple_side=load_texture_png("data/apple_side.png", 256, 256, false, true);
+	_tex_apple_top=load_texture_png("data/apple_top.png", 256, 256, false, true);
+	_tex_border=load_texture_png("data/border.png", 1024, 1024);
+	_tex_result=load_texture_png("data/result.png", 512, 512);
+	_tex_result_pointer=load_texture_png("data/result_pointer.png", 128, 128);
 }
 
 void Drawing_engine::load_hq_models(void)
@@ -85,7 +85,7 @@ void Drawing_engine::load_hq_models(void)
 	for (int i = 0; i <= 7; i++)
 	{	
 		std::stringstream sstm;
-		sstm << "src/fourmi_obj/fourmi3_0000" << i << "1.obj";
+		sstm << "data/fourmi_obj/fourmi3_0000" << i << "1.obj";
 		std::string file_name = sstm.str();
 		_ant_hq_array[i] = new MeshObj(file_name);
 	}
@@ -93,9 +93,9 @@ void Drawing_engine::load_hq_models(void)
 		for (int i = 1; i <= 5; i++)
 	{	
 		std::stringstream sstm;
-		sstm << "src/apple/apple" << i << ".obj";
+		sstm << "data/apple/apple" << i << ".obj";
 		std::string file_name = sstm.str();
-		_apple_hq_array[i] = new MeshObj(file_name);
+		_apple_hq_array[i-1] = new MeshObj(file_name);
 	}
 }
 
@@ -104,7 +104,7 @@ void Drawing_engine::init(void)
 	set_window();
 	set_openGL();
 	// set glFont
-	_screen_text.Create("src/didactgothic.glf", 1);
+	_screen_text.Create("data/didactgothic.glf", 1);
 	init_fog();
 	init_skybox();
 	load_textures();
@@ -248,7 +248,7 @@ void Drawing_engine::switch_to_ortho_perspective(void)
 	glLoadIdentity();
 }
 
-void Drawing_engine::draw_foods(Ant_Sim* ant_sim_ptr)
+void Drawing_engine::draw_food(Ant_Sim* ant_sim_ptr)
 {
 	std::list<std::shared_ptr<Food>> food_list = (*ant_sim_ptr)._table_items->_food_list;
 	for (std::list<std::shared_ptr<Food>>::iterator food_it = food_list.begin(); 
@@ -257,8 +257,11 @@ void Drawing_engine::draw_foods(Ant_Sim* ant_sim_ptr)
 		Position food_pos = (*food_it)->_pos;
 		glPushMatrix();
 			glTranslatef(food_pos._x,food_pos._y,food_pos._z);
-			if (_high_quality_on) 
-				{ _apple_hq->draw_model(); }
+			if (_high_quality_on)
+			{
+				int apple_size = std::max<double>(((*food_it)->get_size())/40,4);
+				_apple_hq_array[apple_size]->draw_model(); 
+			}
 			else 
 				{ draw_box((*food_it)->get_size(), _tex_apple_side, _tex_apple_top); }
 		glPopMatrix();
@@ -394,10 +397,14 @@ void Drawing_engine::clean_up(void)
 	glDeleteTextures(1,&_tex_logo);
 	glDeleteTextures(1,&_tex_result);
 	glDeleteTextures(1,&_tex_result_pointer);
+	
+	// delete ant sprites
 	for (int i = 0; i <= 7; i++)
 	{
 		delete(_ant_hq_array[i]);
 	}
+
+	// delete food sprites
 	for (int i = 0; i <= 4; i++)
 	{
 		delete(_apple_hq_array[i]);
@@ -480,7 +487,7 @@ void Drawing_engine::display(Ant_Sim *ant_sim_ptr, Uint32 time_remaining, int ro
 	draw_border(BOARD_SIZE, _tex_border);
 	draw_colonies(ant_sim_ptr);
 	draw_obstacles(ant_sim_ptr);
-	draw_foods(ant_sim_ptr);
+	draw_food(ant_sim_ptr);
 	draw_ants(ant_sim_ptr, round_cnt);
 
 	if (_building_menu_on)
