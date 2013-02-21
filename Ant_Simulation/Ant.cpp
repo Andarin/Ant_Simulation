@@ -21,7 +21,7 @@ Ant::Ant(Ant_birth_info &ant_birth_info)
 	_pos._direction [0] = 1/sq2 ;
 	_pos._direction [1] = 1/sq2 ;
 	_max_distance_before_stop = ant_birth_info._max_distance_before_stop;
-	_objective = ANT_STATUS_GET_FOOD ;
+	_objective = ant_birth_info._ant_status ;
 	_food_stored = 0;
 	_time_to_move = 0 ;
 	_max_food_storage=1;
@@ -35,6 +35,12 @@ void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Ant>> p
 {
 	_energy -= _energy_consumption_per_m*time_step/60000;
 	std::list<std::array<double,2>> list_normals = return_normal_board();
+	if (_energy < 0.5*_max_energy_storage)
+	{
+		_pos._direction[0] = -_pos._direction[0];
+		_pos._direction[1] = -_pos._direction[1];
+		_objective = ANT_STATUS_BACK_TO_COLONY;
+	}
 	if (_distance_left <= 0)
 	{
 		_is_moving = false ;
@@ -60,15 +66,41 @@ void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Ant>> p
 		{
 			if (_food_stored>0)
 			{
-			(_phys_coll_col.front())->store_food(_food_stored);
-			_food_stored == 0;
+				(_phys_coll_col.front())->store_food(_food_stored);
+				_food_stored = 0;
+				_pos._direction[0] = -_pos._direction[0];
+				_pos._direction[1] = -_pos._direction[1];
+				restore_energy (*(_phys_coll_col.front()));
 			}
-			restore_energy (*(_phys_coll_col.front()));
+
+			else if (_energy < 0.5*_max_energy_storage)
+			{
+				restore_energy (*(_phys_coll_col.front()));
+				_pos._direction[0] = -_pos._direction[0];
+				_pos._direction[1] = -_pos._direction[1];
+			}
+
+			if (_phys_coll_col.front()->get_if_food_found())
+			{
+				_objective = ANT_STATUS_GET_FOOD;
+			}
+
+			else
+
+			{
+				_objective = ANT_STATUS_SCOUT;
+			}
 		}
 
-		if (!_phys_coll_col.empty() && _food_stored < _max_food_storage)
+		if (!_phys_coll_food.empty() && _food_stored < _max_food_storage)
 		{
-
+			_food_stored += (*(_phys_coll_food.front())).get_piece(_max_food_storage - _food_stored);
+			if (_food_stored == _max_food_storage)
+			{
+			_pos._direction[0] = -_pos._direction[0];
+			_pos._direction[1] = -_pos._direction[1];
+			_objective = ANT_STATUS_BACK_TO_COLONY;
+			}
 		}
 
 		if (_is_moving)

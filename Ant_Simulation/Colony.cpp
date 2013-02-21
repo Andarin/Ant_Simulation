@@ -183,3 +183,8 @@ int Colony::get_number_of_larvas()
 {
 	return _larva_list.size();
 }
+
+bool Colony::get_if_food_found()
+{
+	return _food_found ;
+}
