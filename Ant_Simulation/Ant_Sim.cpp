@@ -152,7 +152,7 @@ void Ant_Sim::add_colony(void)
 {
 	Colony_birth_info colony_birth_info;
 	colony_birth_info._size = 100;
-	colony_birth_info.read_from_file("Ant_Sim_parameters.txt");
+	colony_birth_info.read_from_file(FILE_NAME);
 	auto new_colony_ptr = std::make_shared<Colony>(colony_birth_info);
 	(*_table_items).add_colony(new_colony_ptr);
 }

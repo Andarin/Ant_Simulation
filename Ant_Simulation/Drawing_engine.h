@@ -93,5 +93,6 @@ private:
 	void draw_result(double);
 	void draw_building_menu(void);
 	void go_into_building_menu(void);
+	double get_food_starting_value(void);
 	double calc_result(Ant_Sim*);
 };

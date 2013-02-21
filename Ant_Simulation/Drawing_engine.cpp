@@ -189,8 +189,22 @@ void Drawing_engine::draw_hud(Uint32 time_remaining, Ant_Sim *ant_sim_ptr)
 	if (_countdown_on) draw_countdown(time_remaining_in_s);
 }
 
+double Drawing_engine::get_food_starting_value(void)
+{
+	std::vector<std::string> lines;
+	std::ifstream fin(FILE_NAME);
+	std::string line;
+	while( std::getline(fin, line) )
+	{
+		lines.push_back(line);
+	}
+	double start_food = atof(lines[40].c_str());
+	return start_food;
+}
+
 double Drawing_engine::calc_result(Ant_Sim *ant_sim_ptr)
 {
+	// get liquid and solid food values of the simulation
 	double liquid_food = 0;
 	double solid_food = 0;
 	std::list<std::shared_ptr<Colony>> colony_list = (*ant_sim_ptr)._table_items->_colony_list;
@@ -204,7 +218,10 @@ double Drawing_engine::calc_result(Ant_Sim *ant_sim_ptr)
 			solid_food += (*col_it)->get_solid_food();
 		}
 	}
-	return std::min<double>((liquid_food + solid_food)/1000.0,1.0);
+	// get the value of food the simulation started with
+	double start_food = get_food_starting_value();
+	// return the relation between start food and food at the end (between 0.0 and 1.0)
+	return std::min<double>((liquid_food + solid_food)/start_food/2,1.0);
 }
 
 void Drawing_engine::switch_to_normal_perspective(int field_of_view_in_degrees)
