@@ -26,6 +26,7 @@ Ant::Ant(Ant_birth_info &ant_birth_info)
 	_time_to_move = 0 ;
 	_max_food_storage=1;
 	_get_back_colony = false;
+	_counter = 0;
 }
 
 Ant::~Ant(void)
@@ -202,14 +203,29 @@ void Ant::back_AI()
 	{
 		set_pheromone (0,10,1);
 	}
+}
+
+//because of some problem we encountered we create a simpler version of this AI
+
+void Ant::simple_back_AI()
+{
 
 }
+
+
 
 void Ant::food_AI()
 {
 	_distance_left = 50 + (_max_distance_before_stop - 50.0)*unif_01() ;
 	_pos._direction = direction_phero();
 	set_pheromone (0,5,1);
+}
+
+//because of some problem we encountered we create a simpler version of this AI
+
+void Ant::simple_food_AI()
+{
+
 }
 
 //Board interaction functions :

@@ -46,6 +46,7 @@ private:
 	double _transport_capability;
 	int _size;
 	Uint32 _time_of_death;
+	int _counter;
 
 	double _max_energy_storage;
 	double _energy;
@@ -59,6 +60,9 @@ private:
 	void restore_energy(Colony col);
 	void attack(Game_item target);
 	void set_pheromone(int,double,double);
+	//for the simple AI we add a counter to the pheromone
+	//so the AI can find its way more easily
+	void simple_AI_set_phero (int,int,double,double);
 	void destroy(void);
 	void store_food (void);
 	void take_food (void);
@@ -129,6 +133,8 @@ private:
 	void scout_AI (Uint32); //AI of the ant when it's trying to find food (is a scout)
 	void back_AI(); //AI of the ant when it wants to get back home
 	void food_AI(); //AI of the ant when it wants to go to a known food
+	void simple_back_AI();
+	void simple_food_AI();
 
 	 //common function for back_AI and food_AI to deal with the pheromones
 	void dir_choice_according_to_phero (void) ;
