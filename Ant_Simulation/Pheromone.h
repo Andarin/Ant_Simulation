@@ -16,6 +16,7 @@ public:
 	void merge_pheromone(std::shared_ptr<Pheromone>);
 
 	int _pheromone_type;
+	int _counter;
 
 	double calc_size_by_energy (double);//give the size of pheromone accordingly to its energy
 };

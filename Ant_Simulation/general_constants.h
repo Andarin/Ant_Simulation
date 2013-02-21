@@ -37,3 +37,9 @@ const int PHERO_TYPE_ALERT = 1;
 const int ANT_STATUS_SCOUT = 0;			//to find new foods
 const int ANT_STATUS_BACK_TO_COLONY = 1;//to bring back food to colony or to go back to it to get energy...
 const int ANT_STATUS_GET_FOOD = 2;		//to go and take food from an already discovered food
+
+//Different type of pheromone for the simple AI:
+const int SIMPLE_AI_PHERO_BACK = 0;//is used when the ant searchs for a way to go back to the colony
+const int SIMPLE_AI_PHERO_FOOD = 1;//is used when the ant searchs for food
+
+
