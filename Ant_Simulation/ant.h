@@ -96,6 +96,7 @@ private:
 
 	bool _is_alive;
 	bool _is_moving;
+	bool _get_back_colony;
 	int _objective; //is the objective of the ant, for the moment
 					//there are three possible :
 					//		-scout (to find new foods)
