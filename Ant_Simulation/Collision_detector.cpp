@@ -177,8 +177,8 @@ void Collision_detector::update_active(Uint32 time,Uint32 time_step)//for the mo
 
 void Collision_detector::update_all(Uint32 time,Uint32 time_step)
 {
-	//update_mpfa();
-	//update_mafa();  these functions are too complex to call them every time
+	update_mpfa();
+	//update_mafa(); useless for the moment
 	update_mcfa();
 	update_mffa();
 	update_active(time,time_step);

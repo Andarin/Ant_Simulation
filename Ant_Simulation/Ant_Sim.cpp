@@ -3,7 +3,7 @@
 Ant_Sim::Ant_Sim(int play_time)
 {
 	_time_remaining = play_time*1000;
-	_sim_time_step = 10; // in milli seconds
+	_sim_time_step = 40; // in milli seconds
 	_max_size_of_pheromone = 300;
 	_max_size_of_corps = 100;
 
@@ -58,7 +58,7 @@ Ant_Sim::~Ant_Sim(void)
 
 void Ant_Sim::init(void)
 {
-	_table_items = std::make_shared<Table_of_items>(2500, BOARD_SIZE);
+	_table_items = std::make_shared<Table_of_items>(500, BOARD_SIZE);
 	_coll_dect = std::make_shared<Collision_detector>(_table_items, 
 							_max_size_of_pheromone, _max_size_of_vision, _max_size_of_corps);
 
