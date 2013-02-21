@@ -68,7 +68,7 @@ private:
 	unsigned int _tex_result_pointer;
 	glfont::GLFont _screen_text;
 	MeshObj* _ant_hq_array[8];
-	MeshObj* _apple_hq;
+	MeshObj* _apple_hq_array[5];
 	Uint8 *_keystates;
 
 	// methods

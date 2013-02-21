@@ -90,7 +90,13 @@ void Drawing_engine::load_hq_models(void)
 		_ant_hq_array[i] = new MeshObj(file_name);
 	}
 
-	_apple_hq = new MeshObj("src/apple/apple3.obj");
+		for (int i = 1; i <= 5; i++)
+	{	
+		std::stringstream sstm;
+		sstm << "src/apple/apple" << i << ".obj";
+		std::string file_name = sstm.str();
+		_apple_hq_array[i] = new MeshObj(file_name);
+	}
 }
 
 void Drawing_engine::init(void)
@@ -392,7 +398,10 @@ void Drawing_engine::clean_up(void)
 	{
 		delete(_ant_hq_array[i]);
 	}
-	delete(_apple_hq);
+	for (int i = 0; i <= 4; i++)
+	{
+		delete(_apple_hq_array[i]);
+	}
 }
 
 void Drawing_engine::start_countdown(void)
