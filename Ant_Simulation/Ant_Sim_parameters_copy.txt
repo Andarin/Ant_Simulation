@@ -1,4 +1,4 @@
-Ant Simulation Project by Guillaume Martinet and Lucas Tittmann
+﻿Ant Simulation Project by Guillaume Martinet and Lucas Tittmann
 under GNU GPL v3
 is a project to simulate a colony of ants, represented in simple OpenGL 3D.
 
