@@ -12,12 +12,12 @@ unsigned int skybox[6]; //the ids for the textures
 //load all of the textures, to the skybox array
 void init_skybox()
 {
-    skybox[SKY_LEFT]=load_texture_png("src/left.png", 512,256, true);
-    skybox[SKY_BACK]=load_texture_png("src/back.png", 512,256,true);
-    skybox[SKY_RIGHT]=load_texture_png("src/right.png", 512,256,true);
-    skybox[SKY_FRONT]=load_texture_png("src/front.png", 512,256,true);
-    skybox[SKY_TOP]=load_texture_png("src/top.png", 512,512,true);
-    skybox[SKY_BOTTOM]=load_texture_png("src/grass.png", 512, 512,true);
+    skybox[SKY_LEFT]=load_texture_png("data/left.png", 512,256, true);
+    skybox[SKY_BACK]=load_texture_png("data/back.png", 512,256,true);
+    skybox[SKY_RIGHT]=load_texture_png("data/right.png", 512,256,true);
+    skybox[SKY_FRONT]=load_texture_png("data/front.png", 512,256,true);
+    skybox[SKY_TOP]=load_texture_png("data/top.png", 512,512,true);
+    skybox[SKY_BOTTOM]=load_texture_png("data/grass.png", 512, 512,true);
 }
 
 //delete all of the textures from the skybox array (to avoid memory leaks)

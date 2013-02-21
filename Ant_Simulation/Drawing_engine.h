@@ -86,7 +86,7 @@ private:
 	void draw_hud(Uint32, Ant_Sim*);
 	void draw_test_ants(Ant_Sim*,int,int);
 	void draw_ants(Ant_Sim*,int);
-	void draw_foods(Ant_Sim*);
+	void draw_food(Ant_Sim*);
 	void draw_obstacles(Ant_Sim*);
 	void draw_colonies(Ant_Sim*);
 	void draw_location_selected_on_board(void);
