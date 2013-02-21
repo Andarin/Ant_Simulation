@@ -68,7 +68,7 @@ private:
 	unsigned int _tex_result_pointer;
 	glfont::GLFont _screen_text;
 	MeshObj* _ant_hq_array[8];
-	MeshObj* _apple_hq;
+	MeshObj* _apple_hq_array[5];
 	Uint8 *_keystates;
 
 	// methods
@@ -93,5 +93,6 @@ private:
 	void draw_result(double);
 	void draw_building_menu(void);
 	void go_into_building_menu(void);
+	double get_food_starting_value(void);
 	double calc_result(Ant_Sim*);
 };
