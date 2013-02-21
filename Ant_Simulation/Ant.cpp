@@ -25,6 +25,7 @@ Ant::Ant(Ant_birth_info &ant_birth_info)
 	_food_stored = 0;
 	_time_to_move = 0 ;
 	_max_food_storage=1;
+	_get_back_colony = false;
 }
 
 Ant::~Ant(void)
@@ -34,12 +35,15 @@ Ant::~Ant(void)
 void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Ant>> phys_coll_ant,std::list<std::shared_ptr<Colony>> phys_coll_col,std::list<std::shared_ptr<Food>> phys_coll_food)
 {
 	_energy -= _energy_consumption_per_m*time_step/60000;
+	// if arriving at the border, turn around
 	std::list<std::array<double,2>> list_normals = return_normal_board();
-	if (_energy < 0.5*_max_energy_storage)
+
+	if (_energy < 0.5*_max_energy_storage && !_get_back_colony)
 	{
 		_pos._direction[0] = -_pos._direction[0];
 		_pos._direction[1] = -_pos._direction[1];
 		_objective = ANT_STATUS_BACK_TO_COLONY;
+		_get_back_colony = true;
 	}
 	if (_distance_left <= 0)
 	{
@@ -71,13 +75,15 @@ void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Ant>> p
 				_pos._direction[0] = -_pos._direction[0];
 				_pos._direction[1] = -_pos._direction[1];
 				restore_energy (*(_phys_coll_col.front()));
+				_get_back_colony = false;
 			}
 
-			else if (_energy < 0.5*_max_energy_storage)
+			else if (_energy < 0.5*_max_energy_storage )
 			{
 				restore_energy (*(_phys_coll_col.front()));
 				_pos._direction[0] = -_pos._direction[0];
 				_pos._direction[1] = -_pos._direction[1];
+				_get_back_colony = false;
 			}
 
 			if (_phys_coll_col.front()->get_if_food_found())
@@ -100,6 +106,7 @@ void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Ant>> p
 			_pos._direction[0] = -_pos._direction[0];
 			_pos._direction[1] = -_pos._direction[1];
 			_objective = ANT_STATUS_BACK_TO_COLONY;
+			_get_back_colony = true;
 			}
 		}
 
@@ -184,7 +191,7 @@ void Ant::scout_AI(Uint32 time)
 	_pos._direction[1] = vect[1];
 	Uint32 t = (Uint32) (1000*unif_01());
 	_time_to_move = time + t;
-	set_pheromone (1,0.5,1);
+	set_pheromone (0,2,1);
 }
 
 void Ant::back_AI()
@@ -193,7 +200,7 @@ void Ant::back_AI()
 	_pos._direction = direction_phero();
 	if (_food_stored > 0)
 	{
-		set_pheromone (1,3,1);
+		set_pheromone (0,10,1);
 	}
 
 }
@@ -202,7 +209,7 @@ void Ant::food_AI()
 {
 	_distance_left = 50 + (_max_distance_before_stop - 50.0)*unif_01() ;
 	_pos._direction = direction_phero();
-	set_pheromone (1,1,1);
+	set_pheromone (0,5,1);
 }
 
 //Board interaction functions :
