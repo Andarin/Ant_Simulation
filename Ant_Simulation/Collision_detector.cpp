@@ -151,7 +151,7 @@ void Collision_detector::update_active(Uint32 time,Uint32 time_step)//for the mo
 	{
 		if ((*(*it)).is_alive())
 		{
-			std::list<std::shared_ptr<Ant>> coll_between_ants ;
+			std::list<std::shared_ptr<Ant>> coll_between_ants ;//for the moment we don't pay attention to the collisions between ants, so we take an empty list for that
 			(*(*it)).update(time,time_step,coll_between_ants,get_co_coll(*it),get_fo_coll(*it));
 			if (!((*(*it)).is_moving()))
 				(*(*it)).update_ph(get_ph_coll(*it));
@@ -178,7 +178,7 @@ void Collision_detector::update_active(Uint32 time,Uint32 time_step)//for the mo
 void Collision_detector::update_all(Uint32 time,Uint32 time_step)
 {
 	update_mpfa();
-	update_mafa();
+	//update_mafa(); useless for the moment
 	update_mcfa();
 	update_mffa();
 	update_active(time,time_step);

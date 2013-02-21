@@ -21,9 +21,10 @@ Ant::Ant(Ant_birth_info &ant_birth_info)
 	_pos._direction [0] = 1/sq2 ;
 	_pos._direction [1] = 1/sq2 ;
 	_max_distance_before_stop = ant_birth_info._max_distance_before_stop;
-	_objective = ANT_STATUS_GET_FOOD ;
+	_objective = ant_birth_info._ant_status ;
 	_food_stored = 0;
 	_time_to_move = 0 ;
+	_max_food_storage=1;
 }
 
 Ant::~Ant(void)
@@ -34,6 +35,12 @@ void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Ant>> p
 {
 	_energy -= _energy_consumption_per_m*time_step/60000;
 	std::list<std::array<double,2>> list_normals = return_normal_board();
+	if (_energy < 0.5*_max_energy_storage)
+	{
+		_pos._direction[0] = -_pos._direction[0];
+		_pos._direction[1] = -_pos._direction[1];
+		_objective = ANT_STATUS_BACK_TO_COLONY;
+	}
 	if (_distance_left <= 0)
 	{
 		_is_moving = false ;
@@ -54,6 +61,47 @@ void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Ant>> p
 		_phys_coll_ant = phys_coll_ant;
 		_phys_coll_col = phys_coll_col;
 		_phys_coll_food = phys_coll_food;
+
+		if (!_phys_coll_col.empty())
+		{
+			if (_food_stored>0)
+			{
+				(_phys_coll_col.front())->store_food(_food_stored);
+				_food_stored = 0;
+				_pos._direction[0] = -_pos._direction[0];
+				_pos._direction[1] = -_pos._direction[1];
+				restore_energy (*(_phys_coll_col.front()));
+			}
+
+			else if (_energy < 0.5*_max_energy_storage)
+			{
+				restore_energy (*(_phys_coll_col.front()));
+				_pos._direction[0] = -_pos._direction[0];
+				_pos._direction[1] = -_pos._direction[1];
+			}
+
+			if (_phys_coll_col.front()->get_if_food_found())
+			{
+				_objective = ANT_STATUS_GET_FOOD;
+			}
+
+			else
+
+			{
+				_objective = ANT_STATUS_SCOUT;
+			}
+		}
+
+		if (!_phys_coll_food.empty() && _food_stored < _max_food_storage)
+		{
+			_food_stored += (*(_phys_coll_food.front())).get_piece(_max_food_storage - _food_stored);
+			if (_food_stored == _max_food_storage)
+			{
+			_pos._direction[0] = -_pos._direction[0];
+			_pos._direction[1] = -_pos._direction[1];
+			_objective = ANT_STATUS_BACK_TO_COLONY;
+			}
+		}
 
 		if (_is_moving)
 		{
@@ -136,7 +184,7 @@ void Ant::scout_AI(Uint32 time)
 	_pos._direction[1] = vect[1];
 	Uint32 t = (Uint32) (1000*unif_01());
 	_time_to_move = time + t;
-	set_pheromone (1,0.5,0.5);
+	set_pheromone (1,0.5,1);
 }
 
 void Ant::back_AI()
@@ -145,7 +193,7 @@ void Ant::back_AI()
 	_pos._direction = direction_phero();
 	if (_food_stored > 0)
 	{
-		set_pheromone (1,2,0.5);
+		set_pheromone (1,3,1);
 	}
 
 }
@@ -154,7 +202,7 @@ void Ant::food_AI()
 {
 	_distance_left = 50 + (_max_distance_before_stop - 50.0)*unif_01() ;
 	_pos._direction = direction_phero();
-	set_pheromone (1,1,0.5);
+	set_pheromone (1,1,1);
 }
 
 //Board interaction functions :
@@ -324,12 +372,14 @@ void Ant::update_pheros_lists ()
 		double r = sqrt (x_dir*x_dir + z_dir*z_dir) ;
 		std::array<double,2> vect = {x_dir/r,z_dir/r};
 		double energy = (*(*it)).get_energy();
-		if (x_dir_ant*x_dir + z_dir_ant*z_dir > sqrt(0.5))
+		if (x_dir_ant*vect[0] + z_dir_ant*vect[1] > sqrt(0.5))
 		{
 			res_dir.push_back(vect);
 			res_nrj.push_back(energy);
 		}
 	}
+	_phero_dir = res_dir;
+	_phero_energies = res_nrj;
 }
 
 int Ant::rank_chosen_phero ()//this list is not empty

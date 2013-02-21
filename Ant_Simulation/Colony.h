@@ -33,6 +33,7 @@ public:
 	int get_queen_hp(void);
 	int get_number_of_larvas(void);
 	int _color;
+	bool get_if_food_found(void);
 
 private:
 	double _ant_speed; // in m/s
