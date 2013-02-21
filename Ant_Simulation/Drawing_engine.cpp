@@ -90,7 +90,7 @@ void Drawing_engine::load_hq_models(void)
 		_ant_hq_array[i] = new MeshObj(file_name);
 	}
 
-	_apple_hq = new MeshObj("src/apple/apple.obj");
+	_apple_hq = new MeshObj("src/apple/apple3.obj");
 }
 
 void Drawing_engine::init(void)
