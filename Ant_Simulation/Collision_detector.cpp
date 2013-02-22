@@ -1,3 +1,5 @@
+// This file is part of Ant_Simulation by Guillaume Martinet and Lucas Tittmann
+// Check out the latest version at Github: https://github.com/Andarin/Ant_Simulation
 #include "Collision_detector.h"
 
 Collision_detector::Collision_detector(std::shared_ptr<Table_of_items> env, double solf, double sview, double stouch)
@@ -178,7 +180,7 @@ void Collision_detector::update_active(Uint32 time,Uint32 time_step)//for the mo
 void Collision_detector::update_all(Uint32 time,Uint32 time_step)
 {
 	update_mpfa();
-	//update_mafa(); useless for the moment
+	//update_mafa(); useless at the moment
 	update_mcfa();
 	update_mffa();
 	update_active(time,time_step);
@@ -189,10 +191,9 @@ void Collision_detector::update_all(Uint32 time,Uint32 time_step)
 std::list<std::shared_ptr<Pheromone>> Collision_detector::get_ph_coll(std::shared_ptr<Ant> p_ant)
 {
 	//We get first the square where the ant is
-	Ant ant = *p_ant ;
-	Position pos = ant._pos ;
-	std::tuple<int,int> square = get_in_which_square (pos,_sub_size_olf);
-
+	//Ant ant = *p_ant ;
+	//Position pos =  ant._pos;
+	std::tuple<int,int> square = get_in_which_square ((*p_ant)._pos,_sub_size_olf);
 
 	//Then we look in the squares arround its to search for collisions
 	int x,z,i;
@@ -218,10 +219,9 @@ std::list<std::shared_ptr<Pheromone>> Collision_detector::get_ph_coll(std::share
 std::list<std::shared_ptr<Ant>> Collision_detector::get_an_coll(std::shared_ptr<Ant> p_ant)
 {
 	//We get first the square where the ant is
-	Ant ant = *p_ant ;
-	Position pos = ant._pos ;
-	std::tuple<int,int> square = get_in_which_square (pos,_sub_size_touch);
-
+	//Ant ant = *p_ant ;
+	//Position pos =  ant._pos;
+	std::tuple<int,int> square = get_in_which_square ((*p_ant)._pos,_sub_size_touch);
 
 	//Then we look in the squares arround its to search for collisions
 	int x,z,i ;

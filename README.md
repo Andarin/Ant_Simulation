@@ -42,13 +42,13 @@ You find an executable as well as Visual Studio *.sln and *.vcxproj files in
 Ant_Simulation/bin.
 
 Using the executable:  
-In order to use Ant_Simulation.exe, copy it in the inner Ant_Simulation  
+In order to use Ant_Simulation.exe, copy it in the Ant_Simulation  
 folder (with all the *.cpp) and double click it.
 
 Visual Studio:  
-To build with Visual Studio, copy the *.sln and *.vcxproj into the outer  
-Ant_Simulation folder (where you found this README) and copy also the  
-*.vcxproj in the inner Ant_Simulation folder. In Visual Studio choose  
+To build with Visual Studio, copy the *.sln and *.vcxproj into the folder where  
+you found this README and the Ant_Simulation folder. Also copy the  
+*.vcxproj in the Ant_Simulation folder with all the *.cpp. In Visual Studio choose 
 "Open - Solution" and open Ant_Simulation.sln  
 You should adapt your links of the project to SDL and SDL_image.
 

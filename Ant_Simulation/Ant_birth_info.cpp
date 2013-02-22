@@ -1,3 +1,5 @@
+// This file is part of Ant_Simulation by Guillaume Martinet and Lucas Tittmann
+// Check out the latest version at Github: https://github.com/Andarin/Ant_Simulation
 #include "Ant_birth_info.h"
 
 Ant_birth_info::Ant_birth_info()

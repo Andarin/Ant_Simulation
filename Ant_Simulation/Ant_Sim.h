@@ -14,6 +14,8 @@
 // Authors: Guillaume Martinet, Lucas Tittmann
 // Date: 02/2013
 //
+// Check out the latest version at Github: https://github.com/Andarin/Ant_Simulation
+//
 // Some code is based on the tutorials from:
 // http://www.youtube.com/user/thecplusplusguy
 // If so it is stated in the header. The original files are distributed under LPGL.

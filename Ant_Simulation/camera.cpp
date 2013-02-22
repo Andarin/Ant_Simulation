@@ -6,8 +6,9 @@
 //so other people can see the tutorial
 //this file is functions.h, it's contain the actual implementation of the 3D camera
 
-//Edited by Lucas Tittmann, 02/13
-//added some functionality and made the camera an object
+// Edited by Lucas Tittmann, 02/13
+// added some functionality and made the camera an object
+// Check out the latest version at Github: https://github.com/Andarin/Ant_Simulation
 
 #include "Camera.h"
 

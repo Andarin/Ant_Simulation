@@ -1,3 +1,5 @@
+// This file is part of Ant_Simulation by Guillaume Martinet and Lucas Tittmann
+// Check out the latest version at Github: https://github.com/Andarin/Ant_Simulation
 #include "Colony_birth_info.h"
 
 Colony_birth_info::Colony_birth_info(void) 

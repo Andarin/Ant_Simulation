@@ -1,3 +1,5 @@
+// This file is part of Ant_Simulation by Guillaume Martinet and Lucas Tittmann
+// Check out the latest version at Github: https://github.com/Andarin/Ant_Simulation
 #include "Table_of_items.h"
 
 Table_of_items::Table_of_items()
@@ -54,7 +56,10 @@ void Table_of_items::add_pheromone (std::shared_ptr<Pheromone> p_pheromone){
 		//If there is already a pheromone at this place in the matrix
 		//we merge the new one with the ancient one (without adding former)
 		if (_pheromone_matrix [x] [z] != NULL)
+		{
+			std::cout << "Pheromones merged." << std::endl;
 			(*(_pheromone_matrix [x] [z])).merge_pheromone(p_pheromone);
+		}
 		//Otherwise, we add this pheromone as we did it with the other objects
 		else
 		{
