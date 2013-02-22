@@ -261,8 +261,6 @@ void Ant::simple_back_AI(Uint32 time)
 
 }
 
-
-
 void Ant::food_AI()
 {
 	_distance_left = 50 + (_max_distance_before_stop - 50.0)*unif_01() ;

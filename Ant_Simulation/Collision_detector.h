@@ -33,6 +33,9 @@ public:									//It is build thanks to a Table_of_items and three
 	 //Get the square of the distance between two positions (only considering x and y axis)
 	double square_distance (Position,Position);
 
+	// still in test: speed optimized update_mpfa
+	void update_mpfa_opt(void);		//for _map_ph_for_ant
+
 private:
 
 	double _sub_size_olf;		//size of the sub for the olfactive collisions
@@ -41,6 +44,8 @@ private:
 
 	std::shared_ptr<Table_of_items> _environment;
 
+	// neighbour fields in collision matrix are tested if there are elements inside which
+	// may collide with the ant; there are 4 kind of possible objects to collide with
 	std::map<std::tuple<int,int>,std::list<std::shared_ptr<Pheromone>>> _map_ph_for_ant; //subdivision
 					//of all the pheromones into groups to ease their collisions with an ant
 
