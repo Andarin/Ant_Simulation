@@ -1,9 +1,9 @@
 #include "Ant_Sim.h"
 
-Ant_Sim::Ant_Sim(int play_time)
+Ant_Sim::Ant_Sim(void)
 {
-	_time_remaining = play_time*1000;
-	_sim_time_step = 40; // in milli seconds
+	_time_remaining = read_play_time_from_file(FILE_NAME)*1000;
+	_sim_time_step = 20; // in milli seconds
 	_max_size_of_pheromone = 300;
 	_max_size_of_corps = 100;
 
@@ -64,6 +64,9 @@ void Ant_Sim::init(void)
 
 	add_colony();
 	add_start_food(50);
+	add_obstacle(150,BOARD_SIZE-200,0,BOARD_SIZE-200);
+	add_obstacle(100,BOARD_SIZE-200,0,BOARD_SIZE-300);
+	add_obstacle(50,BOARD_SIZE-300,0,BOARD_SIZE-300);
 
 	////////// calculate test ants ///////////////////////////////
 	// in order to see them, also uncomment the test variables in Ant_Sim.h and 
@@ -83,6 +86,19 @@ void Ant_Sim::init(void)
 //	delete(_ant_posx);
 //	delete(_ant_posz);
 //}
+
+int Ant_Sim::read_play_time_from_file(std::string file)
+{
+	std::vector<std::string> lines;
+	std::ifstream fin(file);
+	std::string line;
+	while( std::getline(fin, line) )
+	{
+		lines.push_back(line);
+	}
+	double play_time = atof(lines[16].c_str());
+	return play_time;
+}
 
 void Ant_Sim::handle_user_input(SDL_Event &event)
 {
@@ -176,23 +192,23 @@ void Ant_Sim::add_start_food(int number_of_items)
 	{
 		double x = unif_01() * (BOARD_SIZE-400) + 200;
 		double z = unif_01() * (BOARD_SIZE-400) + 200;
-		double amount = unif_01() * 200;
+		double amount = std::max<double>(unif_01()*200,10);
 		add_food(amount,x,0,z);
 	}
 }
 
-//void Ant_Sim::add_obstacle(double size, int x, int y, int z)
-//{
-//	Game_item_birth_info go_info;
-//	go_info._energy = size;
-//	go_info._size = size;
-//	go_info._energy_consumption_per_m = 0;
-//	std::array<double, 2> dir = {1.0, 0.0};
-//	Position pos(x,y,z,dir);
-//	go_info._pos = pos;
-//	auto new_obst_ptr = std::make_shared<Obstacle>(go_info);
-//	(*_table_items).add_obstacle(new_obst_ptr);
-//}
+void Ant_Sim::add_obstacle(double size, int x, int y, int z)
+{
+	Game_item_birth_info go_info;
+	go_info._energy = size;
+	go_info._size = size;
+	go_info._energy_consumption_per_m = 0;
+	std::array<double, 2> dir = {1.0, 0.0};
+	Position pos(x,y,z,dir);
+	go_info._pos = pos;
+	auto new_obst_ptr = std::make_shared<Obstacle>(go_info);
+	(*_table_items).add_obstacle(new_obst_ptr);
+}
 
 void Ant_Sim::start(void)
 {

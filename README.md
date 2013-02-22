@@ -1,28 +1,26 @@
 Project Description
 -------------------
 
-Ant Simulation Project by Guillaume Martinet and Lucas Tittmann under
+Ant Simulation Project by Guillaume Martinet and Lucas Tittmann under  
 GNU GPL v3 is a project to simulate a colony of ants, represented in simple OpenGL 3D.
 
 Check out the latest version at Github: https://github.com/Andarin/Ant_Simulation  
 Operating system: Tested under Windows XP, Linux (Ubuntu 64bit), Windows 7 64bit
 
-You find an executable as well as Visual Studio *.sln and *.vcxproj files in 
-Ant_Simulation/bin.
-
 How to play
 -----------
 
-The aim of the simulation is to gather as much food as possible (solid and liquid) in order
-to spread a lot new queens and drones in the new generation.
-More ants can gather more food but also consume food themselves. The colony needs larvae to
-transform solid food into liquid food. Adult ants can only eat liquid food and must therefore
-return to the colony from time to time. They age and die eventually, so keep an eye
+The aim of the simulation is to gather as much food as possible (solid and liquid) in order  
+to spread a lot new queens and drones in the new generation.  
+More ants can gather more food but also consume food themselves. The colony needs larvae to  
+transform solid food into liquid food. Adult ants can only eat liquid food and must therefore  
+return to the colony from time to time. They age and die eventually, so keep an eye  
 on the ant count if you reduce egg production.
 
-You can control your colony by changing the parameters of the simulation in the
-"Ant_Simulation_parameters.txt" file in the Ant_Simulation folder. There you can change
-the resolution of the application as well.
+You can control your colony by changing the parameters of the simulation in the  
+"Ant_Simulation_parameters.txt" file in the Ant_Simulation folder.  
+You can change the resolution of the application and the size of the board  
+in general_constants.h
   
 Controls  
 --------  
@@ -39,6 +37,9 @@ ESC: exit programme
 
 Compiling information
 ---------------------
+
+You find an executable as well as Visual Studio *.sln and *.vcxproj files in  
+Ant_Simulation/bin.
 
 Using the executable:  
 In order to use Ant_Simulation.exe, copy it in the inner Ant_Simulation  

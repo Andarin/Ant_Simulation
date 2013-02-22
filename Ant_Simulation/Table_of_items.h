@@ -3,6 +3,7 @@
 #include "Colony.h"
 #include "Food.h"
 #include "Pheromone.h"
+#include "Obstacle.h"
 #include <list>
 #include <vector>
 #include <algorithm>	
@@ -19,6 +20,7 @@ public:									// We use smart pointers to identify the objects
 	void add_colony (std::shared_ptr<Colony>);
 	void add_food (std::shared_ptr<Food>);
 	void add_pheromone (std::shared_ptr<Pheromone>);
+	void add_obstacle (std::shared_ptr<Obstacle>);
 
 	//Delete functions :
 
@@ -26,6 +28,7 @@ public:									// We use smart pointers to identify the objects
 	void delete_colony (std::shared_ptr<Colony>);
 	void delete_food (std::shared_ptr<Food>);
 	void delete_pheromone (std::shared_ptr<Pheromone>);
+	void delete_obstacle (std::shared_ptr<Obstacle>);
 
 	//Lists :
 
@@ -33,6 +36,7 @@ public:									// We use smart pointers to identify the objects
 	std::list<std::shared_ptr<Colony>> _colony_list;
 	std::list<std::shared_ptr<Food>> _food_list;
 	std::list<std::shared_ptr<Pheromone>> _pheromone_list;
+	std::list<std::shared_ptr<Obstacle>> _obstacle_list;
 
 	//Pheromone matrix :
 

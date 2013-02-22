@@ -13,7 +13,6 @@ Drawing_engine::Drawing_engine(void)
 	_countdown_on = false;
 	_high_quality_on = false;
 	_switch_fog_on = false;
-	_building_menu_on = false;
 }
 
 Drawing_engine::~Drawing_engine(void)
@@ -204,7 +203,7 @@ double Drawing_engine::get_food_starting_value(void)
 	{
 		lines.push_back(line);
 	}
-	double start_food = atof(lines[40].c_str());
+	double start_food = atof(lines[28].c_str());
 	return start_food;
 }
 
@@ -259,7 +258,7 @@ void Drawing_engine::draw_food(Ant_Sim* ant_sim_ptr)
 			glTranslatef(food_pos._x,food_pos._y,food_pos._z);
 			if (_high_quality_on)
 			{
-				int apple_size = std::max<double>(((*food_it)->get_size())/40,4);
+				int apple_size = 4-std::min<double>(((*food_it)->get_size())/20,4);
 				_apple_hq_array[apple_size]->draw_model(); 
 			}
 			else 
@@ -277,6 +276,17 @@ void Drawing_engine::draw_food(Ant_Sim* ant_sim_ptr)
 
 void Drawing_engine::draw_obstacles(Ant_Sim* ant_sim_ptr)
 {
+	std::list<std::shared_ptr<Obstacle>> obstacle_list = (*ant_sim_ptr)._table_items->_obstacle_list;
+	for (std::list<std::shared_ptr<Obstacle>>::iterator obstacle_it = obstacle_list.begin(); 
+			obstacle_it != obstacle_list.end() ; ++obstacle_it)
+	{ 
+		Position food_pos = (*obstacle_it)->_pos;
+		glPushMatrix();
+			glTranslatef(food_pos._x,food_pos._y,food_pos._z);
+			draw_box((*obstacle_it)->get_size(),_tex_box, _tex_box);
+		glPopMatrix();
+	}
+
 	// draw a test box
 	//glPushMatrix();
 	//glTranslatef(100,0,300);
@@ -453,15 +463,6 @@ void Drawing_engine::left_mouse_unclick(void)
 	SDL_ShowCursor(SDL_ENABLE);
 }
 
-void Drawing_engine::go_into_building_menu(void)
-{
-}
-
-void Drawing_engine::draw_building_menu(void)
-{
-
-}
-
 void Drawing_engine::display(Ant_Sim *ant_sim_ptr, Uint32 time_remaining, int round_cnt)
 {
 	// in color_buffer the color of every pixel is saved
@@ -490,8 +491,6 @@ void Drawing_engine::display(Ant_Sim *ant_sim_ptr, Uint32 time_remaining, int ro
 	draw_food(ant_sim_ptr);
 	draw_ants(ant_sim_ptr, round_cnt);
 
-	if (_building_menu_on)
-		draw_building_menu();
 	if (_countdown_on) 
 	{ 
 		double result = calc_result(ant_sim_ptr);

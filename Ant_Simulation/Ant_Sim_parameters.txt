@@ -5,28 +5,16 @@ is a project to simulate a colony of ants, represented in simple OpenGL 3D.
 Check out the latest version at Github: https://github.com/Andarin/Ant_Simulation
 
 With this file you can change:  
-1. Display resolution  
-2. Duration of the simulation  
-3. Board size  
-4. Control parameters of your colony
+1. Duration of the simulation  
+2. Control parameters of your colony
 
 Use with caution and only change the numbers. Don't make spaces behind or in  
 front of the numbers. There is a security copy in case you broke this file  
 called "Ant_Sim_parameters_copy.txt"  
 
-1. Display resolution  
-SCREEN_WIDTH  
-960  
-SCREEN_HEIGHT  
-640  
-
 2. Duration of the simulation in seconds  
 PLAY_TIME (standard is 600)  
-600
-
-3. Board size in millimeters  
-BOARD_SIZE (standard is 5000)  
-5000  
+500
 
 4. Control parameters of your colony  
 COLONY_POSITION_X (should be between 100 and BOARD_SIZE-100; standard is 200)  
