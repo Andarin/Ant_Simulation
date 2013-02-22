@@ -38,11 +38,14 @@ void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Ant>> p
 	_energy -= _energy_consumption_per_m*time_step/60000;
 	// if arriving at the border, turn around
 	std::list<std::array<double,2>> list_normals = return_normal_board();
+	_phys_coll_ant = phys_coll_ant;
+	_phys_coll_col = phys_coll_col;
+	_phys_coll_food = phys_coll_food;
 
 	if (_energy < 0.5*_max_energy_storage && !_get_back_colony)
 	{
-		_pos._direction[0] = -_pos._direction[0];
-		_pos._direction[1] = -_pos._direction[1];
+		//_pos._direction[0] = -_pos._direction[0];
+		//_pos._direction[1] = -_pos._direction[1];
 		_objective = ANT_STATUS_BACK_TO_COLONY;
 		_get_back_colony = true;
 	}
@@ -63,18 +66,16 @@ void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Ant>> p
 	}
 	else
 	{
-		_phys_coll_ant = phys_coll_ant;
-		_phys_coll_col = phys_coll_col;
-		_phys_coll_food = phys_coll_food;
 
 		if (!_phys_coll_col.empty())
 		{
+			_counter = 0;
 			if (_food_stored>0)
 			{
 				(_phys_coll_col.front())->store_food(_food_stored);
 				_food_stored = 0;
-				_pos._direction[0] = -_pos._direction[0];
-				_pos._direction[1] = -_pos._direction[1];
+				//_pos._direction[0] = -_pos._direction[0];
+				//_pos._direction[1] = -_pos._direction[1];
 				restore_energy (*(_phys_coll_col.front()));
 				_get_back_colony = false;
 			}
@@ -82,8 +83,8 @@ void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Ant>> p
 			else if (_energy < 0.5*_max_energy_storage )
 			{
 				restore_energy (*(_phys_coll_col.front()));
-				_pos._direction[0] = -_pos._direction[0];
-				_pos._direction[1] = -_pos._direction[1];
+				//_pos._direction[0] = -_pos._direction[0];
+				//_pos._direction[1] = -_pos._direction[1];
 				_get_back_colony = false;
 			}
 
@@ -101,11 +102,12 @@ void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Ant>> p
 
 		if (!_phys_coll_food.empty() && _food_stored < _max_food_storage)
 		{
+			_counter = 0;
 			_food_stored += (*(_phys_coll_food.front())).get_piece(_max_food_storage - _food_stored);
 			if (_food_stored == _max_food_storage)
 			{
-			_pos._direction[0] = -_pos._direction[0];
-			_pos._direction[1] = -_pos._direction[1];
+			//_pos._direction[0] = -_pos._direction[0];
+			//_pos._direction[1] = -_pos._direction[1];
 			_objective = ANT_STATUS_BACK_TO_COLONY;
 			_get_back_colony = true;
 			}
@@ -120,11 +122,16 @@ void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Ant>> p
 		else if (_distance_left <= 0)
 		{
 			if (_objective == ANT_STATUS_SCOUT)
+			{
 				scout_AI (time);
+				set_pheromone(SIMPLE_AI_PHERO_BACK,8,1);
+			}
 			else if (_objective == ANT_STATUS_BACK_TO_COLONY)
-				back_AI();
+				//back_AI();
+				simple_back_AI(time);
 			else if (_objective == ANT_STATUS_GET_FOOD)
-				food_AI();
+				//food_AI();
+				simple_food_AI(time);
 		}
 		else if (_time_to_move <= time)
 		{
@@ -149,9 +156,12 @@ void Ant::set_pheromone(int phero_type,double energy, double consumption)
 
 	std::shared_ptr<Pheromone> p_pheromone = std::make_shared<Pheromone> (info, phero_type);
 
+	p_pheromone->_counter = _counter;
+
 	_buffer_fresh_phero.push_back(p_pheromone);
 
 }
+
 
 void Ant::restore_energy(Colony col)//take energy from the colony col
 {
@@ -207,8 +217,45 @@ void Ant::back_AI()
 
 //because of some problem we encountered we create a simpler version of this AI
 
-void Ant::simple_back_AI()
+void Ant::simple_back_AI(Uint32 time)
 {
+	std::list<std::shared_ptr<Pheromone>> list_back_phero = get_simple_back_phero ();
+	if (list_back_phero.empty())
+	{
+		scout_AI(time);
+		if (_food_stored > 0)
+			set_pheromone(SIMPLE_AI_PHERO_FOOD,8,1);
+		_counter += 1;
+	}
+	else
+	{
+		std::list<std::shared_ptr<Pheromone>>::iterator it_possible = list_back_phero.begin();
+		int count_min = (*it_possible)->_counter;
+		for (std::list<std::shared_ptr<Pheromone>>::iterator it = list_back_phero.begin() ; it != list_back_phero.end() ; ++it)
+		{
+			int count = (*it)->_counter;
+			if (count < count_min)
+			{
+				count_min = count;
+				it_possible = it;
+			}
+		}
+		double x = (*it_possible)->_pos._x - _pos._x ;
+		double z = (*it_possible)->_pos._z - _pos._z ;
+		double r = sqrt (x*x + z*z);
+		x = x/r;
+		z = z/r;
+		_pos._direction[0] = x;
+		_pos._direction[1] = z;
+		_distance_left = r+15;
+		if (_food_stored > 0)
+		{
+			set_pheromone(SIMPLE_AI_PHERO_FOOD,10,1);
+			_counter += 1;
+		}
+		Uint32 t = (Uint32) (1000*unif_01());
+		_time_to_move = time + t;
+	}
 
 }
 
@@ -223,9 +270,41 @@ void Ant::food_AI()
 
 //because of some problem we encountered we create a simpler version of this AI
 
-void Ant::simple_food_AI()
+void Ant::simple_food_AI(Uint32 time)
 {
-
+	std::list<std::shared_ptr<Pheromone>> list_food_phero = get_simple_food_phero ();
+	if (list_food_phero.empty())
+	{
+		scout_AI(time);
+		set_pheromone(SIMPLE_AI_PHERO_BACK,8,1);
+		_counter += 1;
+	}
+	else
+	{
+		std::list<std::shared_ptr<Pheromone>>::iterator it_possible = list_food_phero.begin();
+		int count_min = (*it_possible)->_counter;
+		for (std::list<std::shared_ptr<Pheromone>>::iterator it = list_food_phero.begin() ; it != list_food_phero.end() ; ++it)
+		{
+			int count = (*it)->_counter;
+			if (count < count_min)
+			{
+				count_min = count;
+				it_possible = it;
+			}
+		}
+		double x = (*it_possible)->_pos._x - _pos._x ;
+		double z = (*it_possible)->_pos._z - _pos._z ;
+		double r = sqrt (x*x + z*z);
+		x = x/r;
+		z = z/r;
+		_pos._direction[0] = x;
+		_pos._direction[1] = z;
+		_distance_left = r - 15;// to prevent from having a merge of two pheromones of diff types we substract 15
+		set_pheromone(SIMPLE_AI_PHERO_BACK,10,1);
+		_counter += 1;
+		Uint32 t = (Uint32) (1000*unif_01());
+		_time_to_move = time + t;
+	}
 }
 
 //Board interaction functions :
@@ -462,5 +541,27 @@ std::array<double,2> Ant::direction_phero (void)
 	}
 
 	res = add_triangle_noise_30 (res);
+	return res;
+}
+
+std::list<std::shared_ptr<Pheromone>> Ant::get_simple_back_phero ()
+{
+	std::list<std::shared_ptr<Pheromone>> res ;
+	for (std::list<std::shared_ptr<Pheromone>>::iterator it = _olf_coll_ph.begin() ; it != _olf_coll_ph.end() ; ++it)
+	{
+		if ( (*it)->_pheromone_type == SIMPLE_AI_PHERO_BACK)
+			res.push_back( (*it));
+	}
+	return res;
+}
+
+std::list<std::shared_ptr<Pheromone>> Ant::get_simple_food_phero ()
+{
+	std::list<std::shared_ptr<Pheromone>> res ;
+	for (std::list<std::shared_ptr<Pheromone>>::iterator it = _olf_coll_ph.begin() ; it != _olf_coll_ph.end() ; ++it)
+	{
+		if ( (*it)->_pheromone_type == SIMPLE_AI_PHERO_FOOD)
+			res.push_back( (*it));
+	}
 	return res;
 }

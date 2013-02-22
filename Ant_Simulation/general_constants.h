@@ -42,4 +42,7 @@ const int ANT_STATUS_GET_FOOD = 2;		//to go and take food from an already discov
 const int SIMPLE_AI_PHERO_BACK = 0;//is used when the ant searchs for a way to go back to the colony
 const int SIMPLE_AI_PHERO_FOOD = 1;//is used when the ant searchs for food
 
+//Pheromone type for food
+const int FOOD_PHERO_TYPE = 2;
+
 

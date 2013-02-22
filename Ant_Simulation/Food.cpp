@@ -6,6 +6,8 @@ Food::~Food(void)
 
 void Food::update(Uint32 time, Uint32 time_step)
 {
+	if (_energy <=0)
+		destroy();
 }
 
 double Food::get_piece(double ant_demand)
