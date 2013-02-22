@@ -106,13 +106,13 @@ private:
 	bool _get_back_colony;
 	int _objective; //is the objective of the ant, for the moment
 					//there are three possible :
-					//		-scout (to find new foods)
-					//		-go_back_to_colony (to bring back food to colony or
+					//	-scout (to find new foods)
+					//	-go_back_to_colony (to bring back food to colony or
 					//						  to go back to it to get energy...)
-					//		-get_food (to go and take food from an already discovered food)
-
-	Uint32 _time_to_move;//when an ant has stopped this indicates when it has to move again
-
+					//	-get_food (to go and take food from an already discovered food)
+	
+	//when an ant has stopped this indicates when it has to move again
+	Uint32 _time_to_move;
 	//list of olfactive collisions of the ant with pheromones
 
 	std::list<std::shared_ptr<Pheromone>> _olf_coll_ph ;
