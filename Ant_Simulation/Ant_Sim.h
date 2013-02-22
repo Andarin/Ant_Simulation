@@ -79,7 +79,7 @@
 class Ant_Sim
 {
 public:
-	Ant_Sim(int);
+	Ant_Sim(void);
 	~Ant_Sim(void);
 	void start(void);
 
@@ -114,6 +114,7 @@ private:
 	// methods
 	void move_test_ants(void);
 	void init(void);
+	int read_play_time_from_file(std::string); 
 	void add_colony(void);
 	void add_food(double,int,int,int);
 	void add_start_food(int);

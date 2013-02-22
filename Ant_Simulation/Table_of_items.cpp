@@ -31,6 +31,11 @@ void Table_of_items::add_colony (std::shared_ptr<Colony> p_colony){
 		_colony_list.push_back (p_colony);
 }
 
+void Table_of_items::add_obstacle (std::shared_ptr<Obstacle> p_obstacle){
+	if (std::find(_obstacle_list.begin(), _obstacle_list.end(), p_obstacle) == _obstacle_list.end())
+		_obstacle_list.push_back (p_obstacle);
+}
+
 void Table_of_items::add_food (std::shared_ptr<Food> p_food){
 	if (std::find(_food_list.begin(), _food_list.end(), p_food) == _food_list.end())
 		_food_list.push_back (p_food);
@@ -71,6 +76,10 @@ void Table_of_items::delete_colony (std::shared_ptr<Colony> p_colony){
 
 void Table_of_items::delete_food (std::shared_ptr<Food> p_food){
 	_food_list.remove(p_food) ;
+}
+
+void Table_of_items::delete_obstacle (std::shared_ptr<Obstacle> p_obstacle){
+	_obstacle_list.remove(p_obstacle) ;
 }
 
 void Table_of_items::delete_pheromone (std::shared_ptr<Pheromone> p_pheromone){
