@@ -1,2 +1,4 @@
 all:
 	g++ -o ants *.cpp -lGL -lSDL -lSDL_image -lGLU -std=c++11
+debug:
+	g++ -o ants -g *.cpp -lGL -lSDL -lSDL_image -lGLU -std=c++11
