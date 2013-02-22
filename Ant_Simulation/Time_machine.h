@@ -9,12 +9,17 @@
 #endif
 #include <iostream>
 
+// class which keeps track on everything concerning time management in the
+// simulation; it tries to keep the time passed in the simulation synchron
+// with the real time passed to calculate it
 class Time_machine
 {
 public:
 	Time_machine(void);
 	~Time_machine(void);	
+	// return the time needed to render the 3D scene
 	Uint32 return_frame_time(void);
+	// give console output of frame rate and time passed in the simulation
 	void print_time_status(int, int);
 
 private:

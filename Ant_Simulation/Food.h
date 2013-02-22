@@ -1,5 +1,8 @@
 // This file is part of Ant_Simulation by Guillaume Martinet and Lucas Tittmann
 // Check out the latest version at Github: https://github.com/Andarin/Ant_Simulation
+
+// Food is the energy source of the ants. Ants can gather "solid food" from
+// food sources via the method "get piece".
 #pragma once
 #include "Game_item.h"
 
@@ -13,6 +16,7 @@ public:
 	};
 	~Food(void);
 	void update(Uint32, Uint32);
+	// API for an ant to demand for food
 	double get_piece(double);
 
 private :

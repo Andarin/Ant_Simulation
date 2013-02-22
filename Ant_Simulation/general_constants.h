@@ -1,5 +1,9 @@
 // This file is part of Ant_Simulation by Guillaume Martinet and Lucas Tittmann
 // Check out the latest version at Github: https://github.com/Andarin/Ant_Simulation
+
+// This file contains certain constants, e.g. the screen resolution which you
+// can easily change here.
+// Furthermore, you can adjust the size of the board and the sky distance
 #pragma once
 #include <string>
 
@@ -40,11 +44,11 @@ const int ANT_STATUS_SCOUT = 0;			//to find new foods
 const int ANT_STATUS_BACK_TO_COLONY = 1;//to bring back food to colony or to go back to it to get energy...
 const int ANT_STATUS_GET_FOOD = 2;		//to go and take food from an already discovered food
 
-//Different type of pheromone for the simple AI:
+// different types of pheromones for the simple AI:
 const int SIMPLE_AI_PHERO_BACK = 0;//is used when the ant searchs for a way to go back to the colony
 const int SIMPLE_AI_PHERO_FOOD = 1;//is used when the ant searchs for food
 
-//Pheromone type for food
+// pheromone type for food
 const int FOOD_PHERO_TYPE = 2;
 
 

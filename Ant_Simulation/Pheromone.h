@@ -1,5 +1,8 @@
 // This file is part of Ant_Simulation by Guillaume Martinet and Lucas Tittmann
 // Check out the latest version at Github: https://github.com/Andarin/Ant_Simulation
+
+// class of pheromones; they are created by ants and food and are used by the
+// blind ants to get an image of their environment
 #pragma once
 #include "Game_item.h"
 #include "general_constants.h"
@@ -15,10 +18,14 @@ public:
 	};
 	~Pheromone(void);
 	void update(Uint32, Uint32);
+
+	// if two pheromones are very close, merge them to save calculations
 	void merge_pheromone(std::shared_ptr<Pheromone>);
 
+	//give the size of pheromone accordingly to its energy
+	double calc_size_by_energy (double);
+	
+	// variables
 	int _pheromone_type;
 	int _counter;
-
-	double calc_size_by_energy (double);//give the size of pheromone accordingly to its energy
 };
