@@ -50,7 +50,8 @@ To build with Visual Studio, copy the *.sln and *.vcxproj into the folder where
 you found this README and the Ant_Simulation folder. Also copy the  
 *.vcxproj in the Ant_Simulation folder with all the *.cpp. In Visual Studio choose 
 "Open - Solution" and open Ant_Simulation.sln  
-You should adapt your links of the project to SDL and SDL_image.
+You need to install SDL and SDL_image. Afterwards, you should adapt your links  
+in project properties to the lib / include folders of SDL and SDL_image.
 
 Linux/cygwin:  
 Open the inner Ant_Simulation in the terminal and type "make" (there  

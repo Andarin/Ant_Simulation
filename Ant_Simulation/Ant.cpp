@@ -37,13 +37,12 @@ Ant::~Ant(void)
 
 void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Ant>> phys_coll_ant,std::list<std::shared_ptr<Colony>> phys_coll_col,std::list<std::shared_ptr<Food>> phys_coll_food)
 {
-	_energy -= _energy_consumption_per_m*time_step/60000;
-	// if arriving at the border, turn around
-	std::list<std::array<double,2>> list_normals = return_normal_board();
 	_phys_coll_ant = phys_coll_ant;
 	_phys_coll_col = phys_coll_col;
 	_phys_coll_food = phys_coll_food;
 
+	_energy -= _energy_consumption_per_m*time_step/60000;
+	// if getting hungry, go back to the colony
 	if (_energy < 0.5*_max_energy_storage && !_get_back_colony)
 	{
 		//_pos._direction[0] = -_pos._direction[0];
@@ -51,11 +50,13 @@ void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Ant>> p
 		_objective = ANT_STATUS_BACK_TO_COLONY;
 		_get_back_colony = true;
 	}
-	if (_distance_left <= 0)
-	{
-		_is_moving = false ;
-	}
 
+	// if temporal target reached, the makes a stop
+	if (_distance_left <= 0)
+	{ _is_moving = false ; }
+
+	// if arriving at the border, turn around
+	std::list<std::array<double,2>> list_normals = return_normal_board();
 	if (!list_normals.empty())
 	{
 		board_manager(list_normals);
@@ -63,9 +64,7 @@ void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Ant>> p
 	}
 
 	if (time > _time_of_death || _energy <= 0)
-	{
-		destroy();
-	}
+	{ destroy(); }
 	else
 	{
 
