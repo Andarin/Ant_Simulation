@@ -139,6 +139,26 @@ private:
 	void simple_back_AI(Uint32);
 	void simple_food_AI(Uint32);
 
+	 //Test if the ant should go back to the colony to full its energy
+
+	void test_should_go_back_because_energy (void);
+
+	 //Manage the decision of the ant when it encounters a board
+
+	void what_should_do_when_meet_board (void);
+
+	 //Manage the decision of the ant when it encounters a colony
+
+	void what_should_do_when_meet_colony (void);
+
+	 //Manage the decision of the ant when it encounters a food
+
+	void what_should_do_when_meet_food (void);
+
+	 //Change type of AI depending on the objective of the ant
+
+	void AI_chosen_according_to_objective (Uint32);
+
 	 //common function for back_AI and food_AI to deal with the pheromones
 	void dir_choice_according_to_phero (void) ;
 
