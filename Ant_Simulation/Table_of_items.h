@@ -1,7 +1,7 @@
 // This file is part of Ant_Simulation by Guillaume Martinet and Lucas Tittmann
 // Check out the latest version at Github: https://github.com/Andarin/Ant_Simulation
 #pragma once
-#include "ant.h"
+#include "Ant.h"
 #include "Colony.h"
 #include "Food.h"
 #include "Pheromone.h"
