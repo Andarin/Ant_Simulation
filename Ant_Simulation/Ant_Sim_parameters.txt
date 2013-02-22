@@ -25,8 +25,8 @@ COLONY_REPRODUCTION_SPEED_PER_MINUTE (standard is 5)
 # attention! at the moment, the simulation is very calculation intensive,  
 # therefore be careful when increasing this value, it can get slow fast  
 5  
-COLONY_INITIAL_FOOD (standard is 1000)  
-200  
+COLONY_INITIAL_FOOD (standard is 100)  
+100  
 ANT_SPEED (in meter per second; standard is 0.1)  
 0.1  
 LARVA_DEVELOPPEMENT_TIME (in seconds; standard is 10)  
