@@ -1,3 +1,5 @@
+// This file is part of Ant_Simulation by Guillaume Martinet and Lucas Tittmann
+// Check out the latest version at Github: https://github.com/Andarin/Ant_Simulation
 #pragma once
 #ifdef _WIN32
 	#include "windows.h"
@@ -14,8 +16,9 @@
 
 void draw_board(int,unsigned int);
 void draw_border(int,unsigned int);
-void draw_ant(int);
+void draw_ant(int, double[]);
+void draw_ant_anim(int, double[], double);
 void draw_colony(int, unsigned int);
 void draw_box(int, unsigned int, unsigned int);
-
+void draw_pic(int, unsigned int);
 #endif

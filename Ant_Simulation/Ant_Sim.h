@@ -10,22 +10,37 @@
 //
 //You should have received a copy of the GNU General Public License
 //along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+//
 // Authors: Guillaume Martinet, Lucas Tittmann
-// Date: 01/2013
-
+// Date: 02/2013
+//
+// Check out the latest version at Github: https://github.com/Andarin/Ant_Simulation
+//
 // Some code is based on the tutorials from:
-//http://www.youtube.com/user/thecplusplusguy
+// http://www.youtube.com/user/thecplusplusguy
 // If so it is stated in the header. The original files are distributed under LPGL.
 //
-//The source files are also GPL v3.0 with 1 exception:
-//grass.bmp is taken from
-//http://www.public-domain-image.com/full-image/textures-and-patterns-public-domain-images-pictures/grass-texture-public-domain-images-pictures/buffalo-grass-texture.jpg-copyright-friendly-photo.html
-//by Titus Tscharntke
+// Furthermore, to display text, we use glfont2 by Brad Fisher:
+// https://students.cs.byu.edu/~bfish/glfont2.php
+//
+// As font we used Didact Gothic by Daniel Johnson
+// http://openfontlibrary.org/en/font/didact-gothic#Didact%20Gothic-Medium
+//
+// For displaying PNG-images, we use loadpng by Lode Vandevenne
+// http://lodev.org/lodepng/
+//
+// To display the Blender models (*.obj) in our simulation, we used code from
+// the site du zero:
+// http://www.siteduzero.com/informatique/tutoriels/charger-des-fichiers-obj/parser-les-formats-obj-et-mtl
+// http://www.siteduzero.com/informatique/tutoriels/creez-des-programmes-en-3d-avec-opengl/plaquage-de-texture
+//
+// The source files are also GPL v3.0 with 1 exception:
+// grass.png by Titus Tscharntke is taken from
+// http://www.public-domain-image.com/full-image/textures-and-patterns-public-domain-images-pictures/grass-texture-public-domain-images-pictures/buffalo-grass-texture.jpg-copyright-friendly-photo.html
 
 #pragma once
 
-// libraries
+// libraries - extern
 #ifdef _WIN32
 	#include "windows.h"
 	#include <SDL.h>
@@ -34,71 +49,80 @@
 	#include <SDL/SDL.h>
 	#include <SDL/SDL_image.h>
 #endif
+#include <string>
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include "glfont2.h"
 #include <cmath>
 #include <iostream>
+#include <sstream>
 #include <time.h>
 #include "glext.h"
 #include "OBJlib.h"
 
-// self-created external depencies
-#include "camera.h"
-#include "skybox.h"
+// self-created source files
+#include "Camera.h"
+#include "Collision_detector.h"
+#include "Colony.h"
+#include "Colony_birth_info.h"
+#include "Drawing_engine.h"
+#include "Food.h"
+#include "Game_item.h"
+#include "Game_item_birth_info.h"
+#include "Obstacle.h"
+#include "Position.h"
+#include "Table_of_items.h"
+#include "Time_machine.h"
+#include "general_constants.h"
 #include "loadpng_functions.h"
 #include "models.h"
-#include "general_constants.h"
-#include "Time_machine.h"
+#include "skybox.h"
 
 class Ant_Sim
 {
 public:
-	Ant_Sim(int, int, int);
+	Ant_Sim(void);
 	~Ant_Sim(void);
 	void start(void);
 
-private:
-	int _FPS;
-	Uint32 _sim_time_step;
-	int _cam_velocity;
-	int _recent_cam_velocity;
-	int _ant_number;
-	bool _high_quality_on;
-	bool _switch_fog_on;
-
-	// system variables
-	SDL_Surface *_prescreen;
-	SDL_Surface *_screen;
-	SDL_Surface *_logo;
-	int _round_cnt;
-	bool _running;
-	bool _mousein;
-	unsigned int _tex_board;
-	unsigned int _tex_border;
-	unsigned int _tex_colony;
-	unsigned int _tex_box;
-	unsigned int _tex_apple_side;
-	unsigned int _tex_apple_top;
-	unsigned int _tex_logo;
-	Uint8 *_keystates;
-	int _ant_model;
+	std::shared_ptr<Table_of_items> _table_items;
+	std::shared_ptr<Collision_detector> _coll_dect;
 
 	// just for testing / not important
-	float *_ant_posx;
-	float *_ant_posz;
-	//float _ant_posx[_ant_number];
-	//float _ant_posz[_ant_number];
-	float _ant_posy;
-	float _ant_size;
-	float _ant_angley;
+	//float *_ant_posx;
+	//float *_ant_posz;
+	//float _ant_posy;
+	//float _ant_size;
+	//float _ant_angley;
+	//int _ant_number;
+
+private:
+	// simulation related variables
+	int _round_cnt;
+	Uint32 _time_remaining;
+	Uint32 _sim_time_step;
+	double _max_size_of_pheromone;
+	double _max_size_of_vision;
+	double _max_size_of_corps;
+
+	// boolean checks
+	bool _running;
+	bool _countdown_on;
+
+	// graphic related variables
+	Drawing_engine _drawing_engine;
+	Uint8 *_keystates;
 
 	// methods
-	void move_ants(void);
-	void set_window(void);
-	void set_openGL(void);
-	void set_fog(void);
+	void move_test_ants(void);
 	void init(void);
+	int read_play_time_from_file(std::string); 
+	void add_colony(void);
+	void add_food(double,int,int,int);
+	void add_start_food(int);
+	void add_obstacle(double,int,int,int);
 	void handle_user_input(SDL_Event &event);
-	void display(VirtualAnim*, AnimMesh*);
+	void start_countdown(void);
+	void game_logic(Uint32);
 	void clean_up(void);
 };

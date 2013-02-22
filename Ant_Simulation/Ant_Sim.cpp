@@ -1,210 +1,136 @@
+// This file is part of Ant_Simulation by Guillaume Martinet and Lucas Tittmann
+// Check out the latest version at Github: https://github.com/Andarin/Ant_Simulation
 #include "Ant_Sim.h"
 
-Ant_Sim::Ant_Sim(int ant_number, int FPS, int cam_velocity)
+Ant_Sim::Ant_Sim(void)
 {
-	_ant_number = ant_number;
-	_FPS = FPS;
-	_sim_time_step = 10; // in milli seconds
-	_cam_velocity = cam_velocity;
-	_recent_cam_velocity = _cam_velocity;
-	_switch_fog_on = false;
-	_high_quality_on = false;
-	_ant_posx = new float[_ant_number];
-	_ant_posz = new float[_ant_number];
+	_time_remaining = read_play_time_from_file(FILE_NAME)*1000;
+	_sim_time_step = 20; // in milli seconds
+	_max_size_of_pheromone = 300;
+	_max_size_of_corps = 100;
 
-	// system variables
+	// boolean checks
 	_running = true;
+	_countdown_on = false;
+
+	// graphic related variables
 	_round_cnt = 0;
-	_mousein = false;
 	_keystates = SDL_GetKeyState( NULL );
 
 	// just for testing / not important
-	_ant_posy = 2;
-	_ant_size = 10;
-	_ant_angley = 180;
+	//_ant_number = 1000;
+	//_ant_posx = new float[_ant_number];
+	//_ant_posz = new float[_ant_number];
+	//_ant_posy = 2;
+	//_ant_size = 10;
+	//_ant_angley = 180;
 }
 
 Ant_Sim::~Ant_Sim(void)
 {
 }
 
-void Ant_Sim::move_ants()
+////////// calculate test ants ///////////////////////////////
+// in order to see them, also uncomment the test variables in Ant_Sim.h and
+// in the constructor, the block in the Ant_Sim.init()
+// uncomment also in Ant_Sim.start() clean_up_test_ants(); 
+// in Ant_Sim.game_logic move_test_ants and in Drawing_engine.draw_ants
+//////////////////////////////////////////////////////////////
+
+//void Ant_Sim::move_test_ants(void)
+//{
+//	int velocity = (_round_cnt%360)/45;	 
+//	switch(velocity) {
+//	case 0:
+//		for (int cnt = 0; cnt < _ant_number; cnt++) {_ant_posz[cnt] += 1;}
+//		break;
+//	case 2:
+//		for (int cnt = 0; cnt < _ant_number; cnt++) {_ant_posx[cnt] += 1;}
+//		break;
+//	case 4:
+//		for (int cnt = 0; cnt < _ant_number; cnt++) {_ant_posz[cnt] -= 1;}
+//		break;
+//	case 6:
+//		for (int cnt = 0; cnt < _ant_number; cnt++) {_ant_posx[cnt] -= 1;}
+//		break;
+//	default:
+//		_ant_angley += 90/45; break;
+//	}
+//}
+
+void Ant_Sim::init(void)
 {
-	int velocity = (_round_cnt%360)/45;	 
-	switch(velocity) {
-	case 0:
-		for (int cnt = 0; cnt < _ant_number; cnt++) {_ant_posz[cnt] += 1;}
-		break;
-	case 2:
-		for (int cnt = 0; cnt < _ant_number; cnt++) {_ant_posx[cnt] += 1;}
-		break;
-	case 4:
-		for (int cnt = 0; cnt < _ant_number; cnt++) {_ant_posz[cnt] -= 1;}
-		break;
-	case 6:
-		for (int cnt = 0; cnt < _ant_number; cnt++) {_ant_posx[cnt] -= 1;}
-		break;
-	default:
-		_ant_angley += 90/45; break;
-	}
+	_table_items = std::make_shared<Table_of_items>(500, BOARD_SIZE);
+	_coll_dect = std::make_shared<Collision_detector>(_table_items, 
+							_max_size_of_pheromone, _max_size_of_vision, _max_size_of_corps);
+
+	add_colony();
+	add_start_food(50);
+	add_obstacle(150,BOARD_SIZE-200,0,BOARD_SIZE-200);
+	add_obstacle(100,BOARD_SIZE-200,0,BOARD_SIZE-300);
+	add_obstacle(50,BOARD_SIZE-300,0,BOARD_SIZE-300);
+
+	////////// calculate test ants ///////////////////////////////
+	// in order to see them, also uncomment the test variables in Ant_Sim.h and 
+	// in the constructor, uncomment in Ant_Sim.start() clean_up_test_ants(); 
+	// in Ant_Sim.game_logic move_test_ants and in Drawing_engine.draw_ants
+	//
+	//for (int cnt = 0; cnt < _ant_number; cnt++)
+	//{
+	//	_ant_posx[cnt] = rand() % (BOARD_SIZE-40) + 20;
+	//	_ant_posz[cnt] = rand() % (BOARD_SIZE-40) + 20;
+	//}
+	//////////////////////////////////////////////////////////////
 }
 
-void Ant_Sim::set_window(void)
+//void Ant_Sim::clean_up_test_ants(void)
+//{
+//	delete(_ant_posx);
+//	delete(_ant_posz);
+//}
+
+int Ant_Sim::read_play_time_from_file(std::string file)
 {
-	SDL_Init(SDL_INIT_EVERYTHING);
-
-	// create prescreen to show logo while everything is initialized
-	_prescreen = SDL_SetVideoMode(screen_width, screen_height, 32, SDL_SWSURFACE);
-	_logo = load_image("src/logo.png");
-	apply_surface( 200, 150, _logo, _prescreen );
-	SDL_Flip( _prescreen ); 
-
-	// set up the real screen
-	_screen = SDL_SetVideoMode(screen_width, screen_height, 32, SDL_SWSURFACE|SDL_OPENGL);
-	// SDL_SWSURFACE|SDL_OPENGL means: do both options
-	// for full screen:
-	//screen = SDL_SetVideoMode(screen_width, screen_height, 32, SDL_SWSURFACE|SDL_FULLSCREEN);
-	SDL_WM_SetCaption( "Ant Simulation", NULL );
-	SDL_Surface *icon;
-	icon = SDL_LoadBMP("src/icon.bmp");
-	Uint32 colorkey = SDL_MapRGB(icon->format, 111,111,111);
-	SDL_SetColorKey(icon, SDL_SRCCOLORKEY, colorkey);              
-	SDL_WM_SetIcon(icon,NULL);
-	SDL_FreeSurface(icon);
-}
-
-void Ant_Sim::set_openGL()
-{
-	glClearColor(0.2,0.2,0.8,1.0); //background color and alpha
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(45,(1.0*screen_width)/screen_height,1.0,10000.0);
-	glMatrixMode(GL_MODELVIEW);
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_TEXTURE_2D);
-}
-
-void Ant_Sim::set_fog(void)
-{
-	if (_switch_fog_on) { glEnable(GL_FOG); }
-	glFogi(GL_FOG_MODE,GL_LINEAR);
-	glFogf(GL_FOG_START,800.0);
-	glFogf(GL_FOG_END,3000.0);
-	float fog_color[] = {0.33,0.5,.80,0.7};
-	glFogfv(GL_FOG_COLOR,fog_color);
-}
-
-void Ant_Sim::init()
-{
-	set_window();
-	set_openGL();
-	set_fog();
-	init_skybox();
-	_tex_board=load_texture_png("src/grass.png", 512, 512, false, true);
-	_tex_colony=load_texture_png("src/gravel.png", 256, 256, false, true);
-	_tex_box=load_texture_png("src/box.png", 256, 256, false, true);
-	_tex_apple_side=load_texture_png("src/apple_side.png", 256, 256, false, true);
-	_tex_apple_top=load_texture_png("src/apple_top.png", 256, 256, false, true);
-	_tex_border=load_texture_png("src/border.png", 1024, 1024);
-	for (int cnt = 0; cnt < _ant_number; cnt++)
+	std::vector<std::string> lines;
+	std::ifstream fin(file);
+	std::string line;
+	while( std::getline(fin, line) )
 	{
-		_ant_posx[cnt] = rand() % (board_size-40) + 20;
-		_ant_posz[cnt] = rand() % (board_size-40) + 20;
+		lines.push_back(line);
 	}
-}
-
-void Ant_Sim::display(VirtualAnim *anim, AnimMesh *fish)
-{
-	// in color_buffer the color of every pixel is saved
-	// in depth buffer the depth of every pixel is saved (which px is in front of which)
-	// usually, it makes sense to clean the buffers after every frame
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	glLoadIdentity();
-
-	if(_keystates[SDLK_LSHIFT]) { _recent_cam_velocity += 1; }
-	else { _recent_cam_velocity = _cam_velocity; }
-	camera_control(_recent_cam_velocity,0.5,board_size,screen_width,screen_height,_mousein);
-	draw_skybox(SKY_BOY_DISTANCE); // don't make it bigger than the far-view-plane (see gluPerspective)
-	update_camera();
-	draw_board(board_size, _tex_board);
-	draw_border(board_size, _tex_border);
-
-	// draw a colony
-	glPushMatrix();
-		glTranslatef(100,0,100);
-		draw_colony(100, _tex_colony);
-	glPopMatrix();
-
-	// draw a box
-	glPushMatrix();
-		glTranslatef(220,0,220);
-		draw_box(70, _tex_box, _tex_box);
-	glPopMatrix();
-
-	// draw an apple
-	glPushMatrix();
-		glTranslatef(400,0,400);
-		draw_box(100, _tex_apple_side, _tex_apple_top);
-	glPopMatrix();
-
-	glCallList(_ant_model);
-	for (int cnt = 0; cnt < _ant_number; cnt++) 
-	{
-		glPushMatrix();
-			glTranslatef(_ant_posx[cnt],_ant_posy,_ant_posz[cnt]);
-			glRotatef(_ant_angley,0.0,1.0,0.0);
-			if (_high_quality_on) { anim->draw(fish,false,true); }
-			else { draw_ant(_ant_size); }
-			//
-		glPopMatrix();
-	}
-}
-
-void Ant_Sim::clean_up(void)
-{
-	SDL_FreeSurface( _prescreen );
-	SDL_FreeSurface( _screen );
-	SDL_FreeSurface( _logo );
-	kill_skybox();
-	glDeleteTextures(1,&_tex_board);
-	glDeleteTextures(1,&_tex_border);
-	delete(_ant_posx);
-	delete(_ant_posz);
-
-	SDL_Quit();
+	double play_time = atof(lines[16].c_str());
+	return play_time;
 }
 
 void Ant_Sim::handle_user_input(SDL_Event &event)
 {
 	switch(event.type) {
 		case SDL_QUIT:
-			_running = false; break;
+			if (_countdown_on)	{ _running = false; }
+			else				{ start_countdown(); }
+			break;
 		case SDL_MOUSEBUTTONDOWN:
-			_mousein = true;
-			SDL_ShowCursor(SDL_DISABLE);
-			SDL_WarpMouse(screen_width/2,screen_height/2);
-			break;
+			// left mouse click
+			if (event.button.button ==SDL_BUTTON_LEFT)
+				{ _drawing_engine.left_mouse_click(); break; } 
 		case SDL_MOUSEBUTTONUP:
-			_mousein = false;
-			SDL_ShowCursor(SDL_ENABLE);
-			break;
+				{ _drawing_engine.left_mouse_unclick(); break; } 
 		case SDL_KEYUP:
 			switch(event.key.keysym.sym) {
 				case SDLK_p:
-					print_camera_pos(); break;
+					_drawing_engine.print_cam_pos(); break;
 				case SDLK_f:
-					_switch_fog_on= !_switch_fog_on;
-					if (_switch_fog_on) { glEnable(GL_FOG); }
-					else {glDisable(GL_FOG); }
-					break;	
+					_drawing_engine.switch_fog_no_fog(); break;	
 				case SDLK_q:
-					_high_quality_on = !_high_quality_on; break;	
+					_drawing_engine.switch_good_bad_graphics(); break;	
 				case SDLK_n:
 					_sim_time_step = std::min<int>(_sim_time_step+1,300); break;						
 				case SDLK_m:
 					_sim_time_step = std::max<int>(_sim_time_step-1,2); break;
 				case SDLK_ESCAPE:
-					_running = false; break;
+					if (_countdown_on)	{ _running = false; }
+					else				{ start_countdown(); }
+					break;
 				default:
 					break;
 			}
@@ -214,8 +140,81 @@ void Ant_Sim::handle_user_input(SDL_Event &event)
 	}
 }
 
+void Ant_Sim::start_countdown(void)
+{
+	_countdown_on = true;
+	_drawing_engine.start_countdown();
+	_time_remaining = 10000;
+}
+
+void Ant_Sim::game_logic(Uint32 time)
+{
+	_round_cnt++;
+	//move_test_ants();
+
+	_table_items->update_passive(time, _sim_time_step);
+	_coll_dect->update_all(time, _sim_time_step);
+
+	// check if game time is over
+	_time_remaining -= _sim_time_step;
+	if (_time_remaining <= 0)
+		if (!_countdown_on)
+			// game run out of time -> start countdown and show results
+			start_countdown();
+		else
+			// countdown is already over -> finish the simulation
+			_running = false;
+}
+
+void Ant_Sim::add_colony(void)
+{
+	Colony_birth_info colony_birth_info;
+	colony_birth_info._size = 100;
+	colony_birth_info.read_from_file(FILE_NAME);
+	auto new_colony_ptr = std::make_shared<Colony>(colony_birth_info);
+	(*_table_items).add_colony(new_colony_ptr);
+}
+
+void Ant_Sim::add_food(double amount, int x, int y, int z)
+{
+	Game_item_birth_info go_info;
+	go_info._energy = amount;
+	go_info._size = amount;
+	go_info._energy_consumption_per_m = 0;
+	std::array<double, 2> dir = {1.0, 0.0};
+	Position pos(x,y,z,dir);
+	go_info._pos = pos;
+	auto new_food_ptr = std::make_shared<Food>(go_info);
+	(*_table_items).add_food(new_food_ptr);
+}
+
+void Ant_Sim::add_start_food(int number_of_items)
+{
+	for (int cnt = 0; cnt < number_of_items; cnt++)
+	{
+		double x = unif_01() * (BOARD_SIZE-400) + 200;
+		double z = unif_01() * (BOARD_SIZE-400) + 200;
+		double amount = std::max<double>(unif_01()*200,10);
+		add_food(amount,x,0,z);
+	}
+}
+
+void Ant_Sim::add_obstacle(double size, int x, int y, int z)
+{
+	Game_item_birth_info go_info;
+	go_info._energy = size;
+	go_info._size = size;
+	go_info._energy_consumption_per_m = 0;
+	std::array<double, 2> dir = {1.0, 0.0};
+	Position pos(x,y,z,dir);
+	go_info._pos = pos;
+	auto new_obst_ptr = std::make_shared<Obstacle>(go_info);
+	(*_table_items).add_obstacle(new_obst_ptr);
+}
+
 void Ant_Sim::start(void)
 {
+	_drawing_engine.init();
 	init();
 
 	// set local variables
@@ -223,11 +222,6 @@ void Ant_Sim::start(void)
 	Time_machine time_machine; // to keep control of time flux
 	Uint32 time = 0; // in milli seconds
 	Uint32 accumulator = 0;
-
-	// better graphics meshes
-	AnimMesh *ant=new AnimMesh(16,"src/fourmi_obj/fourmi2"); //On charge les frames
-    VirtualAnim *anim=new VirtualAnim(); //We create a virtual animation
-    anim->start(0,15,50); // we start the animation
 
 	while(_running) {
 		////////////////////////////////////////////////////////
@@ -245,8 +239,8 @@ void Ant_Sim::start(void)
 
 		while ( accumulator >= _sim_time_step )
 		{
-			_round_cnt++;
-			move_ants();
+			game_logic(time);
+
 			// operations to hold constant time flux
 			accumulator -= _sim_time_step;
 			time += _sim_time_step;
@@ -254,10 +248,10 @@ void Ant_Sim::start(void)
 		////////////////////////////////////////////////////////
 		/////////////        GRAPHIC RENDERING    //////////////
 		////////////////////////////////////////////////////////
-		display(anim, ant);
+		_drawing_engine.display(this, _time_remaining, _round_cnt);
 		SDL_GL_SwapBuffers(); // blits the buffer to the screen
 	}
-	delete anim;
-    delete ant;
-	clean_up();
+	_drawing_engine.clean_up();
+	//clean_up_test_ants();
+	SDL_Quit();
 }

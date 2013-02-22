@@ -5,51 +5,66 @@
 //if you would not delete the link
 //so other people can see the tutorial
 //this file is functions.h, it's contain the actual implementation of the 3D camera
-#include "camera.h"
 
-float camX		=71; 
-float camY		=128;
-float camZ		=59;       //current position of the camera
-float camYaw	=229;       //camera rotation in Y axis
-float camPitch	=-15;     //camera rotation in X axis
-#ifndef M_PI    //if the pi is not defined in the cmath header file
-#define M_PI 3.1415926535       //define it
-#endif
+// Edited by Lucas Tittmann, 02/13
+// added some functionality and made the camera an object
+// Check out the latest version at Github: https://github.com/Andarin/Ant_Simulation
 
-void lock_camera(int board_size)
+#include "Camera.h"
+
+Camera::Camera(void)
+{
+	_camX = 71; 
+	_camY = 128;
+	_camZ = 59;
+	_camYaw	= 229;       //camera rotation in Y axis
+	_camPitch = -15;     //camera rotation in X axis
+
+	_camX_saved = 71; 
+	_camY_saved = 128;
+	_camZ_saved = 59;
+	_camYaw_saved = 229;    //camera rotation in Y axis
+	_camPitch_saved = -15;  //camera rotation in X axis
+}
+
+Camera::~Camera(void)
+{
+}
+
+void Camera::lock(int BOARD_SIZE)
 {
     //set campitch between -90 and 90 and set camyaw between 0 and 360 degrees
-    if(camPitch>90)
-		camPitch=90;
-    if(camPitch<-90)
-        camPitch=-90;
-    if(camYaw<0.0)
-        camYaw+=360.0;
-    if(camYaw>360.0)
-        camYaw-=360;
-	camX = std::max<double>(camX,5);
-	camX = std::min<double>(camX,board_size-5);
-	camZ = std::max<double>(camZ,5);
-	camZ = std::min<double>(camZ,board_size-5);
-	camY = std::max<double>(camY,5);
-	camY = std::min<double>(camY,300);
+    if(_camPitch>90)
+		_camPitch=90;
+    if(_camPitch<-90)
+        _camPitch=-90;
+    if(_camYaw<0.0)
+        _camYaw+=360.0;
+    if(_camYaw>360.0)
+        _camYaw-=360;
+	_camX = std::max<double>(_camX,5);
+	_camX = std::min<double>(_camX,BOARD_SIZE-5);
+	_camZ = std::max<double>(_camZ,5);
+	_camZ = std::min<double>(_camZ,BOARD_SIZE-5);
+	_camY = std::max<double>(_camY,5);
+	_camY = std::min<double>(_camY,300);
 }
  
-void move_camera(float dist,float dir)
+void Camera::move(float dist,float dir)
 {
-    float rad=(camYaw+dir)*M_PI/180.0; //convert the degrees into radians
-    camX-=sin(rad)*dist;    //calculate the new coordinate
-    camZ-=cos(rad)*dist;
+    float rad=(_camYaw+dir)*M_PI/180.0; //convert the degrees into radians
+    _camX-=sin(rad)*dist;    //calculate the new coordinate
+    _camZ-=cos(rad)*dist;
 }
  
-void move_camera_up(float dist,float dir)
+void Camera::move_camera_up(float dist,float dir)
 {
     //the the same, only this time we calculate the y coorinate
-    float rad=(camPitch+dir)*M_PI/180.0;
-    camY+=sin(rad)*dist;   
+    float rad=(_camPitch+dir)*M_PI/180.0;
+    _camY+=sin(rad)*dist;   
 }
  
-void camera_control(float movevel, float mousevel, int board_size, 
+void Camera::control(float movevel, float mousevel, int BOARD_SIZE, 
 					int screen_w, int screen_h, bool mouse_in_window)
 {
     if(mouse_in_window)  //if the mouse is in the screen
@@ -59,40 +74,99 @@ void camera_control(float movevel, float mousevel, int board_size,
         SDL_ShowCursor(SDL_DISABLE);    //we don't show the cursor
         int tmpx,tmpy;
         SDL_GetMouseState(&tmpx,&tmpy); //get the current position of the cursor
-        camYaw+=mousevel*(MidX-tmpx);   //get the rotation
-        camPitch+=mousevel*(MidY-tmpy); //this is for X
-        lock_camera(board_size);
+        _camYaw += mousevel*(MidX-tmpx);   //get the rotation
+        _camPitch += mousevel*(MidY-tmpy); //this is for X
+        lock(BOARD_SIZE);
         SDL_WarpMouse(MidX,MidY);       //move back the cursor to the center of the screen
         Uint8* state=SDL_GetKeyState(NULL);     //which key is pressed?
         if(state[SDLK_w])
         {
 			 //if we are facing directly up or down, we don't go forward
-            if(camPitch!=90 && camPitch!=-90)
-                    move_camera(movevel,0.0); //move forward
+            if(_camPitch!=90 && _camPitch!=-90)
+                    move(movevel,0.0); //move forward
             move_camera_up(movevel,0.0);      //move up/down
-        }else if(state[SDLK_s])
+        } else if(state[SDLK_s])
         {
             //same, just we use 180 degrees, so we move at the different direction (move back)
-            if(camPitch!=90 && camPitch!=-90)
-                move_camera(movevel,180.0);
+            if(_camPitch!=90 && _camPitch!=-90)
+                move(movevel,180.0);
             move_camera_up(movevel,180.0);
         }              
         if(state[SDLK_a])       //move left
-            move_camera(movevel,90.0);
+            move(movevel,90.0);
         else if(state[SDLK_d])  //move right
-            move_camera(movevel,270);       
+            move(movevel,270);       
     }
-    glRotatef(-camPitch,1.0,0.0,0.0); //rotate the camera
-    glRotatef(-camYaw,0.0,1.0,0.0);
+    glRotatef(-_camPitch,1.0,0.0,0.0); //rotate the camera
+    glRotatef(-_camYaw,0.0,1.0,0.0);
 }
  
-void update_camera()
+void Camera::update(void)
 {
-    glTranslatef(-camX,-camY,-camZ); //move the camera
+    glTranslatef(-_camX,-_camY,-_camZ); //move the camera
 }
 
-void print_camera_pos()
+void Camera::print(void)
 {
-	cout << "x: " << camX <<" - y: " << camY <<" - z: " << camZ 
-		<< " - camPitch: " << camPitch << " - camYaw: " << camYaw << endl;
+	std::cout << "x: " << _camX <<" - y: " << _camY <<" - z: " << _camZ 
+		<< " - camPitch: " << _camPitch << " - camYaw: " << _camYaw << std::endl;
+}
+
+std::vector<double> Camera::calculate_click_point(int map_size)
+{
+	// caculates where on the board was clicked on
+	// returns -1, -1 of coords not on board
+	double x_on_board;
+	double z_on_board;
+	std::vector<double> board_pos;
+    int tmpx,tmpy;
+
+	SDL_GetMouseState(&tmpx,&tmpy);
+	// calculate pitch of mouse pointer in rad
+	float click_pitch_deg = 45.0*(SCREEN_HEIGHT/2.0 - tmpy)/SCREEN_HEIGHT;
+	float anti_angle_deg = 90 + _camPitch + click_pitch_deg;
+	float anti_angle_pi = anti_angle_deg / 180 * M_PI;
+	// now we can calculate the distance to the camera
+	float distance = std::tan(anti_angle_pi)*_camY;
+
+	// now calculate the position on the circle
+	float click_yaw_deg =60.0*(SCREEN_WIDTH/2.0 - tmpx)/SCREEN_WIDTH;
+	float angle_yaw_deg = 270 - _camYaw - click_yaw_deg;
+	float angle_yaw_pi = angle_yaw_deg / 180 * M_PI;
+
+	x_on_board = _camX + std::cos(angle_yaw_pi)*distance;
+	z_on_board = _camY + std::sin(angle_yaw_pi)*distance;
+
+	// sanitize user input
+	if (anti_angle_deg >= 90
+		|| x_on_board < map_size/50 || x_on_board > map_size*49/50
+		|| z_on_board < map_size/50 || z_on_board > map_size*49/50) 
+	{
+		x_on_board = -1;
+		z_on_board = -1;
+	}
+
+	//std::cout << tmpx << " " << angle_yaw_deg <<" "<<x_on_board<<" "<<z_on_board<< std::endl;
+	//std::cout << _camX << " " << _camY << " " << _camZ << std::endl;
+	board_pos.push_back(x_on_board);
+	board_pos.push_back(z_on_board);
+	return board_pos;
+}
+
+void Camera::save_current_pos(void)
+{
+	_camX_saved = _camX;
+	_camY_saved = _camY;
+	_camZ_saved = _camZ;
+	_camPitch_saved = _camPitch;
+	_camYaw_saved = _camYaw;
+}
+
+void Camera::load_last_pos(void)
+{
+	_camX = _camX_saved;
+	_camY = _camY_saved;
+	_camZ = _camZ_saved;
+	_camPitch = _camPitch_saved;
+	_camYaw = _camYaw_saved;
 }

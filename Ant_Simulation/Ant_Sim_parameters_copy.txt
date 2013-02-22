@@ -1,0 +1,62 @@
+﻿Ant Simulation Project by Guillaume Martinet and Lucas Tittmann
+under GNU GPL v3
+is a project to simulate a colony of ants, represented in simple OpenGL 3D.
+
+Check out the latest version at Github: https://github.com/Andarin/Ant_Simulation
+
+With this file you can change:
+1. Display resolution
+2. Duration of the simulation
+3. Board size
+4. Control parameters of your colony
+
+Use with caution and only change the numbers. Don't make spaces behind or in
+front of the numbers. There is a security copy in case you broke this file
+called "Ant_Sim_parameters_copy.txt"
+
+1. Display resolution
+SCREEN_WIDTH
+960
+SCREEN_HEIGHT
+640
+
+2. Duration of the simulation in seconds
+PLAY_TIME (standard is 600)
+600
+
+3. Board size in millimeters
+BOARD_SIZE (standard is 5000)
+5000
+
+4. Control parameters of your colony
+COLONY_POSITION_X (should be between 100 and BOARD_SIZE-100; standard is 200)
+200
+COLONY_POSITION_Y (should be between 100 and BOARD_SIZE-100; standard is 200)
+200
+COLONY_REPRODUCTION_SPEED_PER_MINUTE (standard is 10)
+# attention! at the moment, the simulation is very calculation intensive,
+# therefore be careful when increasing this value, it can get slow fast
+6
+COLONY_INITIAL_FOOD (standard is 1000)
+1000
+ANT_SPEED (in meter per second; standard is 0.1)
+0.1
+LARVA_DEVELOPPEMENT_TIME (in seconds; standard is 20)
+# how long does an ant need after creation to become adult
+# attention! the colony needs larvas to transform solid food into liquid food
+# adult ants and the queen eat only liquid food
+20
+ANT_LIFE_TIME (in seconds; standard is 300)
+300
+ANT_START_ENERGY (standard is 100)
+100
+ANT_ENERGY_CONSUMPTION_PER_MINUTE (standard is 50)
+50
+ANT_MAX_DISTANCE_BEFORE_STOP (standard is 200)
+200
+ANT_TRANSPORT_CAPABILITY (standard is 1)
+1
+ANT_ATTACK_POINTS (standard is 1)
+1
+ANT_ARMOR (standard is 1)
+1

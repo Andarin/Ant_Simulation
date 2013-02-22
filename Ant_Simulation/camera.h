@@ -17,14 +17,42 @@
 #include <cstdio>
 #include <iostream>
 #include <cmath>
-using namespace std;
+#include <vector>
+#include "general_constants.h"
 #ifndef CAMERA_H
 #define CAMERA_H
 
-void lock_camera(int);
-void move_camera(float,float);
-void move_camera_up(float,float);
-void camera_control(float,float,int,int,int,bool);
-void update_camera();
-void print_camera_pos();
+class Camera
+{
+public:
+	Camera(void);
+	~Camera(void);
+
+	//current position of the camera
+	float _camX; 
+	float _camY;
+	float _camZ;
+	float _camYaw;       //camera rotation in Y axis
+	float _camPitch;     //camera rotation in X axis
+
+	void control(float,float,int,int,int,bool);
+	void update(void);
+	void print(void);
+	std::vector<double> calculate_click_point(int);
+	void save_current_pos(void);
+	void load_last_pos(void);
+
+private:
+	//saved position of the camera
+	float _camX_saved; 
+	float _camY_saved;
+	float _camZ_saved;
+	float _camYaw_saved;   //camera rotation in Y axis
+
+	void lock(int);
+	void move(float,float);
+	void move_camera_up(float,float);
+	float _camPitch_saved; //camera rotation in X axis
+};
+
 #endif
