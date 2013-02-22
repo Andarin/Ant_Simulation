@@ -42,103 +42,39 @@ void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Ant>> p
 	_phys_coll_food = phys_coll_food;
 
 	_energy -= _energy_consumption_per_m*time_step/60000;
-	// if getting hungry, go back to the colony
-	if (_energy < 0.5*_max_energy_storage && !_get_back_colony)
-	{
-		//_pos._direction[0] = -_pos._direction[0];
-		//_pos._direction[1] = -_pos._direction[1];
-		_objective = ANT_STATUS_BACK_TO_COLONY;
-		_get_back_colony = true;
-	}
 
-	// if temporal target reached, the makes a stop
-	if (_distance_left <= 0)
-	{ _is_moving = false ; }
+	test_should_go_back_because_energy ();
 
 	// if arriving at the border, turn around
-	std::list<std::array<double,2>> list_normals = return_normal_board();
-	if (!list_normals.empty())
-	{
-		board_manager(list_normals);
-		_is_moving = true;
-	}
-
+	what_should_do_when_meet_board ();
+	
 	if (time > _time_of_death || _energy <= 0)
 	{ destroy(); }
 	else
 	{
-
-		if (!_phys_coll_col.empty())
-		{
-			_counter = 0;
-			if (_food_stored>0)
-			{
-				(_phys_coll_col.front())->store_food(_food_stored);
-				_food_stored = 0;
-				//_pos._direction[0] = -_pos._direction[0];
-				//_pos._direction[1] = -_pos._direction[1];
-				restore_energy (*(_phys_coll_col.front()));
-				_get_back_colony = false;
-			}
-
-			else if (_energy < 0.5*_max_energy_storage )
-			{
-				restore_energy (*(_phys_coll_col.front()));
-				//_pos._direction[0] = -_pos._direction[0];
-				//_pos._direction[1] = -_pos._direction[1];
-				_get_back_colony = false;
-			}
-
-			if (_phys_coll_col.front()->get_if_food_found())
-			{
-				_objective = ANT_STATUS_GET_FOOD;
-			}
-
-			else
-
-			{
-				_objective = ANT_STATUS_SCOUT;
-			}
-		}
-
-		if (!_phys_coll_food.empty() && _food_stored < _max_food_storage)
-		{
-			_counter = 0;
-			_food_stored += (*(_phys_coll_food.front())).get_piece(_max_food_storage - _food_stored);
-			if (_food_stored == _max_food_storage)
-			{
-			//_pos._direction[0] = -_pos._direction[0];
-			//_pos._direction[1] = -_pos._direction[1];
-			_objective = ANT_STATUS_BACK_TO_COLONY;
-			_get_back_colony = true;
-			}
-		}
-
+		what_should_do_when_meet_colony();
+		what_should_do_when_meet_food();
+		
 		if (_is_moving)
 		{
+			//we move the ant according to its past decisions
+			//for both direction and distance left
 			_pos._x += (time_step*(_pos._direction[0])*_speed);
 			_pos._z += (time_step*(_pos._direction[1])*_speed);
 			_distance_left -= time_step*_speed;
 		}
 		else if (_distance_left <= 0)
 		{
-			if (_objective == ANT_STATUS_SCOUT)
-			{
-				scout_AI (time);
-				set_pheromone(SIMPLE_AI_PHERO_BACK,8,1);
-			}
-			else if (_objective == ANT_STATUS_BACK_TO_COLONY)
-				//back_AI();
-				simple_back_AI(time);
-			else if (_objective == ANT_STATUS_GET_FOOD)
-				//food_AI();
-				simple_food_AI(time);
+			AI_chosen_according_to_objective(time);
 		}
 		else if (_time_to_move <= time)
 		{
 			_is_moving = true;
 		}
 	}
+	// if temporal target reached, the makes a stop
+	if (_distance_left <= 0)
+	{ _is_moving = false ; }
 }
 
 void Ant::update_ph(std::list<std::shared_ptr<Pheromone>> olf_coll_ph)
@@ -265,6 +201,94 @@ void Ant::food_AI()
 	_distance_left = 50 + (_max_distance_before_stop - 50.0)*unif_01() ;
 	_pos._direction = direction_phero();
 	set_pheromone (0,5,1);
+}
+
+void Ant::test_should_go_back_because_energy ()
+{
+		// if getting hungry, go back to the colony
+	if (_energy < 0.5*_max_energy_storage && !_get_back_colony)
+	{
+		//_pos._direction[0] = -_pos._direction[0];
+		//_pos._direction[1] = -_pos._direction[1];
+		_objective = ANT_STATUS_BACK_TO_COLONY;
+		_get_back_colony = true;
+	}
+}
+
+void Ant::what_should_do_when_meet_board ()
+{
+	std::list<std::array<double,2>> list_normals = return_normal_board();
+	if (!list_normals.empty())
+	{
+		board_manager(list_normals);
+		_is_moving = true;
+	}
+
+}
+
+void Ant::what_should_do_when_meet_colony()
+{
+	if (!_phys_coll_col.empty())
+	{
+		_counter = 0;
+		//_pos._direction[0] = -_pos._direction[0];
+		//_pos._direction[1] = -_pos._direction[1];
+		if (_food_stored>0)
+		{
+			(_phys_coll_col.front())->store_food(_food_stored);
+			_food_stored = 0;
+			restore_energy (*(_phys_coll_col.front()));
+			_get_back_colony = false;
+		}
+
+		else if (_energy < 0.5*_max_energy_storage )
+		{
+			restore_energy (*(_phys_coll_col.front()));
+			_get_back_colony = false;
+		}
+
+		if (_phys_coll_col.front()->get_if_food_found())
+		{
+			_objective = ANT_STATUS_GET_FOOD;
+		}
+
+		else
+
+		{
+			_objective = ANT_STATUS_SCOUT;
+		}
+	}
+}
+
+void Ant::what_should_do_when_meet_food(void)
+{
+	if (!_phys_coll_food.empty() && _food_stored < _max_food_storage)
+	{
+		_counter = 0;
+		_food_stored += (*(_phys_coll_food.front())).get_piece(_max_food_storage - _food_stored);
+		if (_food_stored == _max_food_storage)
+		{
+		//_pos._direction[0] = -_pos._direction[0];
+		//_pos._direction[1] = -_pos._direction[1];
+		_objective = ANT_STATUS_BACK_TO_COLONY;
+		_get_back_colony = true;
+		}
+	}
+}
+
+void Ant::AI_chosen_according_to_objective (Uint32 time)
+{
+	if (_objective == ANT_STATUS_SCOUT)
+	{
+		scout_AI (time);
+		set_pheromone(SIMPLE_AI_PHERO_BACK,8,1);
+	}
+	else if (_objective == ANT_STATUS_BACK_TO_COLONY)
+		//back_AI();
+		simple_back_AI(time);
+	else if (_objective == ANT_STATUS_GET_FOOD)
+		//food_AI();
+		simple_food_AI(time);
 }
 
 //because of some problem we encountered we create a simpler version of this AI
