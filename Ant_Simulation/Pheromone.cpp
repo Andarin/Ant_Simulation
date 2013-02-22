@@ -12,6 +12,7 @@ double Pheromone::calc_size_by_energy (double energy)
 void Pheromone::merge_pheromone(std::shared_ptr<Pheromone> p_other_phero)
 {
 	_energy += (*p_other_phero)._energy;
+	_pheromone_type = p_other_phero->_pheromone_type;
 	(*p_other_phero).destroy();
 }
 

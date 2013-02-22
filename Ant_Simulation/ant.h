@@ -62,7 +62,6 @@ private:
 	void set_pheromone(int,double,double);
 	//for the simple AI we add a counter to the pheromone
 	//so the AI can find its way more easily
-	void simple_AI_set_phero (int,int,double,double);
 	void destroy(void);
 	void store_food (void);
 	void take_food (void);
@@ -133,8 +132,8 @@ private:
 	void scout_AI (Uint32); //AI of the ant when it's trying to find food (is a scout)
 	void back_AI(); //AI of the ant when it wants to get back home
 	void food_AI(); //AI of the ant when it wants to go to a known food
-	void simple_back_AI();
-	void simple_food_AI();
+	void simple_back_AI(Uint32);
+	void simple_food_AI(Uint32);
 
 	 //common function for back_AI and food_AI to deal with the pheromones
 	void dir_choice_according_to_phero (void) ;
@@ -154,4 +153,13 @@ private:
 	 //gives the direction to the chosen pheromone with a random noise
 	 //if there is no pheromone in the vision field return another direction
 	std::array<double,2> direction_phero (void);
+
+	 //to create a list of the smelled pheromones of type SIMPLE_AI_PHERO_BACK
+
+	std::list<std::shared_ptr<Pheromone>> get_simple_back_phero (void);
+
+	 //to create a list of the smelled pheromones of type SIMPLE_AI_PHERO_FOOD
+
+	std::list<std::shared_ptr<Pheromone>> get_simple_food_phero (void);
+
 };
