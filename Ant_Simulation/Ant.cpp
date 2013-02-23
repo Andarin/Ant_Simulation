@@ -397,7 +397,7 @@ std::array<double,2> Ant::rand_dir_from_board (std::array<double,2> dir)//we sup
 			res[1] = dir[1]*(sqrt(3.0)/2);
 		}
 	}
-	else if (dir[1] = 0)
+	else if (dir[1] == 0)
 	{
 		if (_pos._direction[1] <= 0)
 		{
