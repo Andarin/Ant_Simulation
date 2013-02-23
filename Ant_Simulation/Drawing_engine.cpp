@@ -35,7 +35,7 @@ void Drawing_engine::set_window(void)
 	_screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_SWSURFACE|SDL_OPENGL);
 	// SDL_SWSURFACE|SDL_OPENGL means: do both options
 	// for full screen:
-	//screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_SWSURFACE|SDL_FULLSCREEN);
+	//_screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_SWSURFACE|SDL_FULLSCREEN);
 	SDL_WM_SetCaption( "Ant Simulation", NULL );
 	SDL_Surface *icon;
 	icon = SDL_LoadBMP("data/icon.bmp");
