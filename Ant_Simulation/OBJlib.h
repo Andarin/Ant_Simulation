@@ -1,3 +1,7 @@
+// To display the Blender models (*.obj) in our simulation, this code from
+// the site du zero was used
+// http://www.siteduzero.com/informatique/tutoriels/charger-des-fichiers-obj/parser-les-formats-obj-et-mtl
+// http://www.siteduzero.com/informatique/tutoriels/creez-des-programmes-en-3d-avec-opengl/plaquage-de-texture
 //Dernière mise à jour le 09/01/2011
 
 #ifndef __OBJ_LIB__

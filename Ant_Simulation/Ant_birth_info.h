@@ -9,6 +9,7 @@
 	#include <SDL/SDL.h>
 #endif
 
+// class to pass information needed to create an ant
 class Ant_birth_info
 {
 public:

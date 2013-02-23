@@ -1,5 +1,8 @@
 // This file is part of Ant_Simulation by Guillaume Martinet and Lucas Tittmann
 // Check out the latest version at Github: https://github.com/Andarin/Ant_Simulation
+
+// observer of the simulation; class to handle all render and display
+// aspects
 #pragma once
 // libraries
 #ifdef _WIN32
@@ -73,13 +76,20 @@ private:
 	Uint8 *_keystates;
 
 	// methods
+	// set initial statements
 	void set_window(void);
 	void set_openGL(void);
 	void load_textures(void);
 	void load_hq_models(void);
+
+	// declare fog which can be enabled
 	void init_fog(void);
+
+	// switch between differents perspectives for scene and HUD
 	void switch_to_normal_perspective(int);
 	void switch_to_ortho_perspective(void);
+
+	// draw things to the screen
 	void draw_text(std::string, float, float);
 	void draw_text_with_number(std::string, int, float, float);
 	void draw_text_with_number(std::string, double, float, float);
@@ -92,6 +102,8 @@ private:
 	void draw_colonies(Ant_Sim*);
 	void draw_location_selected_on_board(void);
 	void draw_result(double);
+
+	// help functions for the result drawing
 	double get_food_starting_value(void);
 	double calc_result(Ant_Sim*);
 };

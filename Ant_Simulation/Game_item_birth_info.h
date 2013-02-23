@@ -3,6 +3,7 @@
 #pragma once
 #include "Position.h"
 
+// class to pass information needed to create a game_item
 class Game_item_birth_info
 {
 public:

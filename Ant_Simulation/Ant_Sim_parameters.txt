@@ -14,28 +14,28 @@ called "Ant_Sim_parameters_copy.txt"
 
 2. Duration of the simulation in seconds  
 PLAY_TIME (standard is 600)  
-500
+420
 
 4. Control parameters of your colony  
 COLONY_POSITION_X (should be between 100 and BOARD_SIZE-100; standard is 200)  
 200  
 COLONY_POSITION_Y (should be between 100 and BOARD_SIZE-100; standard is 200)  
 200  
-COLONY_REPRODUCTION_SPEED_PER_MINUTE (standard is 10)  
+COLONY_REPRODUCTION_SPEED_PER_MINUTE (standard is 5)  
 # attention! at the moment, the simulation is very calculation intensive,  
 # therefore be careful when increasing this value, it can get slow fast  
-30 
-COLONY_INITIAL_FOOD (standard is 1000)  
-1000  
+5  
+COLONY_INITIAL_FOOD (standard is 100)  
+100  
 ANT_SPEED (in meter per second; standard is 0.1)  
 0.1  
-LARVA_DEVELOPPEMENT_TIME (in seconds; standard is 20)  
+LARVA_DEVELOPPEMENT_TIME (in seconds; standard is 10)  
 # how long does an ant need after creation to become adult  
 # attention! the colony needs larvas to transform solid food into liquid food  
 # adult ants and the queen eat only liquid food  
 10  
-ANT_LIFE_TIME (in seconds; standard is 300)  
-300  
+ANT_LIFE_TIME (in seconds; standard is 200)  
+180   
 ANT_START_ENERGY (standard is 100)  
 100  
 ANT_ENERGY_CONSUMPTION_PER_MINUTE (standard is 50)  

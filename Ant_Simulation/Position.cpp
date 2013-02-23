@@ -20,10 +20,10 @@ Position::~Position(void)
 
 std::shared_ptr<Position> Position::clone()
 {
-return clone_impl();
+	return clone_impl();
 }
 
 std::shared_ptr<Position> Position::clone_impl()
 {
-return(std::shared_ptr<Position>(new Position(*this)));
+	return(std::shared_ptr<Position>(new Position(*this)));
 }
