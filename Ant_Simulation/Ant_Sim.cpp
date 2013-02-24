@@ -257,3 +257,20 @@ void Ant_Sim::start(void)
 	//clean_up_test_ants();
 	SDL_Quit();
 }
+
+
+void Ant_Sim::start_text_output(void)
+{
+	init();
+
+	// set local variables
+	Uint32 time = 0; // in milli seconds
+
+	while(_running) {
+		////////////////////////////////////////////////////////
+		/////////////            GAME LOGIC       //////////////
+		////////////////////////////////////////////////////////
+		game_logic(time);
+		time += _sim_time_step;
+	}
+}
