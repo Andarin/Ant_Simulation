@@ -5,7 +5,7 @@
 Ant_Sim::Ant_Sim(void)
 {
 	_time_remaining = read_play_time_from_file(FILE_NAME)*1000;
-	_sim_time_step = 20; // in milli seconds
+	_sim_time_step = 40; // in milli seconds
 	_max_size_of_pheromone = 300;
 	_max_size_of_corps = 100;
 
@@ -258,4 +258,21 @@ void Ant_Sim::start(void)
 	_drawing_engine.clean_up();
 	//clean_up_test_ants();
 	SDL_Quit();
+}
+
+
+void Ant_Sim::start_text_output(void)
+{
+	init();
+
+	// set local variables
+	Uint32 time = 0; // in milli seconds
+
+	while(_running) {
+		////////////////////////////////////////////////////////
+		/////////////            GAME LOGIC       //////////////
+		////////////////////////////////////////////////////////
+		game_logic(time);
+		time += _sim_time_step;
+	}
 }

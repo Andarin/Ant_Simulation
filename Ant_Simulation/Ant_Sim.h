@@ -84,6 +84,7 @@ public:
 	Ant_Sim(void);
 	~Ant_Sim(void);
 	void start(void);
+	void start_text_output(void);
 
 	std::shared_ptr<Table_of_items> _table_items;
 	std::shared_ptr<Collision_detector> _coll_dect;

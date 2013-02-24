@@ -1,7 +1,5 @@
 // This file is part of Ant_Simulation by Guillaume Martinet and Lucas Tittmann
 // Check out the latest version at Github: https://github.com/Andarin/Ant_Simulation
-
-// class to simulate the ant and its AI
 #pragma once
 #include "Ant_birth_info.h"
 #include "Pheromone.h"
@@ -101,18 +99,30 @@ private:
 	 //to manage the general reaction of an ant encountering a board
 	void board_manager (std::list<std::array<double,2>>);
 
+	std::shared_ptr<Pheromone> _last_phero_targeted ;
+
 	bool _is_alive;
 	bool _is_moving;
 	bool _get_back_colony;
 	int _objective; //is the objective of the ant, for the moment
 					//there are three possible :
-					//	-scout (to find new foods)
-					//	-go_back_to_colony (to bring back food to colony or
+					//		-scout (to find new foods)
+					//		-go_back_to_colony (to bring back food to colony or
 					//						  to go back to it to get energy...)
-					//	-get_food (to go and take food from an already discovered food)
-	
-	//when an ant has stopped this indicates when it has to move again
-	Uint32 _time_to_move;
+					//		-get_food (to go and take food from an already discovered food)
+
+	//A varaible to test if the ant is in a colony
+	bool _in_colony;
+
+	//Another to test if an ant searching for food go to place where it is
+	//supposed there is some food...
+	bool _go_to_food;
+
+	//when, because for instance there's no food anymore there, it should change the counter of a phero
+	bool _change_phero_counter;
+
+	Uint32 _time_to_move;//when an ant has stopped this indicates when it has to move again
+
 	//list of olfactive collisions of the ant with pheromones
 
 	std::list<std::shared_ptr<Pheromone>> _olf_coll_ph ;
@@ -133,7 +143,9 @@ private:
 
 	//AI functions
 
-	void scout_AI (Uint32); //AI of the ant when it's trying to find food (is a scout)
+	void scout_AI (Uint32,int); //AI of the ant when it's trying to find a way
+								// either to a colony or to a food
+								// the int indicates the type of phero it sets
 	void back_AI(); //AI of the ant when it wants to get back home
 	void food_AI(); //AI of the ant when it wants to go to a known food
 	void simple_back_AI(Uint32);
@@ -154,6 +166,12 @@ private:
 	 //Manage the decision of the ant when it encounters a food
 
 	void what_should_do_when_meet_food (void);
+
+	 //When an ant come to a place where it was supposed there is food
+	 //and doesn't find anymore, so the ant modify the pheromone to indicate
+	 //that other ants should not come at this place
+
+	void what_to_do_when_food_disappear (void);
 
 	 //Change type of AI depending on the objective of the ant
 
