@@ -3,7 +3,7 @@
 #include "random_generator.h"
 
 static std::mt19937 eng (time(NULL));
-static std::tr1::uniform_real<double> unif(0, 1);
+static std::uniform_real_distribution<double> unif(0, 1);
 
 double unif_01()
 {

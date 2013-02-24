@@ -5,7 +5,7 @@
 Ant_Sim::Ant_Sim(void)
 {
 	_time_remaining = read_play_time_from_file(FILE_NAME)*1000;
-	_sim_time_step = 40; // in milli seconds
+	_sim_time_step = 10; // in milli seconds
 	_max_size_of_pheromone = 300;
 	_max_size_of_corps = 100;
 
@@ -262,20 +262,23 @@ void Ant_Sim::start(void)
 void Ant_Sim::start_text_output(void)
 {
 	init();
-	std::ofstream save_game;
-	save_game.open ("simulation.sav");
 
 	// set local variables
 	Uint32 time = 0; // in milli seconds
 
+	std::list<double> output;
+	output.push_back(_sim_time_step);
+
 	while(_running) {
-		////////////////////////////////////////////////////////
-		/////////////            GAME LOGIC       //////////////
-		////////////////////////////////////////////////////////
+		///////////// SAVE TO TEXTFILE //////////////
+
+		///////////// GAME LOGIC //////////////
 		game_logic(time);
 		time += _sim_time_step;
 	}
 
+	std::ofstream save_game;
+	save_game.open ("simulation.sav");
 	std::stringstream sstm;
 	sstm << "44" << 6;
 	std::string new_line = sstm.str();

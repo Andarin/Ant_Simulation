@@ -12,11 +12,11 @@ Use with caution and only change the numbers. Don't make spaces behind or in
 front of the numbers. There is a security copy in case you broke this file  
 called "Ant_Sim_parameters_copy.txt"  
 
-2. Duration of the simulation in seconds  
+1. Duration of the simulation in seconds  
 PLAY_TIME (standard is 600)  
 420
 
-4. Control parameters of your colony  
+2. Control parameters of your colony  
 COLONY_POSITION_X (should be between 100 and BOARD_SIZE-100; standard is 200)  
 200  
 COLONY_POSITION_Y (should be between 100 and BOARD_SIZE-100; standard is 200)  

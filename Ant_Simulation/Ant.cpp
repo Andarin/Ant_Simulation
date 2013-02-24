@@ -40,7 +40,6 @@ Ant::~Ant(void)
 void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Ant>> phys_coll_ant,std::list<std::shared_ptr<Colony>> phys_coll_col,std::list<std::shared_ptr<Food>> phys_coll_food)
 {
 	_energy -= _energy_consumption_per_m*time_step/60000;
-	
 	if (time > _time_of_death || _energy <= 0)
 	{ destroy(); }
 	else
