@@ -56,6 +56,7 @@
 #include <cmath>
 #include <iostream>
 #include <sstream>
+#include <fstream>
 #include <time.h>
 #include "glext.h"
 #include "OBJlib.h"

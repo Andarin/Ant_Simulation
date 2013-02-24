@@ -26,9 +26,9 @@ Colony::Colony(Colony_birth_info &colony_birth_info)
 	_food_found_timer = 0;
 	_egg_production_per_m = _max_egg_production_per_m;
 	_every_XX_ms_egg = 60000.0/_egg_production_per_m;
-	_egg_time_accumulated = 0; // in ms
+	_egg_time_accumulated = _every_XX_ms_egg; // in ms
 	_queen_hp = 100;
-	_proba_that_ant_is_worker_not_solidier = 1.0;
+	_proba_that_ant_is_solidier = 0.0;
 	_solid_food = 0.0;
 	_is_alive = true;
 }
@@ -109,10 +109,10 @@ void Colony::create_ant(Uint32 time)
 {
 	Ant_birth_info info;
 	double rd = unif_01();
-	if (rd <= _proba_that_ant_is_worker_not_solidier)
-	{ info._ant_type = ANT_TYPE_NR_OF_WORKER; }
-	else 
+	if (rd <= _proba_that_ant_is_solidier)
 	{ info._ant_type = ANT_TYPE_NR_OF_SOLDIER; }
+	else 
+	{ info._ant_type = ANT_TYPE_NR_OF_WORKER; }
 	info._speed = _ant_speed;
 	info._attack_points = _ant_attack_points;
 	info._armor = _ant_armor;

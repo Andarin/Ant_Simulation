@@ -262,6 +262,8 @@ void Ant_Sim::start(void)
 void Ant_Sim::start_text_output(void)
 {
 	init();
+	std::ofstream save_game;
+	save_game.open ("simulation.sav");
 
 	// set local variables
 	Uint32 time = 0; // in milli seconds
@@ -273,4 +275,10 @@ void Ant_Sim::start_text_output(void)
 		game_logic(time);
 		time += _sim_time_step;
 	}
+
+	std::stringstream sstm;
+	sstm << "44" << 6;
+	std::string new_line = sstm.str();
+	save_game << new_line;
+	save_game.close();
 }
