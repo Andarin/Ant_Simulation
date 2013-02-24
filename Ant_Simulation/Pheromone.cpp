@@ -15,6 +15,7 @@ void Pheromone::merge_pheromone(std::shared_ptr<Pheromone> p_other_phero)
 {
 	_energy += (*p_other_phero)._energy;
 	_pheromone_type = p_other_phero->_pheromone_type;
+	_counter = p_other_phero-> _counter;
 	(*p_other_phero).destroy();
 }
 

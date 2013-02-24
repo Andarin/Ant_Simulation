@@ -29,6 +29,8 @@ Ant::Ant(Ant_birth_info &ant_birth_info)
 	_max_food_storage=1;
 	_get_back_colony = false;
 	_counter = 0;
+	_in_colony = true;
+	_go_to_food = false;
 }
 
 Ant::~Ant(void)
@@ -37,23 +39,20 @@ Ant::~Ant(void)
 
 void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Ant>> phys_coll_ant,std::list<std::shared_ptr<Colony>> phys_coll_col,std::list<std::shared_ptr<Food>> phys_coll_food)
 {
-	_phys_coll_ant = phys_coll_ant;
-	_phys_coll_col = phys_coll_col;
-	_phys_coll_food = phys_coll_food;
-
 	_energy -= _energy_consumption_per_m*time_step/60000;
-
-	test_should_go_back_because_energy ();
-
-	// if arriving at the border, turn around
-	what_should_do_when_meet_board ();
 	
 	if (time > _time_of_death || _energy <= 0)
 	{ destroy(); }
 	else
 	{
+		_phys_coll_ant = phys_coll_ant;
+		_phys_coll_col = phys_coll_col;
+		_phys_coll_food = phys_coll_food;
+
 		what_should_do_when_meet_colony();
 		what_should_do_when_meet_food();
+		test_should_go_back_because_energy ();
+		what_should_do_when_meet_board ();
 		
 		if (_is_moving)
 		{
@@ -65,6 +64,20 @@ void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Ant>> p
 		}
 		else if (_distance_left <= 0)
 		{
+			//If it is supposed there is food here
+			//and actually there is not
+			if (_go_to_food && (_food_stored < _max_food_storage))
+			what_to_do_when_food_disappear();
+
+			else if (_change_phero_counter)
+			{
+				set_pheromone(SIMPLE_AI_PHERO_BACK,2,1);
+				_change_phero_counter = false ;
+				scout_AI(time,SIMPLE_AI_PHERO_BACK);
+				_objective = ANT_STATUS_SCOUT;
+			}
+
+			else
 			AI_chosen_according_to_objective(time);
 		}
 		else if (_time_to_move <= time)
@@ -73,6 +86,9 @@ void Ant::update(Uint32 time, Uint32 time_step,std::list<std::shared_ptr<Ant>> p
 		}
 	}
 	// if temporal target reached, the makes a stop
+	// this condition is put at the end so the 
+	// update will be done before the decision of
+	// the AI...
 	if (_distance_left <= 0)
 	{ _is_moving = false ; }
 }
@@ -97,6 +113,7 @@ void Ant::set_pheromone(int phero_type,double energy, double consumption)
 
 	_buffer_fresh_phero.push_back(p_pheromone);
 
+	_counter++;
 }
 
 
@@ -131,7 +148,7 @@ bool Ant::is_moving()
 
 //AI functions
 
-void Ant::scout_AI(Uint32 time)
+void Ant::scout_AI(Uint32 time,int type_phero)
 {
 	_distance_left = 50 + (_max_distance_before_stop - 50.0)*unif_01() ;
 	std::array<double,2> vect = add_unif_noise_45(_pos._direction);
@@ -139,7 +156,8 @@ void Ant::scout_AI(Uint32 time)
 	_pos._direction[1] = vect[1];
 	Uint32 t = (Uint32) (1000*unif_01());
 	_time_to_move = time + t;
-	set_pheromone (0,2,1);
+	if (type_phero > -1)
+	set_pheromone (type_phero,10,1);
 }
 
 void Ant::back_AI()
@@ -159,10 +177,7 @@ void Ant::simple_back_AI(Uint32 time)
 	std::list<std::shared_ptr<Pheromone>> list_back_phero = get_simple_back_phero ();
 	if (list_back_phero.empty())
 	{
-		scout_AI(time);
-		if (_food_stored > 0)
-			set_pheromone(SIMPLE_AI_PHERO_FOOD,8,1);
-		_counter += 1;
+		scout_AI(time,SIMPLE_AI_PHERO_FOOD);
 	}
 	else
 	{
@@ -177,21 +192,25 @@ void Ant::simple_back_AI(Uint32 time)
 				it_possible = it;
 			}
 		}
-		double x = (*it_possible)->_pos._x - _pos._x ;
-		double z = (*it_possible)->_pos._z - _pos._z ;
-		double r = sqrt (x*x + z*z);
-		x = x/r;
-		z = z/r;
-		_pos._direction[0] = x;
-		_pos._direction[1] = z;
-		_distance_left = r+15;
+		if ( *it_possible == _last_phero_targeted)
+			scout_AI(time,-1);
+		else
+		{
+			_last_phero_targeted = *it_possible;
+			double x = (*it_possible)->_pos._x - _pos._x ;
+			double z = (*it_possible)->_pos._z - _pos._z ;
+			double r = sqrt (x*x + z*z);
+			x = x/r;
+			z = z/r;
+			_pos._direction[0] = x;
+			_pos._direction[1] = z;
+			_distance_left = r+15;
+		}
+
 		if (_food_stored > 0)
 		{
 			set_pheromone(SIMPLE_AI_PHERO_FOOD,10,1);
-			_counter += 1;
 		}
-		Uint32 t = (Uint32) (1000*unif_01());
-		_time_to_move = time + t;
 	}
 
 }
@@ -230,6 +249,7 @@ void Ant::what_should_do_when_meet_colony()
 {
 	if (!_phys_coll_col.empty())
 	{
+		_in_colony = true;
 		_counter = 0;
 		//_pos._direction[0] = -_pos._direction[0];
 		//_pos._direction[1] = -_pos._direction[1];
@@ -258,6 +278,11 @@ void Ant::what_should_do_when_meet_colony()
 			_objective = ANT_STATUS_SCOUT;
 		}
 	}
+	else if (_in_colony)
+	{
+		_in_colony = false;
+		_counter ++;
+	}
 }
 
 void Ant::what_should_do_when_meet_food(void)
@@ -276,11 +301,24 @@ void Ant::what_should_do_when_meet_food(void)
 	}
 }
 
+void Ant::what_to_do_when_food_disappear(void)
+{
+	//The ant have to go to the place where a pheromone
+	//of counter = 0 is and to increase its counter
+	//We suppose it is 15 forward from this phero, because
+	//this phero was its last objective
+	_distance_left = 15;
+	_pos._direction[0] = -_pos._direction[0];
+	_pos._direction[1] = -_pos._direction[1];
+	_change_phero_counter = true;
+	_go_to_food = false;
+}
+
 void Ant::AI_chosen_according_to_objective (Uint32 time)
 {
 	if (_objective == ANT_STATUS_SCOUT)
 	{
-		scout_AI (time);
+		scout_AI (time,SIMPLE_AI_PHERO_BACK);
 		set_pheromone(SIMPLE_AI_PHERO_BACK,8,1);
 	}
 	else if (_objective == ANT_STATUS_BACK_TO_COLONY)
@@ -298,9 +336,7 @@ void Ant::simple_food_AI(Uint32 time)
 	std::list<std::shared_ptr<Pheromone>> list_food_phero = get_simple_food_phero ();
 	if (list_food_phero.empty())
 	{
-		scout_AI(time);
-		set_pheromone(SIMPLE_AI_PHERO_BACK,8,1);
-		_counter += 1;
+		scout_AI(time,SIMPLE_AI_PHERO_BACK);
 	}
 	else
 	{
@@ -315,18 +351,29 @@ void Ant::simple_food_AI(Uint32 time)
 				it_possible = it;
 			}
 		}
-		double x = (*it_possible)->_pos._x - _pos._x ;
-		double z = (*it_possible)->_pos._z - _pos._z ;
-		double r = sqrt (x*x + z*z);
-		x = x/r;
-		z = z/r;
-		_pos._direction[0] = x;
-		_pos._direction[1] = z;
-		_distance_left = r - 15;// to prevent from having a merge of two pheromones of diff types we substract 15
-		set_pheromone(SIMPLE_AI_PHERO_BACK,10,1);
-		_counter += 1;
-		Uint32 t = (Uint32) (1000*unif_01());
-		_time_to_move = time + t;
+		//If the counter of such a pheromone equals 0 it means that
+		//there is or used to be food there...
+		if (count_min == 0) 
+			_go_to_food = true;
+
+		else
+			_go_to_food = false;
+
+		if ( *it_possible == _last_phero_targeted)
+			scout_AI(time,SIMPLE_AI_PHERO_BACK);
+		else
+		{
+			_last_phero_targeted = *it_possible;
+			double x = (*it_possible)->_pos._x - _pos._x ;
+			double z = (*it_possible)->_pos._z - _pos._z ;
+			double r = sqrt (x*x + z*z);
+			x = x/r;
+			z = z/r;
+			_pos._direction[0] = x;
+			_pos._direction[1] = z;
+			_distance_left = r + 15;// to prevent from having a merge of two pheromones of diff types we add 15
+			set_pheromone(SIMPLE_AI_PHERO_BACK,10,1);
+		}
 	}
 }
 
@@ -397,17 +444,17 @@ std::array<double,2> Ant::rand_dir_from_board (std::array<double,2> dir)//we sup
 			res[1] = dir[1]*(sqrt(3.0)/2);
 		}
 	}
-	else if (dir[1] = 0)
+	else if (dir[1] == 0)
 	{
 		if (_pos._direction[1] <= 0)
 		{
 			res[1] = -0.5;
-			res[0] = dir[1]*(sqrt(3.0)/2);
+			res[0] = dir[0]*(sqrt(3.0)/2);
 		}
 		else
 		{
 			res[1] = 0.5;
-			res[0] = dir[1]*(sqrt(3.0)/2);
+			res[0] = dir[0]*(sqrt(3.0)/2);
 		}
 	}
 	//else we are in a corner, in this case we don't add a 30° deviation
