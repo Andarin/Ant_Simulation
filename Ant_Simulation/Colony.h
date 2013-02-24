@@ -56,7 +56,7 @@ private:
 	Uint32 _egg_time_accumulated;
 	int _larva_dev_time;
 	int _queen_hp;
-	double _proba_that_ant_is_worker_not_solidier;
+	double _proba_that_ant_is_solidier;
 	double _liquid_food;
 	double _solid_food;
 	bool _is_alive;
