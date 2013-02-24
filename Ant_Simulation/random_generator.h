@@ -7,9 +7,6 @@
 // std:: in C++11; if you use an older version, include the Boost lib
 // or delete it and just use the standard uniform distribution
 #include <random>
-#ifndef _WIN32
-	#include <tr1/random>
-#endif
 #include <time.h>
 
 void seed(unsigned s);
