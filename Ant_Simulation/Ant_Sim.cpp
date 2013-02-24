@@ -160,12 +160,14 @@ void Ant_Sim::game_logic(Uint32 time)
 	// check if game time is over
 	_time_remaining -= _sim_time_step;
 	if (_time_remaining <= 0)
+	{
 		if (!_countdown_on)
 			// game run out of time -> start countdown and show results
 			start_countdown();
 		else
 			// countdown is already over -> finish the simulation
 			_running = false;
+	}
 }
 
 void Ant_Sim::add_colony(void)
