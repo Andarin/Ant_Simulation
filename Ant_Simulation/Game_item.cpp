@@ -8,7 +8,6 @@ Game_item::Game_item(Game_item_birth_info go_birth_info)
 	_energy = go_birth_info._energy;
 	_size = go_birth_info._size;
 	_energy_consumption_per_m = go_birth_info._energy_consumption_per_m;
-
 	_pos = go_birth_info._pos;
 	_is_alive = true;
 }

@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="models.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="skybox.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="lodepng.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Ant_Sim.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Ant.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Ant_birth_info.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Colony.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Colony_birth_info.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Position.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Food.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Pheromone.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="random_generator.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="OBJlib.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="sdlglutils.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="loadpng_functions.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Time_machine.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision_detector.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="glfont2.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawing_engine.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Obstacle.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Table_of_items.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Game_item.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Game_item_birth_info.cpp">
+      <Filter>.cpp</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="skybox.h">
+      <Filter>.h</Filter>
+    </ClInclude>
+    <ClInclude Include="lodepng.h">
+      <Filter>.h</Filter>
+    </ClInclude>
+    <ClInclude Include="Ant.h">
+      <Filter>.h</Filter>
+    </ClInclude>
+    <ClInclude Include="models.h">
+      <Filter>.h</Filter>
+    </ClInclude>
+    <ClInclude Include="Ant_birth_info.h">
+      <Filter>.h</Filter>
+    </ClInclude>
+    <ClInclude Include="Colony.h">
+      <Filter>.h</Filter>
+    </ClInclude>
+    <ClInclude Include="Colony_birth_info.h">
+      <Filter>.h</Filter>
+    </ClInclude>
+    <ClInclude Include="Position.h">
+      <Filter>.h</Filter>
+    </ClInclude>
+    <ClInclude Include="general_constants.h">
+      <Filter>.h</Filter>
+    </ClInclude>
+    <ClInclude Include="Food.h">
+      <Filter>.h</Filter>
+    </ClInclude>
+    <ClInclude Include="Pheromone.h">
+      <Filter>.h</Filter>
+    </ClInclude>
+    <ClInclude Include="random_generator.h">
+      <Filter>.h</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision_detector.h">
+      <Filter>.h</Filter>
+    </ClInclude>
+    <ClInclude Include="OBJlib.h">
+      <Filter>.h</Filter>
+    </ClInclude>
+    <ClInclude Include="sdlglutils.h">
+      <Filter>.h</Filter>
+    </ClInclude>
+    <ClInclude Include="loadpng_functions.h">
+      <Filter>.h</Filter>
+    </ClInclude>
+    <ClInclude Include="Ant_Sim.h">
+      <Filter>.h</Filter>
+    </ClInclude>
+    <ClInclude Include="Time_machine.h">
+      <Filter>.h</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>.h</Filter>
+    </ClInclude>
+    <ClInclude Include="glfont2.h">
+      <Filter>.h</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing_engine.h">
+      <Filter>.h</Filter>
+    </ClInclude>
+    <ClInclude Include="Obstacle.h">
+      <Filter>.h</Filter>
+    </ClInclude>
+    <ClInclude Include="Table_of_items.h">
+      <Filter>.h</Filter>
+    </ClInclude>
+    <ClInclude Include="Game_item_birth_info.h">
+      <Filter>.h</Filter>
+    </ClInclude>
+    <ClInclude Include="Game_item.h">
+      <Filter>.h</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include=".h">
+      <UniqueIdentifier>{36546232-b81b-4e92-be94-16c4799f9412}</UniqueIdentifier>
+    </Filter>
+    <Filter Include=".cpp">
+      <UniqueIdentifier>{0333f30c-5983-471c-aa76-be009feda42b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

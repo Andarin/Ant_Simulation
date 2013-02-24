@@ -90,7 +90,7 @@ void Colony::produce_larva(Uint32 time)
 
 void Colony::test_if_larva_developped(Uint32 time)
 {
-	if (_larva_list.front() < time)
+	if (!_larva_list.empty() && _larva_list.front() < time)
 	{
 		_larva_list.pop_front();
 		create_ant(time + _ant_life_time);

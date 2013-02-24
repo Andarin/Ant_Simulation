@@ -7,6 +7,9 @@
 #include <fstream>
 #include "Position.h"
 
+// class to pass information needed to create a colony
+// there is the possibility to read this data from a file
+// the path is specified in general_constants.h
 class Colony_birth_info
 {
 public:

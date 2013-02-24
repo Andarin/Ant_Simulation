@@ -3,6 +3,9 @@
 #pragma once
 #include "Game_item.h"
 
+// obstacles in the game environment to make the life of the ants more
+// difficult and to create different maps
+// until now they can be displayed but there is not yet collision detection
 class Obstacle : public Game_item
 {
 public:

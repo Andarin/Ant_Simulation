@@ -3,6 +3,8 @@
     //Free source, modify if you want, LGPL licence (I guess), I would be happy, if you would not delete the link
     //so other people can see the tutorial
     //this file is functions.h, it's contain the function prototypes for the camera
+
+// This class manages the 3D camera.
 #pragma once
 #ifdef _WIN32
 	#include "windows.h"

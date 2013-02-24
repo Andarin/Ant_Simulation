@@ -13,7 +13,7 @@ Drawing_engine::Drawing_engine(void)
 	// boolean checks
 	_mousein = false;
 	_countdown_on = false;
-	_high_quality_on = false;
+	_high_quality_on = true;
 	_switch_fog_on = false;
 }
 
@@ -28,14 +28,14 @@ void Drawing_engine::set_window(void)
 	// create prescreen to show logo while everything is initialized
 	_prescreen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_SWSURFACE);
 	_logo = load_image("data/logo.png");
-	apply_surface( 200, 150, _logo, _prescreen );
+	apply_surface( 200, 100, _logo, _prescreen );
 	SDL_Flip( _prescreen ); 
 
 	// set up the real screen
 	_screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_SWSURFACE|SDL_OPENGL);
 	// SDL_SWSURFACE|SDL_OPENGL means: do both options
 	// for full screen:
-	//screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_SWSURFACE|SDL_FULLSCREEN);
+	//_screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_SWSURFACE|SDL_FULLSCREEN);
 	SDL_WM_SetCaption( "Ant Simulation", NULL );
 	SDL_Surface *icon;
 	icon = SDL_LoadBMP("data/icon.bmp");
@@ -63,8 +63,8 @@ void Drawing_engine::init_fog(void)
 {
 	if (_switch_fog_on) { glEnable(GL_FOG); }
 	glFogi(GL_FOG_MODE,GL_LINEAR);
-	glFogf(GL_FOG_START,800.0);
-	glFogf(GL_FOG_END,3000.0);
+	glFogf(GL_FOG_START,500.0);
+	glFogf(GL_FOG_END,2000.0);
 	float fog_color[] = {0.7,0.7,.80,0.8};
 	glFogfv(GL_FOG_COLOR,fog_color);
 }
@@ -333,7 +333,7 @@ void Drawing_engine::draw_ants(Ant_Sim *ant_sim_ptr, int round_cnt)
 {
 	//for low quality ants
 	double ant_color[3] =  {0.2, 0.0, 0.0};
-	int freq = 50;
+	int freq = 15;
 	double anim_frame = std::abs((round_cnt%freq)/(0.25*freq)-2)-1;
 
 	//for high quality ants

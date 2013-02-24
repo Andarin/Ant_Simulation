@@ -30,6 +30,32 @@ Ant_Sim::~Ant_Sim(void)
 {
 }
 
+void Ant_Sim::init(void)
+{
+	_table_items = std::make_shared<Table_of_items>(500, BOARD_SIZE);
+	_coll_dect = std::make_shared<Collision_detector>(_table_items, 
+							_max_size_of_pheromone, _max_size_of_vision, _max_size_of_corps);
+
+	add_colony();
+	add_start_food(50);
+	add_obstacle(150,BOARD_SIZE-200,0,BOARD_SIZE-200);
+	add_obstacle(100,BOARD_SIZE-200,0,BOARD_SIZE-300);
+	add_obstacle(50,BOARD_SIZE-300,0,BOARD_SIZE-300);
+
+	////////// calculate test ants ///////////////////////////////
+	// in order to see them, also uncomment the test variables in Ant_Sim.h and 
+	// in the constructor, uncomment in Ant_Sim.start() clean_up_test_ants(); 
+	// in Ant_Sim.game_logic move_test_ants and in Drawing_engine.draw_ants
+	//
+	//for (int cnt = 0; cnt < _ant_number; cnt++)
+	//{
+	//	_ant_posx[cnt] = rand() % (BOARD_SIZE-40) + 20;
+	//	_ant_posz[cnt] = rand() % (BOARD_SIZE-40) + 20;
+	//}
+	//////////////////////////////////////////////////////////////
+}
+
+
 ////////// calculate test ants ///////////////////////////////
 // in order to see them, also uncomment the test variables in Ant_Sim.h and
 // in the constructor, the block in the Ant_Sim.init()
@@ -58,30 +84,6 @@ Ant_Sim::~Ant_Sim(void)
 //	}
 //}
 
-void Ant_Sim::init(void)
-{
-	_table_items = std::make_shared<Table_of_items>(500, BOARD_SIZE);
-	_coll_dect = std::make_shared<Collision_detector>(_table_items, 
-							_max_size_of_pheromone, _max_size_of_vision, _max_size_of_corps);
-
-	add_colony();
-	add_start_food(50);
-	add_obstacle(150,BOARD_SIZE-200,0,BOARD_SIZE-200);
-	add_obstacle(100,BOARD_SIZE-200,0,BOARD_SIZE-300);
-	add_obstacle(50,BOARD_SIZE-300,0,BOARD_SIZE-300);
-
-	////////// calculate test ants ///////////////////////////////
-	// in order to see them, also uncomment the test variables in Ant_Sim.h and 
-	// in the constructor, uncomment in Ant_Sim.start() clean_up_test_ants(); 
-	// in Ant_Sim.game_logic move_test_ants and in Drawing_engine.draw_ants
-	//
-	//for (int cnt = 0; cnt < _ant_number; cnt++)
-	//{
-	//	_ant_posx[cnt] = rand() % (BOARD_SIZE-40) + 20;
-	//	_ant_posz[cnt] = rand() % (BOARD_SIZE-40) + 20;
-	//}
-	//////////////////////////////////////////////////////////////
-}
 
 //void Ant_Sim::clean_up_test_ants(void)
 //{
