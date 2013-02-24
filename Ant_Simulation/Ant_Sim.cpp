@@ -5,7 +5,7 @@
 Ant_Sim::Ant_Sim(void)
 {
 	_time_remaining = read_play_time_from_file(FILE_NAME)*1000;
-	_sim_time_step = 20; // in milli seconds
+	_sim_time_step = 40; // in milli seconds
 	_max_size_of_pheromone = 300;
 	_max_size_of_corps = 100;
 
