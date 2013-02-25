@@ -5,6 +5,8 @@
 int main(int argc, char** argv)
 {
 	Ant_Sim my_sim;
-	my_sim.start();
+	//my_sim.start();
+	my_sim.start_text_output("sim_example1.sav");
+	//my_sim.start_text_input("sim_example2.sav");
 	return 0;
 }

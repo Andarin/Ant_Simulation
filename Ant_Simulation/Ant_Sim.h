@@ -85,11 +85,19 @@ public:
 	Ant_Sim(void);
 	~Ant_Sim(void);
 	void start(void);
-	void start_text_output(void);
+	void start_text_output(std::string);
+	void start_text_input(std::string);
 
 	std::shared_ptr<Table_of_items> _table_items;
 	std::shared_ptr<Collision_detector> _coll_dect;
 
+	// replay variables - get accessed by Drawing_engine.cpp
+	bool _is_replay;
+	std::list<float> _obstacle_list;
+	std::list<float> _colony_list;
+	std::list<float> _hud_list;
+	std::list<float> _ant_list;
+	std::list<float> _food_list;
 	// just for testing / not important
 	//float *_ant_posx;
 	//float *_ant_posz;
@@ -127,4 +135,25 @@ private:
 	void start_countdown(void);
 	void game_logic(Uint32);
 	void clean_up(void);
+
+	// save game related methods and variables
+	std::list<std::list<float>> _save_game_list;
+
+	void save_time_step(void);
+	void save_obstacles(void);
+	void save_colonies(void);
+	void save_food(void);
+	void save_hud(void);
+	void save_ants(void);
+	void write_to_file(std::string);
+
+	// load game related methods and variables
+	void load_text_file(std::string);
+	void load_time_step(void);
+	void load_obstacles(void);
+	void load_colony(void);
+	void load_food(void);
+	void load_ants(void);
+	void load_hud(void);
+	std::vector<std::string> split(std::string,char);
 };

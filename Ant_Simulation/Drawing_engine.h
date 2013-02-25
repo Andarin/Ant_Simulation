@@ -105,5 +105,12 @@ private:
 
 	// help functions for the result drawing
 	double get_food_starting_value(void);
-	double calc_result(Ant_Sim*);
+	double calc_result(Ant_Sim*,bool);
+
+	// replay drawing functions
+	void draw_colonies_replay(Ant_Sim*);
+	void draw_obstacles_replay(Ant_Sim*);
+	void draw_food_replay(Ant_Sim*);
+	void draw_ants_replay(Ant_Sim*,int);
+	void draw_hud_replay(Uint32,Ant_Sim*);
 };

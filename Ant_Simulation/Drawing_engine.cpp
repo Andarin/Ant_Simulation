@@ -189,7 +189,7 @@ void Drawing_engine::draw_hud(Uint32 time_remaining, Ant_Sim *ant_sim_ptr)
 	y_coord -= line_distance;
 	double solid_food_rounded = std::floor(100*solid_food)/100.0;
 	double liquid_food_rounded = std::floor(100*liquid_food)/100.0;
-	draw_text_with_number("Solid Food: ", solid_food, x_coord, y_coord);
+	draw_text_with_number("Solid Food: ", solid_food_rounded, x_coord, y_coord);
 	y_coord -= line_distance;
 	draw_text_with_number("Liquid Food: ", liquid_food_rounded, x_coord, y_coord);
 	
@@ -209,22 +209,40 @@ double Drawing_engine::get_food_starting_value(void)
 	return start_food;
 }
 
-double Drawing_engine::calc_result(Ant_Sim *ant_sim_ptr)
+double Drawing_engine::calc_result(Ant_Sim *ant_sim_ptr, bool is_replay)
 {
 	// get liquid and solid food values of the simulation
 	double liquid_food = 0;
 	double solid_food = 0;
-	std::list<std::shared_ptr<Colony>> colony_list = (*ant_sim_ptr)._table_items->_colony_list;
-	for (std::list<std::shared_ptr<Colony>>::iterator col_it = colony_list.begin(); 
-			col_it != colony_list.end() ; ++col_it)
-	{ 
-		// 0 is the "color" of the player
-		if ((*col_it)->_color == 0)
+	if(!is_replay)
+	{ // if this is a real time simulation
+		std::list<std::shared_ptr<Colony>> colony_list = (*ant_sim_ptr)._table_items->_colony_list;
+		for (std::list<std::shared_ptr<Colony>>::iterator col_it = colony_list.begin(); 
+				col_it != colony_list.end() ; ++col_it)
+		{ 
+			// 0 is the "color" of the player
+			if ((*col_it)->_color == 0)
+			{
+				liquid_food += (*col_it)->get_liquid_food();
+				solid_food += (*col_it)->get_solid_food();
+			}
+		}
+	} else
+	{ // if this is a replay
+		for (std::list<float>::iterator hud_it = ((*ant_sim_ptr)._hud_list).begin(); 
+				hud_it != ((*ant_sim_ptr)._hud_list).end() ; ++hud_it)
 		{
-			liquid_food += (*col_it)->get_liquid_food();
-			solid_food += (*col_it)->get_solid_food();
+			//time_remaining_in_s = (int)((*ant_sim_ptr)._time_remaining)/1000);
+			hud_it++;
+			hud_it++;
+			hud_it++;
+			hud_it++;
+			liquid_food = (*hud_it);
+			hud_it++;
+			solid_food = (*hud_it);
 		}
 	}
+
 	// get the value of food the simulation started with
 	double start_food = get_food_starting_value();
 	// return the relation between start food and food at the end (between 0.0 and 1.0)
@@ -282,9 +300,9 @@ void Drawing_engine::draw_obstacles(Ant_Sim* ant_sim_ptr)
 	for (std::list<std::shared_ptr<Obstacle>>::iterator obstacle_it = obstacle_list.begin(); 
 			obstacle_it != obstacle_list.end() ; ++obstacle_it)
 	{ 
-		Position food_pos = (*obstacle_it)->_pos;
+		Position obstacle_pos = (*obstacle_it)->_pos;
 		glPushMatrix();
-			glTranslatef(food_pos._x,food_pos._y,food_pos._z);
+			glTranslatef(obstacle_pos._x,obstacle_pos._y,obstacle_pos._z);
 			draw_box((*obstacle_it)->get_size(),_tex_box, _tex_box);
 		glPopMatrix();
 	}
@@ -488,20 +506,162 @@ void Drawing_engine::display(Ant_Sim *ant_sim_ptr, Uint32 time_remaining, int ro
 	_camera.update();
 	draw_board(BOARD_SIZE, _tex_board);
 	draw_border(BOARD_SIZE, _tex_border);
-	draw_colonies(ant_sim_ptr);
-	draw_obstacles(ant_sim_ptr);
-	draw_food(ant_sim_ptr);
-	draw_ants(ant_sim_ptr, round_cnt);
+	if (!(ant_sim_ptr->_is_replay))
+	{ // if no replay
+		draw_colonies(ant_sim_ptr);
+		draw_obstacles(ant_sim_ptr);
+		draw_food(ant_sim_ptr);
+		draw_ants(ant_sim_ptr, round_cnt);
+	} else
+	{
+		draw_colonies_replay(ant_sim_ptr);
+		draw_obstacles_replay(ant_sim_ptr);
+		draw_food_replay(ant_sim_ptr);
+		draw_ants_replay(ant_sim_ptr, round_cnt);
+	}
 
 	if (_countdown_on) 
 	{ 
-		double result = calc_result(ant_sim_ptr);
+		double result = calc_result(ant_sim_ptr,(*ant_sim_ptr)._is_replay);
 		draw_result(result); 
 	}
 
 	glPushMatrix();
 		switch_to_ortho_perspective();
-		draw_hud(time_remaining, ant_sim_ptr);
+		if (!(ant_sim_ptr->_is_replay))
+			draw_hud(time_remaining, ant_sim_ptr);
+		else
+			draw_hud_replay(time_remaining, ant_sim_ptr);
 	glPopMatrix();
 	glFlush();
+}
+
+void Drawing_engine::draw_food_replay(Ant_Sim* ant_sim_ptr)
+{
+	for (std::list<float>::iterator food_it = ((*ant_sim_ptr)._food_list).begin(); 
+			food_it !=((*ant_sim_ptr)._food_list).end() ; ++food_it)
+	{ 
+		float x = (*food_it);
+		food_it++;
+		float z = (*food_it);
+		food_it++;
+		float size = (*food_it);
+		glPushMatrix();
+			glTranslatef(x,0,z);
+			if (_high_quality_on)
+			{
+				int apple_size = 4-std::min<double>((size)/20,4);
+				_apple_hq_array[apple_size]->draw_model(); 
+			}
+			else 
+				{ draw_box(size, _tex_apple_side, _tex_apple_top); }
+		glPopMatrix();
+	}
+}
+
+void Drawing_engine::draw_obstacles_replay(Ant_Sim* ant_sim_ptr)
+{
+	for (std::list<float>::iterator obstacle_it = ((*ant_sim_ptr)._obstacle_list).begin(); 
+			obstacle_it !=((*ant_sim_ptr)._obstacle_list).end() ; ++obstacle_it)
+	{ 
+		float x = (*obstacle_it);
+		obstacle_it++;
+		float z = (*obstacle_it);
+		obstacle_it++;
+		float size = (*obstacle_it);
+		glPushMatrix();
+			glTranslatef(x,0,z);
+			draw_box(size, _tex_box, _tex_box);
+		glPopMatrix();
+	}
+}
+
+void Drawing_engine::draw_colonies_replay(Ant_Sim* ant_sim_ptr)
+{
+	for (std::list<float>::iterator colony_it = ((*ant_sim_ptr)._colony_list).begin(); 
+			colony_it !=((*ant_sim_ptr)._colony_list).end() ; ++colony_it)
+	{ 
+		float x = (*colony_it);
+		colony_it++;
+		float z = (*colony_it);
+		colony_it++;
+		float size = (*colony_it);
+		glPushMatrix();
+			glTranslatef(x,0,z);
+			draw_colony(size, _tex_colony);
+		glPopMatrix();
+	}
+}
+
+void Drawing_engine::draw_ants_replay(Ant_Sim *ant_sim_ptr, int round_cnt)
+{
+	//for low quality ants
+	double ant_color[3] =  {0.2, 0.0, 0.0};
+	int freq = 15;
+	double anim_frame = std::abs((round_cnt%freq)/(0.25*freq)-2)-1;
+
+	//for high quality ants
+	int hq_frame = (round_cnt%16)/2;
+
+	//draw all ants in the environment list
+	for (std::list<float>::iterator ant_it = ((*ant_sim_ptr)._ant_list).begin(); 
+			ant_it != ((*ant_sim_ptr)._ant_list).end() ; ++ant_it)
+	{
+		float x = (*ant_it);
+		ant_it++;
+		float z = (*ant_it);
+		ant_it++;
+		float angle = (*ant_it);
+		glPushMatrix();
+			glTranslatef(x,2,z);
+			glRotated(angle, 0.0, 1.0, 0.0);
+			if (_high_quality_on) { _ant_hq_array[hq_frame]->draw_model(); }
+			else { draw_ant_anim(10, ant_color, anim_frame); }
+		glPopMatrix();
+	}
+}
+
+
+void Drawing_engine::draw_hud_replay(Uint32 time_remaining, Ant_Sim *ant_sim_ptr)
+{
+	int time_remaining_in_s = (int)time_remaining/1000;
+	int larva_number = 0;
+	int ant_number = (*ant_sim_ptr)._table_items->_ant_list.size();
+	int queen_hp = 0;
+	double liquid_food = 0;
+	double solid_food = 0;
+	for (std::list<float>::iterator hud_it = ((*ant_sim_ptr)._hud_list).begin(); 
+			hud_it != ((*ant_sim_ptr)._hud_list).end() ; ++hud_it)
+	{
+		//time_remaining_in_s = (int)((*ant_sim_ptr)._time_remaining)/1000);
+		hud_it++;
+		larva_number = (*hud_it);
+		hud_it++;
+		ant_number = (*hud_it);
+		hud_it++;
+		queen_hp = (*hud_it);
+		hud_it++;
+		liquid_food = (*hud_it);
+		hud_it++;
+		solid_food = (*hud_it);
+	}
+
+	float x_coord = SCREEN_WIDTH-250.0;
+	float line_distance = 30;
+	float y_coord = SCREEN_HEIGHT-20.0;
+	draw_text_with_number("Time remaining: ", time_remaining_in_s, x_coord, y_coord);
+	y_coord -= line_distance;
+	draw_text_with_number("Larvas: ", larva_number, x_coord, y_coord);
+	y_coord -= line_distance;
+	draw_text_with_number("Ants: ", ant_number, x_coord, y_coord);
+	y_coord -= line_distance;
+	draw_text_with_number("Queen HP: ", queen_hp, x_coord, y_coord);
+	y_coord -= line_distance;
+	double solid_food_rounded = std::floor(100*solid_food)/100.0;
+	double liquid_food_rounded = std::floor(100*liquid_food)/100.0;
+	draw_text_with_number("Solid Food: ", solid_food_rounded, x_coord, y_coord);
+	y_coord -= line_distance;
+	draw_text_with_number("Liquid Food: ", liquid_food_rounded, x_coord, y_coord);
+	
+	if (_countdown_on) draw_countdown(time_remaining_in_s);
 }
